@@ -1,0 +1,2428 @@
+{% comment %}
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+
+{% for block in section.blocks %}
+{% if block.type == 'bg' %}
+{% assign bg = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'badges' %}
+{% assign badges = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'savings' %}
+{% assign savings = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'timer' %}
+{% assign timer = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'customtext' %}
+{% assign customtext = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'stepper' %}
+{% assign stepper = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'announce' %}
+{% assign announce = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'customcss' %}
+{% assign customcss = forloop.index0 | plus: 0 %}
+{% endif %}
+{% endfor %}
+
+{% if section.settings.price_format == 'original'%}{% assign price_format_new = false %}{% else %}{% assign price_format_new = true %}{% endif %}
+{% capture money_symbol %}{{ 0 | money | remove: '0' | remove: '.' | remove: ',' | strip_html | strip }}{% endcapture %}
+{% capture moneyFormat %}<span class="cents">{{ money_symbol }}{% endcapture %}
+{% assign font_size_desktop = section.settings.font_size_desktop | divided_by: 100.0 | plus: 1 %}
+{% assign font_size_mobile = section.settings.font_size_mobile | divided_by: 100.0 | plus: 1 %}
+{% assign btn_brightness = section.settings.button_bg_color | color_brightness | plus:0 | round %}
+{% if btn_brightness > 40 %}{% assign btn_color_hover = section.settings.button_bg_color | color_darken: 10 %}{% else %}{% assign btn_color_hover = section.settings.button_bg_color | color_lighten: 15 %}{% endif %}
+{% capture wrapper_opacity %}{{ section.blocks[bg].settings.bg_secondary_opacity | divided_by: 100.0 }}{% endcapture %}
+{% assign wrapper_opacity = wrapper_opacity | plus: 0 %}
+
+{% case localization.language.iso_code %}
+  {% when 'fr' %}
+    {% assign free_text_auto = 'Gratuit' %}
+  {% when 'nl', 'sv', 'es', 'de' %}
+    {% assign free_text_auto = 'Gratis' %}
+  {% else %}
+    {% assign free_text_auto = 'Free' %}
+{% endcase %}
+
+<style>
+  /* RESETS, ADMIN & UTILITIES */
+  body .main-content.main-content, .mono-produit-true .main-content{padding:0!important;margin:0;max-width:none}
+  p {font-size:1em;margin:0}
+  .page-container {overflow:visible}
+  iframe {display:none}
+  #main.container{all:unset;-webkit-text-fill-color:initial}
+  #shopify-section-{{ section.id }} {position:relative;z-index:0}
+  #shopify-section-{{ section.id }} a{text-decoration:none;}  
+  #shopify-section-{{ section.id }} {font-size:{{ font_size_mobile }}em;}
+  #shopify-section-{{ section.id }} .additional-checkout-buttons iframe {border-radius:100px}
+  #shopify-section-{{ section.id }} .additional-checkout-buttons {margin:0!important}
+  #shopify-section-{{ section.id }} .additional-checkout-buttons .dynamic-checkout__content {min-height:62px}
+  .md_desktop-hide {display:inherit}
+  .md_mobile-hide {display:none}
+  .md_all-hide {display:none!important}
+
+  {% if section.blocks[announce].settings.cart_message_enable %}
+  /* ANNOUNCE */ 
+  .cart-message__wrapper {width:auto;display:block;background-color:{{ section.blocks[announce].settings.cart_message_bgcolor }};padding:10px 20px}
+  .cart-message__text {text-align:left;}
+  .cart-message__text p { color:{{ section.blocks[announce].settings.cart_message_color }};margin:0}
+  {% endif %}
+  
+  {% if section.blocks[stepper].settings.stepper_mobile_enable or section.blocks[stepper].settings.stepper_desktop_enable %}
+  /* STEPER */
+  .checkoutsteps{font-size:0.9em;padding:0;position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;display: -webkit-flex;width:100%;max-width:1200px;margin-bottom:20px;padding-top:15px;-webkit-box-sizing:border-box;box-sizing:border-box;}
+  .checkoutsteps li{margin:0;position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;display: -webkit-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-flex:1;-ms-flex:1;flex:1;width:33%;-ms-flex-preferred-size:33%;flex-basis:33%;-webkit-box-flex:0;-ms-flex:0 0 33%;flex:0 0 33%;color:{{ section.blocks[stepper].settings.stepper_secondary_color }};font-weight:600;text-align:center;list-style-type:none;}
+  .checkoutsteps span{position:relative;z-index:3;display:inline-block;padding:0 0 30px;text-decoration:none;color:{{ section.blocks[stepper].settings.stepper_main_color }};font-weight:600}
+  .checkoutsteps li:after{box-sizing:border-box;content:'';position:absolute;left:50%;z-index:2;-webkit-transform:translate(-50%, 0);transform:translate(-50%, 0);display:block;background:#fff;border-radius:100%;bottom:3px;width:18px;height:18px;border:4px solid {{ section.blocks[stepper].settings.stepper_secondary_color }};}
+  .checkoutsteps:after{content:'';position:absolute;bottom:11px;left:16.5%;display:block;width:66%;height:2px;background:{{ section.blocks[stepper].settings.stepper_secondary_color }};}
+  .checkoutsteps li.current:after{border-color: {{ section.blocks[stepper].settings.stepper_main_color }};}
+  {% endif %}
+
+  /* MAIN WRAPPER */
+  .pageWidth{*zoom:1;max-width:1280px;padding:0px;margin:0}
+  .pageWidth:after{content:'';display:table;clear:both;}
+  form[name="cartForm"] {margin:0;position:relative;}
+  form[name="cartForm"]::after{content: " ";display: block;clear: both;}
+
+  /* TABLE LEFT */
+  /* & container */
+  .cartItems__wrapper {display:block;width:100%;padding:0 20px;background-color:{{ section.blocks[bg].settings.bg_secondary_color | color_modify: 'alpha', wrapper_opacity }};}
+  .cartItems__container {border-top: 1px solid {{ section.blocks[bg].settings.bg_secondary_color | color_darken:10 }};display:flex;display:-webkit-flex;justify-content:space-evenly;position:relative;padding: 20px 0px;{% if section.settings.ellipsis %}padding-left: 5px;padding-right: 5px;{% endif %}} 
+  .cartItems__container:first-child{border-top:0;}
+  .cartItems__container.discounted {margin-bottom:25px}
+  .cartItems__container.discounted-lastRow {margin-bottom:40px}
+  /* & image */ 
+  .cartItems__image {margin-right:10px;display: flex;align-items: center;}
+  .cartItems__image img { {% if section.blocks[bg].settings.img_border %}border:1px solid {{ section.blocks[bg].settings.bg_secondary_color | color_darken:12 | color_modify: 'alpha', wrapper_opacity }};{% endif %}display:block;border-radius: 5px;width:{{ 90 | times: font_size_mobile }}px;height:{{ 90 | times: font_size_mobile }}px;object-fit: cover;}
+  .cartItems__image a {margin:0;display:inline-block;width:{{ 90 | times: font_size_mobile }}px;}
+  /* & infos */
+  .cartItems__infos {width:calc(100% - 90px);display: flex;flex-direction: column;justify-content: space-around;color:inherit;font-size:0.9em}
+  .cartItems__title {color:{{ section.blocks[bg].settings.primary_color_mobile }};line-height: 1em;}
+  .cartItems__title > * {margin-bottom:7px}
+  .cartItems__title > a { {% if section.settings.ellipsis %}white-space: nowrap;overflow: hidden;text-overflow: ellipsis;{% endif %}margin-bottom:5px;display:block;font-weight:700;color:inherit;}
+  .cartItems__title p {color:{{ section.blocks[bg].settings.primary_color_mobile }};margin:0 0 7px 0; line-height:1em;}
+  .cartItems__infos .flash__text {margin-top: auto;margin-bottom: 0;color:{{ section.settings.flashtext_color }}}
+  .cartItems__infos .flash__text p{font-size:0.8em;font-weight:600;}
+   .cartItems__infos .flash__text > * {color:{{ section.settings.flashtext_color }};fill:{{ section.settings.flashtext_color }} }
+  /* & quantity */
+  .cartItems__quantity {position:absolute;right:0;bottom:20px}
+  .cartItems__quantity .cartItems__quantity--controls {display: inline-flex;width: 75px;border: 1px solid #dbdbdb;height: 32px;}
+  .cartItems__quantity .cartItems__quantity--controls > * {all:unset;width:29px;padding:0;text-align:center;border:0;color:#777777;background-color:#fff}  
+  .cartItems__quantity .cartItems__quantity--controls > input {width:17px;}
+  .cartItems__quantity .cartItems__quantity--controls > button {cursor:pointer;outline:none}
+  .cartItems__quantity .cartItems__quantity--controls > button:active {background-color: #eeeeee;transition:all 0.1s ease-out}
+  /* & price & compare at price & discounts */
+  .cartItems__prices {font-size:1.3em;line-height:1em}
+  .cartItems__prices del{position:relative;text-decoration:none;margin-right:6px;display:inline-block}
+  .cartItems__prices del:before {content: "";display: block;width: 100%;border-top: 2px solid #c76f6f;position: absolute;height:0.6em;bottom: 0;left: 0;transform: rotate(-13.4deg);}
+  .cartItems__prices .cents{font-size:60%;vertical-align:55%;display:inline-block;line-height:100%;}
+  .cartItems__prices-compare .cents, .cartItems__prices-original .cents{vertical-align:45%}
+  .cartItems__prices-compare,  .cartItems__prices-original {font-size:0.8em;color:gray}
+  .cartItems__prices-total{display:inline-block;font-weight:400;margin-right:15px;color:{{ section.blocks[bg].settings.primary_color_mobile }};}
+  .cartItems__prices-container {display:flex;display: -webkit-flex;flex-direction: column-reverse;justify-content: space-evenly;}
+  .cartItems__prices-discount{font-size:1em;bottom:-10px;left:0;width:100%;margin-bottom:0;}
+  .cartItems__prices-discount li{color:{{ section.blocks[savings].settings.discount_text_color }};display:inline-block;text-align:left;font-weight:700;background-color: {{ section.blocks[savings].settings.discount_bg_color }};{% if section.blocks[savings].settings.discount_bg_color contains 'rgba(0,0,0,0)' %}padding: 4px 5px 4px 0;{% else %}padding: 4px 5px;{% endif %}line-height:1em;width:auto;border-radius:3px}
+  .cartItems__prices-discount.mobileAbsolute {position:absolute}
+  .cartItems__prices-discount:not(.mobileAbsolute) + .flash__text {display:none}
+  .cartItems__prices--smaller {font-size:1.15em}
+  
+  /* TABLE RIGHT */
+  /* & container */
+  .summary__wrapper{width:100%;text-align:center;padding:0 20px 20px;display:block;position:relative;text-align:right;background-color:{{ section.blocks[bg].settings.bg_secondary_color | color_modify: 'alpha', wrapper_opacity }};}
+  /* total & subtotal */
+  .tva-incluse{font-size:0.95em;color:{{ section.settings.custom_text1_color }};font-weight:300;text-align:left;height: 1em;margin:3px 0 0 0;}
+  .summary__subtotal{padding-top: 20px;margin:0 0 -5px 0;display:flex;display: -webkit-flex;line-height:1;justify-content:space-between;font-size: 1.6em;font-weight: 600;color:{{ section.settings.total_color }};}
+  .summary__subtotal .cents {font-size:60%;vertical-align:50%;display:inline-block;line-height:100%;}
+  .summary__price {font-size:1.1em}
+  /* & custom text */
+  .basket-sep{border-top:1px dashed {{ section.blocks[bg].settings.bg_secondary_color | color_darken:12 }};border-bottom:0;border-style:dashed;border-color:{{ section.blocks[bg].settings.bg_secondary_color | color_darken:12 }};margin:15px 0;clear:both;float:none;}
+  .custom__text p {text-align:center;color:{{ section.blocks[customtext].settings.custom_text2_color }};margin:0}
+  /* & savings */
+  .summary__savings {margin:10px 0 0;}
+  .summary__savings p {text-align:right;font-weight:600}
+  /* & cart btn */
+  .btnCart{position:relative;margin:0;height:50px;color:{{ section.settings.button_text_color }};background-color:{{ section.settings.button_bg_color }};display:inline-block;width:auto;text-decoration:none;text-align:center;vertical-align:middle;white-space:nowrap;cursor:pointer;border:1px solid transparent;-moz-user-select:none;-ms-user-select:none;-webkit-user-select:none;user-select:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;letter-spacing:1.5px;width:100%;font-weight:600; border-radius:50px;font-size:1em;padding:12px 20px;transition:color 0.1s ease-in,background-color 0.1s ease-in;}
+  .btnCart:hover, .btnCart:active, .btnCart:focus{background-color:{{ btn_color_hover }};border:1px solid {{ btn_color_hover }};outline:none}
+  .btn__svg--loader {position: absolute;fill:{{ section.settings.button_text_color }};width: 20px;height: 20px;left: calc(50% - 10px);top: calc(50% - 10px);-webkit-transition: opacity 0.3s ease-in-out;transition: opacity 0.3s ease-in-out;opacity: 0;}
+  .btn__svg--loader.btn__svg--loading {-webkit-animation: rotate 0.5s linear infinite;animation: rotate 0.5s linear infinite;opacity: 1;}
+  .btnCart.btnCart--loading {pointer-events:none}
+  .btnCart.btnCart--loading span {opacity:0;transition: opacity 0.2s ease-out;}
+   @keyframes rotate {0% {-webkit-transform: rotate(0);transform: rotate(0);}100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}}
+
+  /* EXTRA STYLES & EFFECTS */
+  {% if section.settings.flashtext_blink %}
+  .blinking{animation:blinkingText 1.5s infinite;animation-delay:1s}
+  @keyframes blinkingText{20%{opacity:1}50%{opacity:0}100%{opacity:1}}
+  {% endif %}
+  #shopify-section-{{ section.id }}::-webkit-input-placeholder{color:#3d3d3d!important;}
+  #shopify-section-{{ section.id }}::-moz-placeholder{color:#3d3d3d!important;} 
+
+  {% if section.blocks[savings].settings.promofield_enable %}
+  /* PROMO CODE */
+  .discount_Field{width:100%;display: block;position: relative;text-align: right;cursor: pointer}
+  .discount_Field span {display:flex;display: -webkit-flex;align-items:center;margin-bottom:15px;padding: 3px 0;}
+  .discount_Field svg{float:left;width:31px;height:auto;margin-right:15px}
+  #shopify-section-{{ section.id }} input.checkoutcode{height:38px;border-radius:7px;border: solid 1px;background-color:#fff;border-color: #E7E7E7;margin-bottom:0;padding:8px 10px;width:100%;color:#191919;font-size:1em;}
+  #shopify-section-{{ section.id }} input.checkoutcode:focus{outline:none;border:1px solid {{ section.blocks[savings].settings.promofield_color }};box-shadow:0 0 0 1px {{ section.blocks[savings].settings.promofield_color }};transition:all .2s ease-out}
+  .discount_Field--text{margin:-15px 0 0;color:#ec6464;font-size:0.9em;max-height: 0px;opacity: 0;transition: all 0.7s ease-out;}
+  .discount_Field--text.show {max-height:40px;opacity:1}
+  {% endif %}
+  
+  /* CDTIMER */
+  #cdTimerCart {text-align:left;font-size:18px;color:{{ section.blocks[timer].settings.cart_timer_color1 }} }
+  #cdTimerCart .cdTimerCart--color {color:{{ section.blocks[timer].settings.cart_timer_color2 }} }
+
+  {% if section.blocks[badges].settings.badges_enable %}
+  /* TRUST BADGES */
+  .secure-pay-cart{font-size:0.92em;margin:2px auto 0;display:table;color:{{ section.blocks[badges].settings.badges_color }};filter:grayscale(0.1);text-align:center;clear:right}
+  .secure-pay-cart svg:not(:nth-of-type(1)){vertical-align:middle}
+  .secure-pay-cart svg.cb{width:24px;margin-left:7px}
+  .secure-pay-cart svg.applepay{width:38px;margin-left:5px}
+  .secure-pay-cart svg.visa{width:37px;margin-left:3px}
+  .secure-pay-cart svg.mastercard{width:32px;margin-left:3px}
+  .secure-pay-cart svg.paypal{width:64px;margin-left:5px}
+  .secure-pay-cart svg.amex{width:26px;margin-left:5px}
+  .lockicon{margin-right:3px}  
+  .secure-pay-cart > span > span {display:inline-block; margin-bottom:10px; vertical-align:text-top;line-height:100%}
+  {% endif %}
+
+  {% if section.settings.show_notes %}
+  /* CART NOTES */
+  .cart_notes{text-align:center}
+  .cart_notes label {text-transform:none;letter-spacing: 0;font-size: 1em;color:{{ section.blocks[customtext].settings.custom_text2_color }} }
+  .cart_notes textarea{display:block;background-color:#fff;width:100%; border-color:#e9e7e7;margin:5px 0 20px;padding: 10px;height: 100px;min-height:100px;}
+  .cart_notes textarea::-webkit-input-placeholder{color: #c4c4c4!important;opacity: 1;}
+  .cart_notes textarea::-moz-placeholder{color: #c4c4c4!important;opacity: 1;}
+  {% endif %}
+  
+  /* UPSELL */
+  .upsell_section-editor {background-color:#649eff;color:#fff;font-weight: 600;text-align: center;margin: 70px 60px;padding: 5px 10px;order:2}
+  .upsell-svg.submit_upsell ellipse{fill:{{ section.settings.button_bg_color }};}
+
+    .formob{
+    display:none;
+  }
+  .fordesk{
+    display:block;
+  }
+  
+  /* MEDIA QUERIES */
+  @media (min-width: 1100px){
+    {% capture wrapper_opacity %}{{ section.blocks[bg].settings.bg_secondary_opacity_desktop | divided_by: 100.0 }}{% endcapture %}
+    {% assign wrapper_opacity = wrapper_opacity | plus: 0 %}
+    #shopify-section-{{ section.id }} {font-size:{{ font_size_desktop }}em;}
+    #shopify-section-{{ section.id }}::after {content:"";{% if section.blocks[bg].settings.bg_img_desktop == blank %}background-color:{{ section.blocks[bg].settings.bg_color_desktop }};{% else %}background:url('{{ section.blocks[bg].settings.bg_img_desktop | img_url: '1400x', format: 'pjpg' }}');{% endif %};opacity: {{ section.blocks[bg].settings.bg_opacity_desktop | divided_by: 100.0 }};top: 0;left: 0;bottom: 0;right: 0;position:absolute;z-index: -1;background-size:cover;background-repeat:no-repeat;background-position:{{ section.blocks[bg].settings.bg_poshorizontal_desktop }}% {{ section.blocks[bg].settings.bg_posvertical_desktop}}%}
+    form[name="cartForm"] {display:flex;display:-webkit-flex;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;}
+    .md_desktop-hide {display:none}
+    .md_mobile-hide {display:inherit}
+    .summary__wrapper {background-color:{{ section.blocks[bg].settings.bg_secondary_color_desktop | color_modify: 'alpha', wrapper_opacity }};width:30%;margin-left:2%;float:right;margin-top:0;position:sticky;top:100px;}    
+    .cartItems__wrapper {width: 100%;float: left;background-color:{{ section.blocks[bg].settings.bg_secondary_color_desktop | color_modify: 'alpha', wrapper_opacity }};padding: 15px 20px;}
+    .cartItems__container {border-top: 1px solid {{ section.blocks[bg].settings.bg_secondary_color_desktop | color_darken:10 }}}   
+    .basket-sep{border-top:1px dashed {{ section.blocks[bg].settings.bg_secondary_color_desktop | color_darken:12 }}}
+    .pageWidth{padding:75px 20px 100px;margin:0 auto}
+    .checkoutsteps {margin:0 auto 60px;font-size:1em;padding-top:0}
+    #shopify-section-{{ section.id }} input.checkoutcode{height:42px;}
+    .checkoutcode{padding:6px 10px;}
+    .cartItems__container{min-height:150px}
+    .cartItems__container:first-child{padding-top:22px}
+    .cartItems__image img {width:95px;height:auto;{% if section.blocks[bg].settings.img_border %}border:2px solid {{ section.blocks[bg].settings.bg_secondary_color_desktop | color_darken:12 | color_modify: 'alpha', wrapper_opacity }}{% endif %};}
+    .cartItems__image a {width: 95px;}
+    .cartItems__container.discounted, .cartItems__container.discounted-lastRow {margin-bottom:0px}
+    .cartItems__infos {flex-direction: row;align-items: center;justify-content: space-between;font-size:1em}
+    .cartItems__title{width:310px;font-size:1em;display:flex;display:-webkit-flex;flex-direction:column;justify-content:{% if section.settings.flashtext != blank %}space-between{% else %}space-evenly{% endif %};min-height:60px;color:{{ section.blocks[bg].settings.primary_color_desktop }} }
+    .cartItems__title--height {min-height:80px;}
+    .cartItems__title a{white-space: normal;}
+    .cartItems__quantity {position:inherit}
+    .cartItems__quantity .cartItems__quantity--controls{height:35px}
+    .cartItems__prices {width:175px;text-align:right}
+    .cartItems__prices .cents{vertical-align:45%}
+    .cartItems__prices--smaller {font-size:1.25em}
+    .cartItems__prices-discount {position:relative!important;bottom:0}
+    .cartItems__prices-discount li {margin-bottom:5px;margin-top:5px}
+    .cartItems__prices-discount + .flash__text {display:none}
+    .cartItems__title p, .cartItems__prices-total {color:{{ section.blocks[bg].settings.primary_color_desktop }} }
+    .cart-message__wrapper {margin:0px 0px 45px;padding:10px 20px;border-radius:7px}
+    .secure-pay-cart{margin:12px auto 0;}
+    .summary__savings {margin:10px 0;}
+  }
+  @media (max-width:1099px) and (min-width:640px) {
+    .summary__wrapper, .cartItems__wrapper{width:640px;margin:auto;}
+  }
+  @media (max-width: 1099px){
+    #shopify-section-{{ section.id }}::after{content: "";{% if section.blocks[bg].settings.bg_img == blank %}background-color:{{ section.blocks[bg].settings.bg_color }};{% else %}background:url('{{ section.blocks[bg].settings.bg_img | img_url: '800x', format: 'pjpg' }}');{% endif %}opacity: {{ section.blocks[bg].settings.bg_opacity | divided_by: 100.0 }};top: 0;left: 0;bottom: 0;right: 0;position:absolute;z-index: -1;background-size:cover;background-repeat:no-repeat;background-position:{{ section.blocks[bg].settings.bg_poshorizontal }}% {{ section.blocks[bg].settings.bg_posvertical }}%}
+    .summary__wrapper{margin:15px auto;  width:90%; border-radius:7px; }
+    .btnCart__sticky{position: sticky;bottom: 0px;width: 90vw;margin-left: calc(50% - 45vw);padding:15px 20px;background-color:{{ section.blocks[bg].settings.bg_secondary_color }};}
+    .btnCart__sticky.btnCart__sticky--shadow {box-shadow:0px -2px 5px -2px rgba(5,5,5,0.15);transition:all 0.2s ease-in-out}
+    .sticky_sentinel--bottom {position:relative;height: 3px;bottom:-19px;}
+    .scroll__observer {position: absolute;width: 1px;height: 1px;top: -92px;left: 0;}
+     #shopify-section-upsell-maxdesign {padding-bottom:20px;transition:padding 0.5s ease-out 0.7s;}
+    #cdTimerCart {font-size:15px;}
+    .cart-message__text{font-size:12px;}
+    .cart-message__wrapper {margin:15px auto;padding:10px 20px;border-radius:7px;background-color:#ffffff;width:90%}
+    .cartItems__wrapper {width:90%;margin:auto;border-radius:7px}
+    .custom__text{width: 90%;margin: 15px auto;border-radius: 7px;background-color: #fff;padding: 10px 20px;}
+     .formob{
+    display:block;
+  }
+  .fordesk{
+    display:none;
+  }
+
+  }
+
+  /* CUSTOM CSS */
+  @media (min-width:{{ section.blocks[customcss].settings.query }}px) { {{ section.blocks[customcss].settings.css_bureau }} }
+  @media (max-width:{{ section.blocks[customcss].settings.query }}px) { {{ section.blocks[customcss].settings.css_mobile }} }
+
+  .indicator--green {
+    position: relative;
+    display: block;
+    height: 10px;
+    width: 10px;
+    aspect-ratio: 1;
+    background: #0da558;
+    border-radius: 50%;
+    margin-top: 5px;
+}
+
+  .indicator--green:before {
+    content: "";
+    display: block;
+    height: 14px;
+    width: 14px;
+    aspect-ratio: 1;
+    position: absolute;
+    overflow: hidden;
+    left: calc(50% - 7px);
+    top: calc(50% - 7px);
+    border-radius: 50%;
+    border: 3px solid #b0dbd1;
+    animation: breathing 2.5s infinite;
+}
+
+</style>
+
+<div class="scroll__observer"></div>
+<div data-section-id="{{ section.id }}" data-section-type="cart">
+  {% comment %} Translation-friendly source for JS updates {% endcomment %}
+  <span class="js-free-text-template" style="display:none">{{ free_text_auto | escape }}</span>
+
+  <div class="pageWidth">
+    <span style="height:1px;display:block"></span>
+    {% if cart.item_count > 0 %}
+    {% if section.blocks[announce].settings.cart_message_enable %}
+    <div class="cart-message__wrapper">
+      {% if section.blocks[timer].settings.cart_show_timer %}
+              <div id="cdTimerCart">
+               <strong style="font-weight: 700;"> {{ section.blocks[timer].settings.cart_timer_innerText | replace: 'XX', '<font class="cdTimerCart--color"><span id="cart_minutes">&nbsp;&nbsp;</span>:<span id="cart_seconds">&nbsp;&nbsp;</span></font>' }}
+              </strong>  
+             </div> 
+            {% endif %}
+      <div class="cart-message__text">
+        {{ section.blocks[announce].settings.cart_message_text }}</div>
+    </div>
+    {% endif %}
+      {% if section.blocks[customtext].settings.custom_text2_enable %}
+            <div class="custom__text formob">
+              <div class="middel_item m-b-15" style="display:flex; align-item:center">
+                <span class="indicator--green"></span>
+                <span style="margin-left: 10px;">
+                  {{- section.blocks[customtext].settings.custom_text2 }}
+                  {% assign cdate = block.Start_date %}
+                  <span style="color:#79adff;" class="start_date" data-date="{{ cdate}}"></span>
+                </span>
+              </div>
+
+              <script>
+                $(document).ready(function(){
+                  var date = new Date();
+                  var Nday = 1;
+                  var months=["jan","fev","mar","avr","mai","juin","juil","aout","sep","oct","nov","dec"];
+                  var startdate = new Date(date.getTime() + (24 * 60 * 60 * 1000 * Nday ));
+                  var Ndate = startdate.getDate() + " ";
+                  var cdate = $('span.start_date').data('date');
+
+                  var Nday = 3;
+                  var enddate = new Date(date.getTime() + (24 * 60 * 60 * 1000 * Nday ));
+                  var Edate = enddate.getDate() + " " + months[enddate.getMonth()];
+                  $('.start_date').text(Ndate + " - " + Edate);
+                })
+              </script>     
+            </div>
+            {% endif %}
+    {% if section.blocks[stepper].settings.stepper_mobile_enable or section.blocks[stepper].settings.stepper_desktop_enable %}
+    <div class="{% if section.blocks[stepper].settings.stepper_mobile_enable == false %}md_mobile-hide {% endif %}{% if section.blocks[stepper].settings.stepper_desktop_enable == false %}md_desktop-hide {% endif %}{% if section.blocks[stepper].settings.stepper_desktop_enable == false and section.blocks[stepper].settings.stepper_mobile_enable == false %}md_all-hide{% endif %}">
+      <ul class="checkoutsteps">	
+        <li class="current js-buttonPanier">
+          <span>{{ section.blocks[stepper].settings.step1 }}</span>				
+        </li>	      	
+        <li class=" js-buttonLivraison">
+          {{ section.blocks[stepper].settings.step2 }}	
+        </li>			
+        <li class=" js-buttonPayement">
+          {{ section.blocks[stepper].settings.step3 }}
+        </li>	
+      </ul>
+    </div>
+    {% endif %}    
+    <form name="cartForm" action="/cart" method="post" novalidate>
+      <div class="leftside">
+<div class="cartItems__wrapper">
+        {%- assign items_to_sort = "" | split: "" -%}
+        {%- assign items_to_append = "" | split: "" -%}
+        {%- for item in cart.items -%}
+          {%- assign is_special = false -%}
+          {%- if item.price == 0 -%}{%- assign is_special = true -%}{%- endif -%}
+          {%- for property in item.properties -%}
+            {%- if property.first == 'upsell' or property.first == '_upsell' -%}{%- assign is_special = true -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign item_as_array = item | sort -%}
+          {%- if is_special -%}
+            {%- assign items_to_append = items_to_append | concat: item_as_array -%}
+          {%- else -%}
+            {%- assign items_to_sort = items_to_sort | concat: item_as_array -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign sorted_cart_items = items_to_sort | sort: 'price' | reverse | concat: items_to_append -%}
+        {% for item in sorted_cart_items %}
+        {% assign lastloop = forloop.last %}
+        <div class="cartItems__container {% for discount in item.discounts %}{% assign discount_available = true %}{% if lastloop %}discounted-lastRow{% elsif discount.title.size > 15 %}discounted{%endif %}{% endfor %}" id="{{item.variant.id}}">          
+          <div class="cartItems__image">            
+            <a href="{{ item.url | within: collections.all }}">
+              <img src="{{ item | img_url: '240x240' }}" alt="{{ item.title | escape }}">
+            </a>
+          </div>
+          <div class="cartItems__infos">
+            <div class="cartItems__title {% unless item.variant.title contains 'Default' %}cartItems__title--height{% endunless %}">
+              <a href="{{ item.url }}">
+                {{ item.product.title }}
+              </a>
+              {% unless item.variant.title contains 'Default' %}
+              	<p>{{ item.variant.title }}</p>
+              {% endunless %}
+              	{% assign property_size = item.properties | size %}
+              	{% if property_size > 0 %}
+              		{% for p in item.properties %}
+              			{% assign first_character_in_key = p.first | truncate: 1, '' %}
+              			{% unless p.last == blank or first_character_in_key == '_' %}
+                          <p>
+			  {{ p.first }}:
+                          {% if p.last contains '/uploads/' %}
+                              <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                          {% else %}
+                              {{ p.last }}
+                          {% endif %}
+			  </p>
+              			{% endunless %}
+              		{% endfor %}
+              	{% endif %}
+              {% for discount in item.discounts %}             	  
+                  {% if section.blocks[savings].settings.discount_text_enable %}
+                    <span class="cartItems__prices-discount {% if discount.title.size > 15 %}mobileAbsolute{% endif %}">
+                      <li>{{ discount.title }}</li>
+                    </span>
+                  {% endif %}
+              {% endfor %}
+              {% if section.settings.flashtext != blank %}
+              <div class="flash__text {% if section.settings.flashtext_blink%}blinking{% endif %}">
+                <p class="">{{ section.settings.flashtext }}</p>
+              </div>
+              {% endif %}              
+            </div>
+<div class="cartItems__quantity">
+              <div class="cartItems__quantity--controls">
+                <button type="button">−</button>
+                <input name="updates[{{item.key}}]" id="Updates_{{ item.key }}" class="quantity-selector" value="{{ item.quantity }}" min="0" data-line="{{ forloop.index }}" aria-label="{{ 'cart.label.quantity' | t }}"{% if item.price == 0 %} readonly{% endif %}>
+                <button type="button"{% if item.price == 0 %} disabled style="opacity: 0.3; cursor: not-allowed;"{% endif %}>+</button>
+              </div>
+            </div>
+            <div class="cartItems__prices-container">
+              <div class="cartItems__prices {% if price_format_new == false and item.variant.price >= 10000 or item.variant.compare_at_price >= 10000 or smaller_font %}{% assign smaller_font = true %}cartItems__prices--smaller{% endif %}">
+        			{% if section.blocks[savings].settings.compare_price_enable %}              
+                      {% if item.variant.compare_at_price > item.variant.price %}
+                	  {% assign original_compared_price = true %}
+                      <del class="cartItems__prices-compare" id="{{item.variant.id}}">{% if price_format_new %}{{ item.variant.compare_at_price | times: item.quantity | money_without_currency | replace_first: ',', moneyFormat | remove: '€ ' | remove: '00' | strip | replace_first: '.', moneyFormat | remove: '€ ' | remove: '00' | strip }}{% else %}{{ item.variant.compare_at_price | times: item.quantity | money_without_trailing_zeros }}{% endif %}</del>
+                      {% endif %}
+                	{% endif %}
+{% if item.original_line_price != item.line_price and original_compared_price == nil %}
+                <del><small class="cartItems__prices-original" id="{{item.variant.id}}">{% if price_format_new %}{{ item.original_line_price |  money_without_currency | replace_first: ',', moneyFormat | remove: '00' | strip | replace_first: '.', moneyFormat | remove: '€ ' | remove: '00' | strip }}{% else %}{{ item.original_line_price | money_without_trailing_zeros }}{% endif %}</small></del>
+                {% endif %}
+<div class="cartItems__prices-total" id="{{item.variant.id}}">
+                  {% if item.price == 0 %}
+                    <span class="js-free-text-target" style="color: {{ section.settings.free_product_text_color }};">{{ free_text_auto }}</span>
+                  {% else %}
+                    {% if price_format_new %}{{ item.line_price | money_without_currency | replace_first: ',', moneyFormat | remove: '€ ' | remove: '00' | strip | replace_first: '.', moneyFormat | remove: '€ ' | remove: '00' | strip }}{% else %}{{ item.line_price | money_without_trailing_zeros }}{% endif %}
+                  {% endif %}
+                </div>                
+              </div>             
+            </div>
+          </div>
+        </div>
+        {% endfor %} 
+      </div>
+      {% if section.settings.upsell_enable %}
+
+
+
+  {% assign btn_brightness = section.settings.upsell_atcbg | color_brightness | plus:0 | round %}
+  {% if btn_brightness > 40 and btn_brightness != 255 %}{% assign btn_color_hover = section.settings.upsell_atcbg | color_darken: 10 %}{% else %}{% assign btn_color_hover = section.settings.upsell_atcbg | color_lighten: 15 %}{% endif %}
+        
+  {% comment %}
+  Make a loop that goes through all different items in the cart. 
+  Forloop last is necessary to get only the final number and times:1 to convert string to a number
+  This will be used later to show or hide the upsell.
+  {% endcomment %}
+  {% assign number_lineitems = 0 %}
+  {% for item in cart.items %}
+    {% if item.price > 0 %}
+      {% assign number_lineitems = number_lineitems | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+
+
+  {% comment %}
+  Capture the max items before the upsell is hidden, and multiply by one to convert from string to integer.
+  This will be used later to show or hide the upsell.
+  {% endcomment %}
+  {% capture upsell_cap %}{{ section.settings.upsell_cap }}{% endcapture %}
+  {% assign upsell_cap = upsell_cap | times:1 %}
+
+
+  {% comment %}
+  Make an array of all product ID in the cart. This will be used to check if the upsell we want to add is not already in the cart
+  {% endcomment %}
+  {% capture arr %}{% for item in cart.items %}{% if item.price > 0 %}{{-item.product.id-}},{% endif %}{% endfor %}{% endcapture %}
+  {% assign array1 = arr | split: ',' %}
+
+
+{% comment %}
+  Go through the cart items and break the loop once an item meet conditions for upsell. Assign break_loop is to break the parent loop.
+  The loop is set to not break when the upsell found is already in the cart, so that we check next line_item for upsell
+  {% endcomment %}
+{% assign any_upsell_in_cart = false %}
+{% for block in section.blocks %}
+  {% if block.type contains 'upsell' %}
+    {% assign my_handle = block.settings.product_upsell %}
+    {% assign upsell_id = all_products[my_handle].id | times:1 %}
+    {% for myitem in array1 %}
+      {% assign cartItem_id = myitem | times: 1 %}
+      {% if cartItem_id != 0 and cartItem_id == upsell_id %}
+        {% assign any_upsell_in_cart = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% if any_upsell_in_cart %}{% break %}{% endif %}
+  {% endif %}
+{% endfor %}
+
+{% assign break_loop = false %}
+{% unless any_upsell_in_cart %}
+{% for item in cart.items %}
+  {% if item.price == 0 %}{% continue %}{% endif %}
+  {% capture collection_handle %}{% for collection in item.product.collections %}{{ collection.handle }}{% endfor %}{% endcapture %}
+  {% for block in section.blocks %}
+    {% if block.type contains 'upsell' %}
+      {% if block.type == 'upsell1' %}
+        {% if block.settings.trigger_product_id != blank %}
+          {% assign upsell_ref = block.settings.trigger_product_id | times:1 %}
+        {% elsif block.settings.upsell_reference == blank %}
+          {% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].id %}
+        {% else %}
+          {% assign upsell_ref = block.settings.upsell_reference | times:1 %}
+        {% endif %}
+      {% else %}
+        {% if block.settings.trigger_product_id != blank %}
+          {% assign upsell_ref = block.settings.trigger_product_id %}
+        {% else %}
+          {% assign upsell_ref = block.settings.upsell_reference %}
+        {% endif %}
+      {% endif %}
+
+{% if upsell_ref != blank and upsell_ref != 0 %}
+        {% if item.variant.id == upsell_ref or item.product.id == upsell_ref or collection_handle contains upsell_ref %}
+          {% assign my_handle = block.settings.product_upsell %}
+          {% assign upsell_id = all_products[my_handle].id | times:1 %}
+          {% assign already_in_cart = false %}
+          {% for myitem in array1 %}
+            {% assign cartItem_id = myitem | times: 1 %}
+            {% if cartItem_id == upsell_id %}{% assign already_in_cart = true %}{% break %}{% endif %}
+          {% endfor %}
+  
+          {% if already_in_cart == false %}
+            {% assign variant_id = item.id | append: '' %}
+            {% assign product_id = item.product.id | append: '' %}
+            {% assign eligible_upsell = upsell_id | append: '-' | append: forloop.index %}
+            {% assign break_loop = true %}
+            {% break %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if break_loop %}{% break %}{% endif %}
+{% endfor %}
+{% endunless %}
+
+
+<style>
+  /* main styles */
+  .upsell-section{width:100%;max-width:1000px;margin:0 auto;}
+  .upsell-wrapper{position:relative;text-align:center;padding: 20px 15px;}
+  .upsell-header{color:{{ section.settings.upsell_color | color_lighten: 35 }};font-size: 0.8em;letter-spacing: 1px;text-transform: uppercase;font-weight:600;margin-bottom:8px;}
+  .upsell-content{display:flex;align-items:center;margin:0;line-height:inherit;}
+  .upsell-text{color:{{ section.settings.upsell_color }};text-align:left;margin:0 12px}
+  .upsell-topline {margin-bottom:15px;font-weight:600;font-size:1em;}
+  .upsell-topline p {margin-bottom:5px;display:inline-block}
+  .upsell-mainline p, .upsell-mainline{margin-bottom:0;font-size:1em}
+  .upsell-mainline .unset > * {all:unset}  
+  .upsell-image{display:flex;max-width: 60px;flex: 0 0 60px;height:auto}
+  .upsell-image img {width:100%;height: auto;align-self: flex-start;}
+  .upsell-subline{margin:20px 0 5px}
+  .upsell-subline p, .upsell-subline{font-size:1em}
+  .upsell_compare-price{color:{{ section.settings.upsell_atc | color_modify: 'alpha', 0.7 }};font-size: 1em;margin:0 3px}
+   button.submit_upsell.submit_upsell--loading span, .upsell-svg.submit_upsell--loading > g:first-child {opacity:0; transition: opacity 0.1s ease-in}
+   button.submit_upsell svg.submit_upsell--loading, .upsell-svg.submit_upsell--loading > g:last-child > svg {opacity: 1;transition: opacity 0.2s ease-out 0.1s;}
+  .upsell-svg.submit_upsell--loading, .btn__svg--loader.submit_upsell--loading{-webkit-animation: rotate 0.5s linear infinite;animation: rotate 0.5s linear infinite;}
+  .upsell-svg.submit_upsell--loading svg.btn__svg--loader{fill:#000}
+  .md_desktop-hide {display:inherit;}
+  .md_mobile-hide {display:none;}
+  @keyframes rotate {0% {-webkit-transform: rotate(0);transform: rotate(0);}100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}}
+  
+  /* media queries */
+  @media(min-width:1100px) {
+    #shopify-section-upsell-maxdesign{order:2}
+    .upsell-header{background-color:{{ section.settings.upsell_topcolor}};color:{{ section.settings.upsell_topcolor_text}};white-space: nowrap;position: absolute;left: 50%;transform: translateX(-50%);top: -14px;z-index: 2;border-radius: 40px;padding: 4px 30px;}
+    .upsell-wrapper{width:400px;float:left;border:1px solid {{ section.settings.upsell_border_color_desktop }};background-color:{{ section.settings.upsell_bg_color_desktop }};margin:50px 0 0;padding:25px 20px;}
+    .upsell-wrapper button{width:350px}
+    .upsell-content{width:350px;justify-content:space-around;margin:5px auto 15px;line-height:1.3em}
+    .upsell-topline {margin-bottom:10px}
+    .upsell-mainline p, .upsell-mainline{font-size:0.95em}
+    .upsell-image{float:left;width:35%;max-width: 82px;flex: 0 0 auto;}
+    .upsell-text {color:{{ section.settings.upsell_color_desktop }};width:65%;margin:0}
+    button.submit_upsell {position:relative;margin:0;color:{{ section.settings.upsell_atc}};background-color:{{ section.settings.upsell_atcbg}};border:1px solid {{ section.settings.upsell_atc}};letter-spacing:1.5px;width:100%;font-weight:600;font-size:0.9em;padding:11px 20px;border-radius:50px;display:inline-block;text-decoration:none;text-align:center;vertical-align:middle;white-space:nowrap;cursor:pointer;-moz-user-select:none;-webkit-user-select:none;user-select:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none}
+    button.submit_upsell:hover,button.submit_upsell:focus {background-color:{{ btn_color_hover }}}
+    button.submit_upsell.submit_upsell--loading {pointer-events:none}
+    button.submit_upsell svg {position: absolute;fill:{{ section.settings.upsell_atc}};width: 20px;height: 20px;left: calc(50% - 10px);top: calc(50% - 10px);-webkit-transition: opacity 0.3s ease-in-out;transition: opacity 0.3s ease-in-out;opacity: 0;}
+    .md_desktop-hide {display:none;}
+    .md_mobile-hide {display:inherit;}
+  }
+  @media (min-width: 640px) and (max-width: 1099px) {
+    .upsell-header{background-color:{{ section.settings.upsell_topcolor}};color:{{ section.settings.upsell_topcolor_text}};white-space: nowrap;position: absolute;left: 50%;transform: translateX(-50%);top: -14px;z-index: 2;border-radius: 40px;padding: 4px 30px;}
+    .upsell-wrapper {width: 640px;margin-left:auto;margin-right:auto;}
+  }
+  @media(max-width:1099px) {
+    .upsell-header{background-color:{{ section.settings.upsell_topcolor}};color:{{ section.settings.upsell_topcolor_text}};white-space: nowrap;position: absolute;left: 50%;transform: translateX(-50%);top: 5px;z-index: 2;border-radius: 40px;padding: 4px 30px;}
+    .upsell-container{top:14px;font-size:0.9em;background-color:{{ section.settings.upsell_bg_color }};border: 1px solid {{ section.settings.upsell_border_color }};padding: 15px;position: relative;}
+    .upsell-svg {width:25px;height:25px;flex:1 0 auto;position:relative;fill:#000;}
+    button.submit_upsell1 {position:relative;margin:0;color:{{ section.settings.upsell_atc}};background-color:{{ section.settings.upsell_atcbg}};border:1px solid {{ section.settings.upsell_atc}};letter-spacing:1.5px;width:100%;font-weight:600;font-size:0.8em;padding:11px 20px;border-radius:50px;text-decoration:none;text-align:center;vertical-align:left;white-space:nowrap;cursor:pointer;-moz-user-select:none;-webkit-user-select:none;user-select:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none}
+    button.submit_upsell1:hover,button.submit_upsell:focus {background-color:{{ btn_color_hover }}}
+    button.submit_upsell1.submit_upsell--loading {pointer-events:none}
+    button.submit_upsell1 svg {position: absolute;fill:{{ section.settings.upsell_atc}};width: 20px;height: 20px;left: calc(50% - 10px);top: calc(50% - 10px);-webkit-transition: opacity 0.3s ease-in-out;transition: opacity 0.3s ease-in-out;opacity: 0;}
+
+  }
+  /* custom css */
+  {% for block in section.blocks %}{% if block.type == 'customcss' %}{% assign customcss = forloop.index0 %}{% endif %}{% endfor %}
+  @media (min-width:{{ section.blocks[customcss].settings.query}}px) { {{section.blocks[customcss].settings.css_bureau}} }
+  @media (max-width:{{ section.blocks[customcss].settings.query | minus: 1 }}px) { {{section.blocks[customcss].settings.css_mobile}} }
+</style>
+
+
+    {% comment %}
+    Render the html if upsell exist and based of number of items in cart
+        DEBUG TEXT  
+        ==> {{ forloop.index }} • variantid : {{ variant_id }} ==? {{ upsell_ref }} • productID:{{ product_id }} ==? {{ upsell_ref }} • eligibleupsell :{{ eligible_upsell }} ==? {{ myupsell_id }}
+        • eligible_upsell: {{ eligible_upsell }} ==? {{ myupsell_id }} 
+        {% if eligible_upsell == myupsell_id %} WORKS {% endif %}
+        UPSELLREF : {{ upsell_ref }}
+	{% endcomment %}
+
+
+
+  {% if number_lineitems < upsell_cap %}
+	{% for block in section.blocks %} 
+    {% capture blockIndex %}{{ forloop.index }}{% endcapture %}
+	  {% unless block.type == 'customcss' %}
+	    {% capture priceTag %}
+          {% if block.settings.show_price %}                  
+            {% comment %}
+            Loop through all products/variants and see if it matches upsell ID. When true, return the product price.
+            If upsell ID is left blank in editor, then use the first available variant as upsell.
+            {% endcomment %}
+            {% if block.settings.upsell_upsell != blank %}
+              {% assign upsell_id = block.settings.upsell_upsell | times: 1 %}
+            {% else %}
+              {% assign my_handle = block.settings.product_upsell %}
+              {% assign upsell_id = all_products[my_handle].first_available_variant.id | times:1 %}
+            {% endif %}
+            {% for product in collections["all"].products %}
+              {% if product.id == upsell_id %}
+                &nbsp; • &nbsp;{% if product.compare_at_price and block.settings.show_compare_price %}<s class="upsell_compare-price">{{ product.compare_at_price | money | strip }}</s>&nbsp;{% endif %}{{ product.price | money }}                         
+                {% break %}
+              {% endif %}
+              {% for variant in product.variants %}          			
+                {% if variant.id == upsell_id %}  
+                  &nbsp; • &nbsp;{% if variant.compare_at_price and block.settings.show_compare_price %}<s class="upsell_compare-price">{{ variant.compare_at_price | money | strip }}</s>&nbsp;{% endif %}{{ variant.price | money  }}
+                  {% break %}  
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+            {% endif %}                 
+		{% endcapture %}
+        {% assign upsell_handle = block.settings.product_upsell %}
+        {% capture myupsell_id %}{{ all_products[upsell_handle].id }}-{{ blockIndex }}{% endcapture %}
+		
+        {% comment %}FIND UPSELL TYPE COLLECTION OR PRODUCT{% endcomment %}
+        {% if block.type == 'upsell1' %}
+			{% if block.settings.upsell_reference == blank %}{% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].id %}{% else %}{% assign upsell_ref = block.settings.upsell_reference | times:1 %}{% endif %}
+        {% elsif block.type == 'upsell2' %}
+        	{% assign upsell_ref = block.settings.upsell_reference %}
+        {% endif %}	
+
+{% if eligible_upsell == myupsell_id and all_products[upsell_handle].available %}
+            <section class="upsell-section">
+              <div class="upsell-wrapper">	
+                <div class="upsell-header"><span>{{ block.settings.upsell_header }}</span></div>	
+                  <div class="upsell-container">
+                    <div class="upsell-topline md_desktop-hide">{% if block.settings.upsell_topline == blank %}{{ all_products[upsell_handle].title }}{% else %}{{ block.settings.upsell_topline }}{% endif %}{{ priceTag | strip }}</div> 
+                    <div class="upsell-content">
+                      <a class="upsell-image" href="{{ all_products[upsell_handle].url }}">
+                        <img src="{{ block.settings.upsell_img | default: all_products[upsell_handle].featured_image | product_img_url: '300x' }}">	
+                      </a>
+                      <div class="upsell-text">	
+                        <div class="upsell-topline md_mobile-hide">{% if block.settings.upsell_topline == blank %}{{ all_products[upsell_handle].title }}{% else %}{{ block.settings.upsell_topline }}{% endif %}</div> 
+                        <div class="upsell-mainline">{% if block.settings.upsell_mainline == blank %}<span class="unset">{{ all_products[upsell_handle].content | truncatewords: 10 | strip_html }}</span>{% else %}{{ block.settings.upsell_mainline }}{% endif %}</div>	
+                      </div>
+                      
+                  </div>
+                  <button name="upsell" type="button" class="submit_upsell submit_upsell1">
+                    <span>{{ block.settings.upsell_button }}{{ priceTag }}</span>
+                    <svg class="btn__svg--loader" viewBox="0 0 20 20"><path d="M20 10c0 5.523-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0v2c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8h2z"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </section>  
+            <div style="clear:both"></div>
+            {% break %}
+          {% endif %}
+	  {% endunless %}
+	{% endfor %}
+  {% endif %}
+
+
+  {% comment %}
+  	Decides which script to execute depending on upsell choosen
+  {% endcomment %}
+
+  {% if section.settings.upsell_type == 'update_cart' %}
+   <script>  
+     addEventListener("load", function(){
+         (function fetchCart() {
+           fetch('/cart.js').then(function(response) {
+             return response.json();
+           }).then(function(cart) {
+             if (cart.item_count === 0) {
+               console.log('cart empty');
+             } else {     
+               LoadUpsell(cart); 
+             }
+           }).catch(function() {
+             console.log("Cart error. Contact maxdesign.");
+           });
+         })();
+       
+function LoadUpsell(cart) {
+            {% for block in section.blocks %}  
+            {% assign upsell_handle = block.settings.product_upsell %}
+            {% capture myupsell_id %}{{ all_products[upsell_handle].id }}-{{ forloop.index }}{% endcapture %}
+{% unless block.type == 'customcss' %}
+                  {% if eligible_upsell == myupsell_id %}
+                    {% comment %}Convert product id to first available variant id if only product is selected{% endcomment %}
+                    {% if block.settings.upsell_upsell != blank %}
+                    {% assign upsell_id = block.settings.upsell_upsell | times: 1 %}
+                    {% else %}
+                    {% assign my_handle = block.settings.product_upsell %}
+                    {% assign upsell_id = all_products[my_handle].first_available_variant.id | times:1 %}
+                    {% endif %} 
+                    {% if block.type == 'upsell1' %}
+                    {% if block.settings.upsell_reference == blank %}
+                    {% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].first_available_variant.id %}
+                    {% else %}
+                    {% assign upsell_ref = block.settings.upsell_reference | times:1 %}
+                    {% endif %}
+                    {% elsif block.type == 'upsell2' %}
+                    {% assign upsell_ref = block.settings.upsell_reference %}
+                    {% endif %}	
+                      {% if block.settings.replace_reference contains 'replace' %}           		
+                      	document.querySelectorAll('.submit_upsell').forEach(submit => {
+                          submit.addEventListener('click', function() {
+                              if (window.matchMedia("(min-width: 1100px)").matches) {
+                                this.querySelector('svg').classList.add('submit_upsell--loading');
+                                this.classList.add('submit_upsell--loading');
+                              } else {
+this.classList.add('submit_upsell--loading');
+                              }  
+                             fetch('/cart/change.js', {
+                               method: 'POST',
+                               credentials: 'same-origin',
+                               headers: { 'Content-Type': 'application/json' },
+                               body: JSON.stringify({"quantity": 0,"id":"{{ variant_id }}"})
+                              }).then(function (data) {
+                                 if (data.status == 200) {
+                                   fetch('/cart/add.js', {
+                                     method: 'post',
+                                     headers: { 'Content-Type': 'application/json' },
+                                     body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                   }).then(res=>res.json())
+                                   .then(res => document.location = '{{ routes.cart_url }}');
+                                 } else {console.error('Request returned an error', data)}
+                               }).catch(function (error) {console.error('Request failed', error)})
+                             })
+                          })
+                      {% else %}
+                          document.querySelectorAll('.submit_upsell').forEach(submit => {
+                            submit.addEventListener('click', function() {
+                                if (window.matchMedia("(min-width: 1100px)").matches) {
+                                 this.querySelector('svg').classList.add('submit_upsell--loading');
+                                 this.classList.add('submit_upsell--loading');
+                                } else {
+                                 this.classList.add('submit_upsell--loading');
+                                }
+                                fetch('/cart/add.js', {
+                                  method: 'post',
+                                  credentials: 'same-origin',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                }).then(res=>res.json())
+                                .then(res => document.location = '{{ routes.cart_url }}')
+                                .catch(function (error) {console.error('Request failed', error)})
+                              })
+                            })
+{% endif %}
+                      {% break %}
+                  {% endif %}
+                {% endunless %}
+             {% endfor %}    
+        }
+    })
+  </script>
+  {% else %}
+   <script>
+    addEventListener("load", function(){
+       (function fetchCart() {
+           fetch('/cart.js').then(function(response) {
+             return response.json();
+           }).then(function(cart) {
+             if (cart.item_count === 0) {
+               console.log('cart empty');
+             } else {     
+               LoadUpsell(cart); 
+             }
+           }).catch(function() {
+             console.log("Cart error. Contact maxdesign.");
+           });
+         })();
+      
+function LoadUpsell(cart) {
+            {% for block in section.blocks %}
+            {% assign upsell_handle = block.settings.product_upsell %}
+            {% capture myupsell_id %}{{ all_products[upsell_handle].id }}-{{ forloop.index }}{% endcapture %}
+               {% unless block.type == 'customcss' %}
+                   {% if eligible_upsell == myupsell_id %}
+            		{% comment %}Convert product id to first available variant id if only product is selected{% endcomment %}
+                    {% if block.settings.upsell_upsell != blank %}
+                    {% assign upsell_id = block.settings.upsell_upsell | times: 1 %}
+                    {% else %}
+                    {% assign my_handle = block.settings.product_upsell %}
+                    {% assign upsell_id = all_products[my_handle].first_available_variant.id | times:1 %}
+                    {% endif %} 
+                    {% if block.type == 'upsell1' %}
+                    {% if block.settings.upsell_reference == blank %}
+                    {% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].first_available_variant.id %}
+                    {% else %}
+                    {% assign upsell_ref = block.settings.upsell_reference | times:1 %}
+                    {% endif %}
+                    {% elsif block.type == 'upsell2' %}
+                    {% assign upsell_ref = block.settings.upsell_reference %}
+                    {% endif %}	
+                    {% if block.settings.replace_reference contains 'replace' %}
+                        document.querySelectorAll('.submit_upsell').forEach(submit => {
+                            submit.addEventListener('click', function() {
+                              if (window.matchMedia("(min-width: 1100px)").matches) {
+                                this.querySelector('svg').classList.add('submit_upsell--loading');
+                                this.classList.add('submit_upsell--loading');
+                              } else {
+this.classList.add('submit_upsell--loading');
+                              } 
+                             fetch('/cart/change.js', {
+                               method: 'POST',
+                               credentials: 'same-origin',
+                               headers: { 'Content-Type': 'application/json' },
+                               body: JSON.stringify({"quantity": 0,"id":"{{ variant_id }}"})
+                              }).then(function (data) {
+                                 if (data.status == 200) {
+                                   fetch('/cart/add.js', {
+                                     method: 'post',
+                                     headers: { 'Content-Type': 'application/json' },
+                                     body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                   }).then(res=>res.json())
+                                   .then(res => document.location = '{{ routes.cart_url | append: '/checkout' }}');
+                                 } else {console.error('Request returned an error', data)}
+                               }).catch(function (error) {console.error('Request failed', error)})
+                             })
+                            })
+                      {% else %}
+                            document.querySelectorAll('.submit_upsell').forEach(submit => {
+                              submit.addEventListener('click', function() {
+                                if (window.matchMedia("(min-width: 1100px)").matches) {
+                                  this.querySelector('svg').classList.add('submit_upsell--loading');
+                                  this.classList.add('submit_upsell--loading');
+                                } else {
+                                  this.classList.add('submit_upsell--loading');
+                                } 
+                                fetch('/cart/add.js', {
+                                  method: 'post',
+                                  credentials: 'same-origin',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                }).then(res=>res.json())
+                                .then(res => document.location = '{{ routes.cart_url | append: '/checkout' }}')
+                                .catch(function (error) {console.error('Request failed', error)})
+                              })
+                            })
+{% endif %}        
+                  {% endif %}
+                {% endunless %}
+             {% endfor %}    
+        }
+    })
+  </script>
+  {% endif %}
+
+      {% endif %} 
+      </div>
+        <div class="summary__wrapper">
+          <p class="summary__subtotal">
+            <span>{{ section.settings.total }}</span>
+            <span class="summary__price">{% if price_format_new %}{{ cart.total_price | money_without_currency | replace_first: ',', moneyFormat | remove: '€ ' | remove: '00' | strip | replace_first: '.', moneyFormat | remove: '€ ' | remove: '00' | strip }}{% else %}{{ cart.total_price | money_without_trailing_zeros }}{% endif %}</span>
+          </p>
+          {% unless section.settings.custom_text1 == blank %}
+          <p class="tva-incluse">{{ section.settings.custom_text1 }}</p>
+          {% endunless %}
+          <!-- <p id="cartDiscountTotal">
+            {% if cart.total_discounts > 0 %}
+            {% assign price_savings = cart.total_discounts | money %}
+            {{ 'cart.general.savings_html' | t: price: price_savings }}
+            {% endif %}
+          </p>  -->
+          <hr class="basket-sep">
+          {% if section.blocks[customtext].settings.custom_text2_enable %}
+            <div class="custom__text fordesk">
+              <div class="middel_item m-b-15" style="display:flex; align-item:center">
+                <span class="indicator--green"></span>
+                <span style="margin-left: 10px;text-align:left">
+                  {{- section.blocks[customtext].settings.custom_text2 }}
+                  {% assign cdate = block.Start_date %}
+                  <span style="color:#79adff;" class="start_date" data-date="{{ cdate}}"></span>
+                </span>
+                
+              </div>
+              <hr class="basket-sep">
+
+              <script>
+                $(document).ready(function(){
+                  var date = new Date();
+                  var Nday = 1;
+                  var months=["jan","fev","mar","avr","mai","juin","juil","aout","sep","oct","nov","dec"];
+                  var startdate = new Date(date.getTime() + (24 * 60 * 60 * 1000 * Nday ));
+                  var Ndate = startdate.getDate() + " ";
+                  var cdate = $('span.start_date').data('date');
+
+                  var Nday = 3;
+                  var enddate = new Date(date.getTime() + (24 * 60 * 60 * 1000 * Nday ));
+                  var Edate = enddate.getDate() + " " + months[enddate.getMonth()];
+                  $('.start_date').text(Ndate + " - " + Edate);
+                })
+              </script>     
+            </div>
+            {% endif %}
+            
+           
+            {% if section.blocks[savings].settings.promofield_enable %}
+              <div class="discount_Field">
+                <span>
+                  <svg viewBox="0 -10 511.999 511"><path d="M472.04 240.25l-12.208-105.375c47.715-34.578 67.496-92.605 38.918-121.184C486.547 1.488 467.477-2.492 446.434 2.77c-18.641 4.66-37.758 16.078-53.829 32.148-.195.2-.382.402-.578.598l-141.07-16.344L0 270.132l221.078 221.079zM453.714 31.895c10.566-2.641 19.242-1.54 23.805 3.023 11.109 11.11.933 41.914-21.82 64.3l-3.497-30.175-24.558-24.559c8.57-6.066 17.585-10.468 26.07-12.59zM261.922 50.668l108.941 12.621c-4.582 8.09-8.035 16.395-10.18 24.625L350.149 77.38l-21.226 21.226 63.683 63.688 21.23-21.23-21.23-21.227c-4.562-4.563-5.664-13.238-3.023-23.805 2.356-9.422 7.52-19.492 14.652-28.879l4.098.477 15.254 15.254 16.96 146.406-219.468 219.465L42.457 270.133zm0 0"/><path d="M165.723 211.617c-24.828 0-45.032 20.203-45.032 45.035 0 24.828 20.204 45.032 45.032 45.032 24.832 0 45.035-20.204 45.035-45.032 0-24.832-20.203-45.035-45.035-45.035zm0 60.043c-8.278 0-15.008-6.734-15.008-15.008 0-8.277 6.73-15.011 15.008-15.011s15.011 6.734 15.011 15.011c0 8.274-6.73 15.008-15.011 15.008zm0 0M315.832 301.684c24.832 0 45.035-20.204 45.035-45.032 0-24.832-20.203-45.035-45.035-45.035s-45.031 20.203-45.031 45.035c0 24.828 20.199 45.032 45.031 45.032zm0-60.043c8.277 0 15.012 6.734 15.012 15.011 0 8.274-6.735 15.008-15.012 15.008-8.277 0-15.012-6.734-15.012-15.008 0-8.277 6.735-15.011 15.012-15.011zm0 0M240.984 164.121l29.614 4.934-30.024 180.132-29.613-4.937zm0 0"/></svg>
+                  <input class="checkoutcode" placeholder="Promo" autocomplete="off" type="text" name="discount" oninput="this.value = this.value.toUpperCase()" onclick="document.querySelector('.discount_Field--text').classList.add('show')" />
+                </span>
+                <p class="discount_Field--text">{{ section.blocks[savings].settings.promofield_text }}</p>
+                <hr class="basket-sep">
+              </div> 
+            {% endif %}
+          {% if section.settings.show_notes %}
+          <div class="cart_notes">
+            <label for="CartInstructions">Instruções especiais :</label>
+            <textarea name="note" id="CartInstructions" placeholder="Escreva algo..." class="cart__note">{{ cart.note }}</textarea>
+          </div>
+          {% endif %}
+          {% if section.blocks[savings].settings.savings_enable %}
+            {% assign total_saving = 0 | plus: 0 %}
+            {% for item in cart.items %}
+            {% if item.variant.compare_at_price > item.variant.price %}
+            {% capture saving %}{{ item.variant.compare_at_price | minus: item.variant.price | times: item.quantity }}{% endcapture %}
+            {% assign total_saving = saving | plus: total_saving %}       	  
+            {% endif %} 
+            {% endfor %}
+          	{% if section.blocks[savings].settings.compare_price_enable == false %}{% assign total_saving = 0 %}{% endif %}
+            {% if total_saving > 0 or cart.total_discounts > 0 %}
+              <div class="summary__savings">
+                <p style="color:{{ section.blocks[savings].settings.savings_color }}">{{ section.settings.yousave }} <span class="summary__savings-price">{{ total_saving | plus: cart.total_discounts | divided_by: 100.0 | round }}</span>{{ money_symbol }}</p>
+              </div>
+            {% endif %}
+          {% endif %}
+          <div class="btnCart__sticky">
+            <button type="button" class="btnCart">
+              <span style="display:flex;align-items:center;justify-content:center;"><svg style="min-width:15px;margin-right:10px;" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill=#FFFFFF><path d="M220-80q-24.75 0-42.375-17.625T160-140v-434q0-24.75 17.625-42.375T220-634h70v-96q0-78.85 55.606-134.425Q401.212-920 480.106-920T614.5-864.425Q670-808.85 670-730v96h70q24.75 0 42.375 17.625T800-574v434q0 24.75-17.625 42.375T740-80H220Zm260.168-200Q512-280 534.5-302.031T557-355q0-30-22.668-54.5t-54.5-24.5Q448-434 425.5-409.5t-22.5 55q0 30.5 22.668 52.5t54.5 22ZM350-634h260v-96q0-54.167-37.882-92.083-37.883-37.917-92-37.917Q426-860 388-822.083 350-784.167 350-730v96Z"></path></svg> {{ section.settings.button_text }}</span>
+              <svg class="btn__svg--loader" viewBox="0 0 20 20"><path d="M20 10c0 5.523-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0v2c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8h2z"></path></svg>
+            </button>
+            <div class="sticky_sentinel sticky_sentinel--bottom"></div>
+          </div>
+          {% unless section.settings.paypal_mode == 'show_checkout' %}
+          <div class="additional-checkout-buttons" style="{% if section.settings.paypal_mode == 'show_cart' %}display:block!important;height:auto{% elsif section.settings.paypal_mode == 'hide' %}visibility:hidden!important;height:0;{% endif %}">
+            {{ content_for_additional_checkout_buttons }}
+          </div>
+          {% endunless %}
+          {% if section.blocks[badges].settings.badges_enable %}
+          <span class="secure-pay-cart">           
+            <span>
+              <svg style="height:15px;width:15px" viewBox="0 0 1792 1792" fill="{{ section.blocks[badges].settings.badges_color }}"><path d="M640 768h512v-192q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28h-960q-40 0-68-28t-28-68v-576q0-40 28-68t68-28h32v-192q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z"/></svg>          
+              <span>{{ section.blocks[badges].settings.badges_text }}</span>              
+              <br>
+              {% if section.blocks[badges].settings.badges_cb %}<svg class="cb" viewBox="0 0 53.34 39.29"><style>.st1011{fill:#fff}</style><linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="1.123" y1="45.292" x2="1.83" y2="44.585"><stop offset="0" stop-color="#259e2e"/><stop offset=".983" stop-color="#1c381d"/></linearGradient><linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="-158.507" y1="-149.61" x2="-157.051" y2="-149.61" gradientTransform="matrix(0 26.9963 -.8337 0 -98.062 4279.094)"><stop offset="0" stop-color="#1b1f46"/><stop offset=".351" stop-color="#1b1f46"/><stop offset=".474" stop-color="#2e467e"/><stop offset=".551" stop-color="#3665a9"/><stop offset=".593" stop-color="#3665a8"/><stop offset=".631" stop-color="#3565a2"/><stop offset=".67" stop-color="#369"/><stop offset=".707" stop-color="#30668c"/><stop offset=".745" stop-color="#2d667a"/><stop offset=".782" stop-color="#296663"/><stop offset=".818" stop-color="#256449"/><stop offset=".849" stop-color="#216230"/><stop offset="1" stop-color="#216230"/></linearGradient><path fill="url(#SVGID_2_)" d="M0 0h53.34v39.29H0z"/><path class="st1011" d="M16.37 18.77h11.44c-.1-2.26-.68-4.59-2.43-6.08-2.08-1.78-5.73-2.44-8.98-2.44-3.39 0-7.14.73-9.23 2.64-1.8 1.65-2.19 4.3-2.19 6.68 0 2.49.76 5.39 2.72 7.07 2.08 1.78 5.45 2.25 8.71 2.25 3.16 0 6.58-.53 8.65-2.22 2.06-1.69 2.78-4.53 2.78-7.09v-.01H16.37v-.8zM28.58 19.55v8.91h15.91v-.01a4.396 4.396 0 0 0 4.18-4.39c0-2.36-1.85-4.4-4.18-4.51H28.58zM48.37 14.69c0-2.27-1.8-4.07-4.07-4.07-.16 0-.35-.03-.5-.01H28.58v8.17h16.04c2.1-.19 3.75-1.94 3.75-4.09z"/></svg>{% endif %}
+              {% if section.blocks[badges].settings.badges_applepay %}<svg class="applepay" viewBox="0.9 1.001 105.913 49.583"><path d="M28.036 21.536c.056 5.849 5.297 7.795 5.355 7.82-.044.138-.837 2.774-2.76 5.498-1.664 2.354-3.39 4.7-6.109 4.749-2.672.048-3.53-1.534-6.586-1.534-3.054 0-4.009 1.485-6.538 1.582-2.624.096-4.623-2.547-6.3-4.893-3.427-4.8-6.046-13.56-2.529-19.474 1.747-2.937 4.868-4.797 8.257-4.844 2.577-.048 5.01 1.679 6.586 1.679 1.574 0 4.531-2.077 7.64-1.772 1.3.053 4.952.509 7.297 3.834-.19.114-4.359 2.465-4.313 7.355M23.014 7.172C24.407 5.538 25.346 3.264 25.09 1c-2.009.078-4.438 1.296-5.878 2.929-1.292 1.446-2.422 3.76-2.117 5.979 2.24.168 4.526-1.102 5.92-2.737m20.168-2.796a62.54 62.54 0 0 1 3.418-.47 37.158 37.158 0 0 1 4.112-.208c2.136 0 3.977.252 5.525.756 1.55.504 2.821 1.226 3.817 2.165a8.894 8.894 0 0 1 2.003 2.972c.48 1.147.718 2.469.718 3.964 0 1.808-.327 3.39-.986 4.746a9.868 9.868 0 0 1-2.696 3.416c-1.14.92-2.492 1.607-4.058 2.06-1.567.451-3.275.677-5.127.677-1.672 0-3.078-.121-4.216-.364v15.02h-2.51V4.375zm2.51 17.524c.605.173 1.281.295 2.029.364.748.07 1.548.104 2.402.104 3.203 0 5.686-.73 7.448-2.19 1.761-1.46 2.643-3.599 2.643-6.415 0-1.356-.231-2.539-.694-3.547a6.374 6.374 0 0 0-1.975-2.477c-.854-.644-1.868-1.13-3.043-1.461-1.176-.33-2.475-.495-3.9-.495-1.138 0-2.117.043-2.936.13-.818.087-1.477.183-1.975.287v15.7zm37.045 11.266c0 1.008.017 2.017.053 3.025a19.13 19.13 0 0 0 .32 2.92h-2.349l-.373-3.547h-.109c-.32.488-.729.974-1.227 1.46s-1.076.93-1.734 1.33c-.659.4-1.406.722-2.243.965a9.857 9.857 0 0 1-2.75.365c-1.245 0-2.34-.2-3.285-.6-.943-.4-1.717-.921-2.322-1.564a6.383 6.383 0 0 1-1.36-2.217 7.298 7.298 0 0 1-.454-2.503c0-2.955 1.272-5.232 3.817-6.832 2.545-1.6 6.381-2.365 11.508-2.295v-.678c0-.662-.063-1.419-.187-2.27a7.012 7.012 0 0 0-.829-2.425c-.427-.764-1.067-1.407-1.921-1.928-.854-.522-2.012-.783-3.47-.783-1.105 0-2.198.165-3.284.495-1.086.33-2.073.79-2.963 1.382l-.801-1.826c1.138-.764 2.314-1.311 3.523-1.641a14.348 14.348 0 0 1 3.791-.495c1.78 0 3.23.295 4.352.886 1.121.591 2.002 1.356 2.643 2.294a8.448 8.448 0 0 1 1.308 3.156 17.83 17.83 0 0 1 .348 3.468v9.858zm-2.51-7.458a35.361 35.361 0 0 0-4.246.156c-1.476.138-2.838.444-4.083.912-1.247.47-2.278 1.156-3.096 2.06s-1.229 2.104-1.229 3.6c0 1.771.516 3.076 1.55 3.91 1.03.834 2.187 1.252 3.469 1.252 1.032 0 1.958-.138 2.776-.418.819-.278 1.529-.652 2.135-1.12s1.112-1 1.522-1.59c.41-.593.721-1.2.936-1.827.178-.696.268-1.2.268-1.514v-5.421zm7.418-11.632l6.512 16.272a56.4 56.4 0 0 1 1.016 2.79c.32.956.605 1.835.854 2.634h.107c.25-.764.534-1.625.854-2.582.321-.955.677-1.938 1.068-2.948l6.088-16.167h2.668l-7.42 18.36a210.246 210.246 0 0 1-2.11 5.293 49.701 49.701 0 0 1-2.002 4.276 30.451 30.451 0 0 1-2.057 3.365 14.147 14.147 0 0 1-2.322 2.555c-.995.868-1.913 1.504-2.75 1.904-.836.4-1.396.652-1.681.756l-.856-2.034a21.445 21.445 0 0 0 2.137-1.095 11.617 11.617 0 0 0 2.295-1.773c.642-.626 1.345-1.45 2.11-2.478.765-1.025 1.45-2.268 2.056-3.729.213-.556.32-.922.32-1.096 0-.242-.106-.608-.32-1.095l-9.238-23.21h2.671z"/></svg>{% endif %}
+              {% if section.blocks[badges].settings.badges_visa %}<svg class="visa" viewBox="0 0 1000.046 323.653"><path fill="#00579f" d="M433.352 318.984h-81.01l50.67-313.305h81.006zM727.023 13.339c-15.978-6.34-41.322-13.34-72.66-13.34-80 0-136.336 42.661-136.682 103.653-.664 45 40.335 69.994 71 84.998 31.341 15.332 41.995 25.34 41.995 39.006-.319 20.989-25.326 30.664-48.65 30.664-32.343 0-49.673-4.988-76.009-16.666l-10.667-5.005-11.337 70.33c19 8.656 54.006 16.337 90.35 16.674 85.002 0 140.34-42 140.996-106.997.324-35.666-21.326-62.994-68-85.325-28.334-14.336-45.686-24.002-45.686-38.67.332-13.334 14.677-26.991 46.661-26.991 26.336-.67 45.686 5.661 60.345 11.996l7.327 3.327 11.017-67.654zM834.694 207.991c6.671-17.999 32.343-87.66 32.343-87.66-.337.669 6.658-18.331 10.658-29.995l5.662 26.996s15.34 74.995 18.672 90.66h-67.335zM934.69 5.68H872.03c-19.323 0-34.004 5.662-42.341 25.995L709.357 318.98h85.002s13.994-38.669 17.002-46.997h104.011c2.326 11 9.666 46.997 9.666 46.997h75.008L934.691 5.68zM284.678 5.68l-79.336 213.643-8.67-43.33C182.006 125.997 136.005 71.677 84.67 44.667l72.669 273.985h85.667L370.34 5.679h-85.662z"/><path d="M131.672 5.68H1.333L0 12.01c101.672 25.999 169.008 88.67 196.673 163.997L168.339 32.015c-4.665-20.01-19-25.676-36.667-26.336z" fill="#faa61a"/></svg>{% endif %}
+              {% if section.blocks[badges].settings.badges_mastercard %}<svg class="mastercard" viewBox="0 0 131.39 86.9"><defs></defs><path fill="#ff5f00" d="M48.37 15.14h34.66v56.61H48.37z"/><path d="M51.94 43.45a35.94 35.94 0 0 1 13.75-28.3 36 36 0 1 0 0 56.61 35.94 35.94 0 0 1-13.75-28.31z" fill="#eb001b"/><path fill="#f79e1b" d="M120.5 65.76V64.6h.5v-.24h-1.19v.24h.47v1.16zm2.31 0v-1.4h-.36l-.42 1-.42-1h-.36v1.4h.26V64.7l.39.91h.27l.39-.91v1.06zM123.94 43.45a36 36 0 0 1-58.25 28.3 36 36 0 0 0 0-56.61 36 36 0 0 1 58.25 28.3z"/></svg>{% endif %}
+              {% if section.blocks[badges].settings.badges_paypal %}<svg class="paypal" viewBox="0 0 124 33"><path fill="#253B80" d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746zM47 13.154c-.374 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.469 1.044.332 1.906zM66.654 13.075h-3.275a.57.57 0 0 0-.563.481l-.145.916-.229-.332c-.709-1.029-2.29-1.373-3.868-1.373-3.619 0-6.71 2.741-7.312 6.586-.313 1.918.132 3.752 1.22 5.031.998 1.176 2.426 1.666 4.125 1.666 2.916 0 4.533-1.875 4.533-1.875l-.146.91a.57.57 0 0 0 .562.66h2.95a.95.95 0 0 0 .939-.803l1.77-11.209a.568.568 0 0 0-.561-.658zm-4.565 6.374c-.316 1.871-1.801 3.127-3.695 3.127-.951 0-1.711-.305-2.199-.883-.484-.574-.668-1.391-.514-2.301.295-1.855 1.805-3.152 3.67-3.152.93 0 1.686.309 2.184.892.499.589.697 1.411.554 2.317zM84.096 13.075h-3.291a.954.954 0 0 0-.787.417l-4.539 6.686-1.924-6.425a.953.953 0 0 0-.912-.678h-3.234a.57.57 0 0 0-.541.754l3.625 10.638-3.408 4.811a.57.57 0 0 0 .465.9h3.287a.949.949 0 0 0 .781-.408l10.946-15.8a.57.57 0 0 0-.468-.895z"/><path fill="#179BD7" d="M94.992 6.749h-6.84a.95.95 0 0 0-.938.802l-2.766 17.537a.569.569 0 0 0 .562.658h3.51a.665.665 0 0 0 .656-.562l.785-4.971a.95.95 0 0 1 .938-.803h2.164c4.506 0 7.105-2.18 7.785-6.5.307-1.89.012-3.375-.873-4.415-.971-1.142-2.694-1.746-4.983-1.746zm.789 6.405c-.373 2.454-2.248 2.454-4.062 2.454h-1.031l.725-4.583a.568.568 0 0 1 .562-.481h.473c1.234 0 2.4 0 3.002.704.359.42.468 1.044.331 1.906zM115.434 13.075h-3.273a.567.567 0 0 0-.562.481l-.145.916-.23-.332c-.709-1.029-2.289-1.373-3.867-1.373-3.619 0-6.709 2.741-7.311 6.586-.312 1.918.131 3.752 1.219 5.031 1 1.176 2.426 1.666 4.125 1.666 2.916 0 4.533-1.875 4.533-1.875l-.146.91a.57.57 0 0 0 .564.66h2.949a.95.95 0 0 0 .938-.803l1.771-11.209a.571.571 0 0 0-.565-.658zm-4.565 6.374c-.314 1.871-1.801 3.127-3.695 3.127-.949 0-1.711-.305-2.199-.883-.484-.574-.666-1.391-.514-2.301.297-1.855 1.805-3.152 3.67-3.152.93 0 1.686.309 2.184.892.501.589.699 1.411.554 2.317zM119.295 7.23l-2.807 17.858a.569.569 0 0 0 .562.658h2.822c.469 0 .867-.34.939-.803l2.768-17.536a.57.57 0 0 0-.562-.659h-3.16a.571.571 0 0 0-.562.482z"/><path fill="#253B80" d="M7.266 29.154l.523-3.322-1.165-.027H1.061L4.927 1.292a.316.316 0 0 1 .314-.268h9.38c3.114 0 5.263.648 6.385 1.927.526.6.861 1.227 1.023 1.917.17.724.173 1.589.007 2.644l-.012.077v.676l.526.298a3.69 3.69 0 0 1 1.065.812c.45.513.741 1.165.864 1.938.127.795.085 1.741-.123 2.812-.24 1.232-.628 2.305-1.152 3.183a6.547 6.547 0 0 1-1.825 2c-.696.494-1.523.869-2.458 1.109-.906.236-1.939.355-3.072.355h-.73c-.522 0-1.029.188-1.427.525a2.21 2.21 0 0 0-.744 1.328l-.055.299-.924 5.855-.042.215c-.011.068-.03.102-.058.125a.155.155 0 0 1-.096.035H7.266z"/><path fill="#179BD7" d="M23.048 7.667c-.028.179-.06.362-.096.55-1.237 6.351-5.469 8.545-10.874 8.545H9.326c-.661 0-1.218.48-1.321 1.132L6.596 26.83l-.399 2.533a.704.704 0 0 0 .695.814h4.881c.578 0 1.069-.42 1.16-.99l.048-.248.919-5.832.059-.32c.09-.572.582-.992 1.16-.992h.73c4.729 0 8.431-1.92 9.513-7.476.452-2.321.218-4.259-.978-5.622a4.667 4.667 0 0 0-1.336-1.03z"/><path fill="#222D65" d="M21.754 7.151a9.757 9.757 0 0 0-1.203-.267 15.284 15.284 0 0 0-2.426-.177h-7.352a1.172 1.172 0 0 0-1.159.992L8.05 17.605l-.045.289a1.336 1.336 0 0 1 1.321-1.132h2.752c5.405 0 9.637-2.195 10.874-8.545.037-.188.068-.371.096-.55a6.594 6.594 0 0 0-1.017-.429 9.045 9.045 0 0 0-.277-.087z"/><path fill="#253B80" d="M9.614 7.699a1.169 1.169 0 0 1 1.159-.991h7.352c.871 0 1.684.057 2.426.177a9.757 9.757 0 0 1 1.481.353c.365.121.704.264 1.017.429.368-2.347-.003-3.945-1.272-5.392C20.378.682 17.853 0 14.622 0h-9.38c-.66 0-1.223.48-1.325 1.133L.01 25.898a.806.806 0 0 0 .795.932h5.791l1.454-9.225 1.564-9.906z"/></svg>{% endif %}
+              {% if section.blocks[badges].settings.badges_amex %}<svg class="amex" viewBox="0 0 291.764 291.764"><path d="M18.235 41.025h255.294c10.066 0 18.235 8.169 18.235 18.244v173.235c0 10.066-8.169 18.235-18.235 18.235H18.235C8.16 250.74 0 242.57 0 232.505V59.269c0-10.075 8.169-18.244 18.235-18.244z" fill="#26a6d1"/><path d="M47.047 113.966l-28.812 63.76h34.492l4.276-10.166h9.774l4.276 10.166h37.966v-7.759l3.383 7.759h19.639l3.383-7.923v7.923h78.959l9.601-9.902 8.99 9.902 40.555.082-28.903-31.784 28.903-32.058h-39.926l-9.346 9.719-8.707-9.719h-85.897l-7.376 16.457-7.549-16.457h-34.42v7.495l-3.829-7.495H47.047zm6.674 9.054h16.813l19.111 43.236V123.02h18.418l14.761 31 13.604-31h18.326v45.752h-11.151l-.091-35.851-16.257 35.851h-9.975l-16.348-35.851v35.851h-22.94l-4.349-10.257H50.147l-4.34 10.248H33.516l20.205-45.743zm111.235 0h45.342L224.166 138l14.315-14.98h13.868l-21.071 22.995 21.071 22.73h-14.497l-13.868-15.154-14.388 15.154h-44.64V123.02zM61.9 130.761l-7.741 18.272h15.473L61.9 130.761zm114.253 1.732v8.352h24.736v9.309h-24.736v9.118h27.745l12.892-13.43-12.345-13.357h-28.292v.008z" fill="#fff"/></svg>{% endif %}
+            </span> 
+          </span>
+          {% endif %}
+                <div class="cart-review--container">
+                  <style>
+                    .cart-review {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #DED6EA;
+    border-radius: 5px;
+    margin-top: 25px;
+    background-color: #F6F6F6;
+}
+
+.cart-review::before {
+    content: url('https://cdn.shopify.com/s/files/1/0899/4907/7844/files/quote-right.svg?v=1731411740');
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    transform: rotate(180deg);
+    opacity: 0.5;
+}
+
+.cart-review::after {
+    content: url('https://cdn.shopify.com/s/files/1/0899/4907/7844/files/quote-right.svg?v=1731411740');
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    opacity: 0.5;
+}
+
+.cart-review--stars {
+    display: flex;
+    justify-content: center;
+}
+
+.cart-review--text, 
+.cart-review--author {
+    font-size: 14px;
+    line-height: 1.2;
+    max-width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+                    
+                    
+                  </style>
+                  <div class="cart-review">
+                    <div class="cart-review--stars">
+                      <div class="rating-stars">
+  
+    <svg width="18px" height="auto" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.47717 9.97191C2.53651 9.77591 2.59214 9.59591 2.64407 9.41591C2.96304 8.35991 3.28573 7.29991 3.6047 6.24391C3.62325 6.17991 3.60841 6.15191 3.5639 6.11591C2.59585 5.36791 1.63151 4.61591 0.66717 3.86391C0.648625 3.85191 0.630079 3.83591 0.611534 3.81591C0.637497 3.79591 0.659751 3.80391 0.682005 3.80391C1.8763 3.80391 3.07431 3.80391 4.26861 3.80391C4.32796 3.80391 4.35021 3.78391 4.36876 3.72391C4.73595 2.51191 5.10314 1.29991 5.47033 0.0879062C5.47775 0.0639062 5.48517 0.0439063 5.4963 0.00390625C5.51484 0.0679063 5.52968 0.115906 5.54451 0.159906C5.90429 1.35191 6.26777 2.54391 6.62383 3.73591C6.64238 3.79191 6.66463 3.80791 6.72027 3.80791C7.91457 3.80791 9.11258 3.80791 10.3069 3.80791C10.3291 3.80791 10.3551 3.79991 10.3848 3.81991C8.76393 5.08391 7.14309 6.34791 5.52226 7.61191C5.52226 7.61191 5.52226 7.61991 5.52226 7.62391C5.57789 7.60791 5.63724 7.59591 5.69287 7.57991C6.31969 7.40791 6.94652 7.23991 7.57334 7.06391C7.61414 7.05191 7.62526 7.06391 7.63639 7.09991C7.92198 8.05191 8.20758 8.99991 8.49317 9.94791C8.49688 9.96391 8.50059 9.97591 8.50801 10.0039C8.36336 9.89191 8.22983 9.78791 8.09631 9.67991C7.24324 9.00791 6.39017 8.33991 5.5371 7.66391C5.4963 7.63191 5.47404 7.63991 5.43695 7.66391C4.4689 8.41591 3.50085 9.16791 2.53651 9.91991C2.51796 9.93191 2.49942 9.94791 2.46975 9.96791L2.47717 9.97191Z" fill="#0DA558"></path>
+    </svg>
+    <svg width="18px" height="auto" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.47717 9.97191C2.53651 9.77591 2.59214 9.59591 2.64407 9.41591C2.96304 8.35991 3.28573 7.29991 3.6047 6.24391C3.62325 6.17991 3.60841 6.15191 3.5639 6.11591C2.59585 5.36791 1.63151 4.61591 0.66717 3.86391C0.648625 3.85191 0.630079 3.83591 0.611534 3.81591C0.637497 3.79591 0.659751 3.80391 0.682005 3.80391C1.8763 3.80391 3.07431 3.80391 4.26861 3.80391C4.32796 3.80391 4.35021 3.78391 4.36876 3.72391C4.73595 2.51191 5.10314 1.29991 5.47033 0.0879062C5.47775 0.0639062 5.48517 0.0439063 5.4963 0.00390625C5.51484 0.0679063 5.52968 0.115906 5.54451 0.159906C5.90429 1.35191 6.26777 2.54391 6.62383 3.73591C6.64238 3.79191 6.66463 3.80791 6.72027 3.80791C7.91457 3.80791 9.11258 3.80791 10.3069 3.80791C10.3291 3.80791 10.3551 3.79991 10.3848 3.81991C8.76393 5.08391 7.14309 6.34791 5.52226 7.61191C5.52226 7.61191 5.52226 7.61991 5.52226 7.62391C5.57789 7.60791 5.63724 7.59591 5.69287 7.57991C6.31969 7.40791 6.94652 7.23991 7.57334 7.06391C7.61414 7.05191 7.62526 7.06391 7.63639 7.09991C7.92198 8.05191 8.20758 8.99991 8.49317 9.94791C8.49688 9.96391 8.50059 9.97591 8.50801 10.0039C8.36336 9.89191 8.22983 9.78791 8.09631 9.67991C7.24324 9.00791 6.39017 8.33991 5.5371 7.66391C5.4963 7.63191 5.47404 7.63991 5.43695 7.66391C4.4689 8.41591 3.50085 9.16791 2.53651 9.91991C2.51796 9.93191 2.49942 9.94791 2.46975 9.96791L2.47717 9.97191Z" fill="#0DA558"></path>
+    </svg>
+    <svg width="18px" height="auto" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.47717 9.97191C2.53651 9.77591 2.59214 9.59591 2.64407 9.41591C2.96304 8.35991 3.28573 7.29991 3.6047 6.24391C3.62325 6.17991 3.60841 6.15191 3.5639 6.11591C2.59585 5.36791 1.63151 4.61591 0.66717 3.86391C0.648625 3.85191 0.630079 3.83591 0.611534 3.81591C0.637497 3.79591 0.659751 3.80391 0.682005 3.80391C1.8763 3.80391 3.07431 3.80391 4.26861 3.80391C4.32796 3.80391 4.35021 3.78391 4.36876 3.72391C4.73595 2.51191 5.10314 1.29991 5.47033 0.0879062C5.47775 0.0639062 5.48517 0.0439063 5.4963 0.00390625C5.51484 0.0679063 5.52968 0.115906 5.54451 0.159906C5.90429 1.35191 6.26777 2.54391 6.62383 3.73591C6.64238 3.79191 6.66463 3.80791 6.72027 3.80791C7.91457 3.80791 9.11258 3.80791 10.3069 3.80791C10.3291 3.80791 10.3551 3.79991 10.3848 3.81991C8.76393 5.08391 7.14309 6.34791 5.52226 7.61191C5.52226 7.61191 5.52226 7.61991 5.52226 7.62391C5.57789 7.60791 5.63724 7.59591 5.69287 7.57991C6.31969 7.40791 6.94652 7.23991 7.57334 7.06391C7.61414 7.05191 7.62526 7.06391 7.63639 7.09991C7.92198 8.05191 8.20758 8.99991 8.49317 9.94791C8.49688 9.96391 8.50059 9.97591 8.50801 10.0039C8.36336 9.89191 8.22983 9.78791 8.09631 9.67991C7.24324 9.00791 6.39017 8.33991 5.5371 7.66391C5.4963 7.63191 5.47404 7.63991 5.43695 7.66391C4.4689 8.41591 3.50085 9.16791 2.53651 9.91991C2.51796 9.93191 2.49942 9.94791 2.46975 9.96791L2.47717 9.97191Z" fill="#0DA558"></path>
+    </svg>
+    <svg width="18px" height="auto" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.47717 9.97191C2.53651 9.77591 2.59214 9.59591 2.64407 9.41591C2.96304 8.35991 3.28573 7.29991 3.6047 6.24391C3.62325 6.17991 3.60841 6.15191 3.5639 6.11591C2.59585 5.36791 1.63151 4.61591 0.66717 3.86391C0.648625 3.85191 0.630079 3.83591 0.611534 3.81591C0.637497 3.79591 0.659751 3.80391 0.682005 3.80391C1.8763 3.80391 3.07431 3.80391 4.26861 3.80391C4.32796 3.80391 4.35021 3.78391 4.36876 3.72391C4.73595 2.51191 5.10314 1.29991 5.47033 0.0879062C5.47775 0.0639062 5.48517 0.0439063 5.4963 0.00390625C5.51484 0.0679063 5.52968 0.115906 5.54451 0.159906C5.90429 1.35191 6.26777 2.54391 6.62383 3.73591C6.64238 3.79191 6.66463 3.80791 6.72027 3.80791C7.91457 3.80791 9.11258 3.80791 10.3069 3.80791C10.3291 3.80791 10.3551 3.79991 10.3848 3.81991C8.76393 5.08391 7.14309 6.34791 5.52226 7.61191C5.52226 7.61191 5.52226 7.61991 5.52226 7.62391C5.57789 7.60791 5.63724 7.59591 5.69287 7.57991C6.31969 7.40791 6.94652 7.23991 7.57334 7.06391C7.61414 7.05191 7.62526 7.06391 7.63639 7.09991C7.92198 8.05191 8.20758 8.99991 8.49317 9.94791C8.49688 9.96391 8.50059 9.97591 8.50801 10.0039C8.36336 9.89191 8.22983 9.78791 8.09631 9.67991C7.24324 9.00791 6.39017 8.33991 5.5371 7.66391C5.4963 7.63191 5.47404 7.63991 5.43695 7.66391C4.4689 8.41591 3.50085 9.16791 2.53651 9.91991C2.51796 9.93191 2.49942 9.94791 2.46975 9.96791L2.47717 9.97191Z" fill="#0DA558"></path>
+    </svg>
+    <svg width="18px" height="auto" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.47717 9.97191C2.53651 9.77591 2.59214 9.59591 2.64407 9.41591C2.96304 8.35991 3.28573 7.29991 3.6047 6.24391C3.62325 6.17991 3.60841 6.15191 3.5639 6.11591C2.59585 5.36791 1.63151 4.61591 0.66717 3.86391C0.648625 3.85191 0.630079 3.83591 0.611534 3.81591C0.637497 3.79591 0.659751 3.80391 0.682005 3.80391C1.8763 3.80391 3.07431 3.80391 4.26861 3.80391C4.32796 3.80391 4.35021 3.78391 4.36876 3.72391C4.73595 2.51191 5.10314 1.29991 5.47033 0.0879062C5.47775 0.0639062 5.48517 0.0439063 5.4963 0.00390625C5.51484 0.0679063 5.52968 0.115906 5.54451 0.159906C5.90429 1.35191 6.26777 2.54391 6.62383 3.73591C6.64238 3.79191 6.66463 3.80791 6.72027 3.80791C7.91457 3.80791 9.11258 3.80791 10.3069 3.80791C10.3291 3.80791 10.3551 3.79991 10.3848 3.81991C8.76393 5.08391 7.14309 6.34791 5.52226 7.61191C5.52226 7.61191 5.52226 7.61991 5.52226 7.62391C5.57789 7.60791 5.63724 7.59591 5.69287 7.57991C6.31969 7.40791 6.94652 7.23991 7.57334 7.06391C7.61414 7.05191 7.62526 7.06391 7.63639 7.09991C7.92198 8.05191 8.20758 8.99991 8.49317 9.94791C8.49688 9.96391 8.50059 9.97591 8.50801 10.0039C8.36336 9.89191 8.22983 9.78791 8.09631 9.67991C7.24324 9.00791 6.39017 8.33991 5.5371 7.66391C5.4963 7.63191 5.47404 7.63991 5.43695 7.66391C4.4689 8.41591 3.50085 9.16791 2.53651 9.91991C2.51796 9.93191 2.49942 9.94791 2.46975 9.96791L2.47717 9.97191Z" fill="#0DA558"></path>
+    </svg></div>
+
+                    </div>
+                    <div class="cart-review--text">{{ section.settings.reviewtext }}</div>
+                    <div class="cart-review--author">{{ section.settings.reviewname }}</div>
+                  </div>
+                </div>
+
+     <img style="margin-top:15px;" src="{{ section.settings.imagetrust | img_url: 'master' }}" alt="Image description">
+        </div>
+    </form>
+    {% else %}
+    <div class="page-empty text-center">
+      <h1></h1>
+      <p class="cart--empty-message">{{ section.settings.emptycarttext }}</p>
+      <p class="cart--continue-message">
+        <a href="/collections/all" class="btn">{{ section.settings.emptycartbtn }}</a>
+      </p>     
+    </div>
+
+    {% endif %}         
+  </div>
+</div>
+<div style="clear:both"></div>
+
+
+<script>
+
+  
+    function observeStickyBtn() {
+      /* improve sticky effect on scroll */
+      if (window.matchMedia("(max-width: 1100px)").matches) {
+        var buttonVisible = false;
+        setTimeout(function() {
+          //place observer position
+          var rect = document.querySelector('.pageWidth').getBoundingClientRect();
+          document.querySelector('.scroll__observer').style.top = -(rect.top - 2) + 'px'
+        },1000)
+        let observer = new IntersectionObserver(entries => {
+          if(entries[0].target == document.querySelector('.sticky_sentinel--bottom')) {
+            if (entries[0].isIntersecting ) {
+              console.log('bottom < 0', entries[0].boundingClientRect.y)
+              document.querySelector('.btnCart__sticky').classList.remove('btnCart__sticky--shadow');
+              buttonVisible = true;
+            } else {
+              console.log('bottom > 0 page load', entries[0].boundingClientRect.y)
+              document.querySelector('.btnCart__sticky').classList.add('btnCart__sticky--shadow');
+
+            }
+          } else {
+            if (entries[0].isIntersecting ) {
+              console.log('top < 0')
+              if(!buttonVisible) {
+                document.querySelector('.btnCart__sticky').classList.add('btnCart__sticky--shadow');
+              }
+            }
+          }
+        });
+        observer.observe(document.querySelector(".sticky_sentinel--bottom"));
+        observer.observe(document.querySelector(".scroll__observer"));
+      }
+    } observeStickyBtn();
+
+  
+  //prevent too many click per ms on quantity buttons
+  var last, diff;
+  function monitorClicks(event) {
+    if (last){diff = event.timeStamp - last;if (diff >= 500){last++;} else {console.warn('Too many simultaneous requests');return false}}last = event.timeStamp;return true
+  }
+    
+  {% if section.blocks[timer].settings.cart_show_timer %}
+      //this function fire when cart is rendered for the first time. There is a cookie deposited for 1 day
+        function cdTimer() {
+          var totalTime = {{ section.blocks[timer].settings.cart_timer_time }}*60*1000; // Amout of time (sec)  
+          var timerExist = document.querySelector('#cdTimerCart');
+          if(!document.cookie.match(/^(.*;)?\s*cdTime\s*=\s*[^;]+(.*)?$/) && timerExist != null) {
+
+            // First time on page                
+            var firstTime = new Date(); 
+            // Set first time cookie
+            function CookieFirstTime(cname, cvalue, exdays) {          
+              var d = new Date();
+              d.setTime(d.getTime() + (exdays*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }        
+            CookieFirstTime('firstTime', firstTime, {{ section.blocks[timer].settings.cart_timer_renew }})             
+
+            //Set total time given to countdown timer
+            function CookieTotalTime(cname, cvalue, exdays) {
+              var d = new Date();
+              d.setTime(d.getTime() + (exdays*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }        
+            CookieTotalTime('cdTime', totalTime, {{ section.blocks[timer].settings.cart_timer_renew }}); 
+
+            //initial total deadline
+            var deadline = new Date(Date.parse(new Date()) + totalTime);
+            //initialiez the timer     	
+            initializeClock('cdTimerCart', deadline);
+
+          } else if (timerExist != null) {
+
+            //get firsttime cookie value
+            var firstTimeValue = Date.parse(document.cookie.replace(/(?:(?:^|.*;\s*)firstTime\s*\=\s*([^;]*).*$)|^.*$/, "$1"));        
+            var currentTime = Date.parse(new Date());
+            var usedTime = (currentTime - firstTimeValue); // Calculate and convert into seconds       
+            //new deadline after time has passed
+            var runTimer = new Date(Date.parse(new Date()) + (totalTime - usedTime));        
+            //initialie the timer and show it  
+            initializeClock('cdTimerCart', runTimer);
+          }
+
+
+          //setup time formats
+          function getTimeRemaining(endtime) {
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor((t / 1000) % 60);
+            var minutes = Math.floor((t / 1000 / 60) % 60);
+            var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+            var days = Math.floor(t / (1000 * 60 * 60 * 24));
+            return {
+              'total': t,
+              'days': days,
+              'hours': hours,
+              'minutes': minutes,
+              'seconds': seconds
+            };
+          }
+
+          //insert timer value in html
+          function initializeClock(id, endtime) {
+            var clock = document.getElementById(id);
+            //var daysSpan = clock.querySelector('#days');
+            //var hoursSpan = clock.querySelector('#hours');
+            var minutesSpan = clock.querySelector('#cart_minutes');
+            var secondsSpan = clock.querySelector('#cart_seconds');
+
+            function updateClock() {
+              var t = getTimeRemaining(endtime);
+              //daysSpan.innerHTML = ('0' + t.days).slice(-2);
+              //hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+              minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+              secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+              //reset timer when days > 0
+              if (t.total <= 0 || isNaN(t.total)) {
+                clearInterval(timeinterval);  
+                timerExist.remove();
+              }
+            }
+            updateClock();
+            var timeinterval = setInterval(updateClock, 1000);
+          }
+        } cdTimer() 
+  {% endif %}
+    
+  //cart json data  
+  let cart = {{ cart | json }};
+  
+      // update quantities
+      for(var key in cart.items){ 
+        //const i = Object.keys(cart.items).indexOf(key)
+        let variantID = cart.items[key].variant_id;
+        let variantKey = cart.items[key].key;
+        let handle = cart.items[key].handle;       
+        let inputEl = document.querySelector(`[name="updates[${variantKey}]"]`);
+        let value = parseInt(inputEl.value, 10)        
+        inputEl.previousElementSibling.addEventListener('click', function(event) {
+          let validateClick = monitorClicks(event);
+          if (!validateClick) return;
+          value = isNaN(value) ? 0 : value;
+          value--;
+          inputEl.value = value;
+          {% if settings.activate_free_product or discount_available %}     
+          	  {% assign updateCart = true %}
+          	  {% assign break_loop = false %}
+              {% for item in cart.items %}  
+                 {% for collection in item.product.collections %}
+                      {% if collection.handle == settings.collection_free_product or item.variant.id == all_products[settings.free_product].variants.first.id or discount_available %}  
+                          var cart = new XMLHttpRequest();
+                          var url = '/cart/change.js';
+                          var params = 'quantity=' + value + '&id=' + variantKey;
+                          cart.open('POST', url, true);
+                          cart.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                          cart.onreadystatechange = function() {if(cart.readyState == 4 && cart.status == 200) {window.location.reload(true)}}
+                          cart.send(params);
+                        {% assign updateCart = false %} 
+                        {% break %}
+          				{% assign break_loop = true %}                    
+                      {% endif %}                     
+                  {% endfor %}
+          		  {% if break_loop %}{% break %}{% endif %}
+                {% endfor %}
+                {% if updateCart == true %}
+          			updateCart(variantKey, variantID, value, handle)
+                {% endif %}
+          {% else %}   
+              updateCart(variantKey, variantID, value, handle)
+          {% endif %}
+        })
+        inputEl.nextElementSibling.addEventListener('click', function(event) {
+          let validateClick = monitorClicks(event);
+          if (!validateClick) return;
+          value = isNaN(value) ? 0 : value;
+          value++;
+          inputEl.value = value;
+          {% if settings.activate_free_product or discount_available %}     
+          	  {% assign updateCart = true %}
+          	  {% assign break_loop = false %}
+              {% for item in cart.items %}  
+                 {% for collection in item.product.collections %}
+                      {% if collection.handle == settings.collection_free_product or item.variant.id == all_products[settings.free_product].variants.first.id or discount_available %}  
+                          var cart = new XMLHttpRequest();
+                          var url = '/cart/add.js';
+                          var params = 'quantity=1&id=' + variantID;
+                          cart.open('POST', url, true);
+                          cart.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                          cart.onreadystatechange = function() {if(cart.readyState == 4 && cart.status == 200) {window.location.reload(true)}}
+                          cart.send(params);
+                        {% assign updateCart = false %} 
+                        {% break %}
+          				{% assign break_loop = true %}                    
+                      {% endif %}                     
+                  {% endfor %}
+          		  {% if break_loop %}{% break %}{% endif %}
+                {% endfor %}
+                {% if updateCart == true %}
+          			updateCart(variantKey, variantID, value, handle)
+                {% endif %}
+          {% else %}   
+              updateCart(variantKey, variantID, value, handle)
+          {% endif %}
+        })
+      }
+
+  // POST item and call render cart function
+  function updateCart(variantKey, variantID, quantity, handle) {     
+    var cart = new XMLHttpRequest();
+    var url = '/cart/change.js';
+    var params = 'quantity=' + quantity + '&id=' + variantID;
+    cart.open('POST', url, true);
+    cart.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    cart.onreadystatechange = function() {
+      if(cart.readyState == 4 && cart.status == 200) {
+        let myCart = JSON.parse(cart.responseText)
+        if (myCart.total_discount > 0) {window.location.reload(true)}else{renderCart(myCart, variantID, handle, quantity)}
+      }
+    }
+    cart.send(params);
+  }
+
+  //split decimals for layout
+  function priceDisplay(price) {
+    const [priceAmount, priceCents] =  (price / 100).toFixed(2).toString().replace(/\.00$/,'.').split('.');
+    return {priceAmount, priceCents}
+  }  
+
+  //cart rendering
+  function renderCart(cart, updatedID, handle, quantity) {
+    {% if settings.activate_free_product %}
+    {% for item in cart.items %}    
+    {% if item.variant.id == all_products[settings.free_product].variants.first.id %}
+    window.location.reload(true);
+    return
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    var custom_compare_at_price_sum = 0;  
+    for(var key in cart.items){ 
+      let item = cart.items[key];
+      let variantID = item.variant_id;
+      if (variantID == updatedID) {
+        let { priceAmount, priceCents } = priceDisplay(item.original_line_price)
+        let { priceAmount: totalPriceAmount, priceCents: totalPriceCents} = priceDisplay(cart.original_total_price)    
+        for (let item of cart.items){
+          var product = new XMLHttpRequest();
+          var url = '/products/' + item.handle + '.js';   
+          product.open('GET', url, false);
+          product.setRequestHeader('Content-type', 'application/json');
+product.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200) {
+              //update original price
+              if (cart.items[key].price === 0) {
+                const freeText = document.querySelector(`.js-free-text-template`).textContent;
+                document.querySelector(`.cartItems__prices-total[id="${updatedID}"]`).innerHTML = `<span style="color: {{ section.settings.free_product_text_color }};">${freeText}</span>`;
+              } else {
+                document.querySelector(`.cartItems__prices-total[id="${updatedID}"]`).innerHTML = `{% if price_format_new %}{% if money_symbol contains '£' or money_symbol contains '$' %}{{ money_symbol }}{% endif %}${priceAmount}<span class="cents">{% if money_symbol contains '€' %}{{ money_symbol }}{% endif %}.${priceCents}</span>{% else %}${theme.Currency.formatMoney(item.original_line_price, theme.moneyFormat)}{% endif %}`;
+              }
+              document.querySelector('.summary__price').innerHTML = `{% if price_format_new %}{% if money_symbol contains '£' or money_symbol contains '$' %}{{ money_symbol }}{% endif %}${totalPriceAmount}<span class="cents">{% if money_symbol contains '€' %}{{ money_symbol }}{% endif %}.${totalPriceCents}</span>{% else %}${theme.Currency.formatMoney(cart.original_total_price, theme.moneyFormat)}{% endif %}`;
+             //update compare at price
+              var myProduct = JSON.parse(this.responseText) 
+              for (let variant of myProduct.variants){
+                if (variant.id == item.variant_id){
+                  if (variant.compare_at_price) {               
+                    let compare_at_price_total = variant.compare_at_price*item.quantity;  
+                    let { priceAmount, priceCents} = priceDisplay(compare_at_price_total);
+                    document.querySelector(`.cartItems__prices-compare[id="${variant.id}"]`).innerHTML = `{% if price_format_new %}${priceAmount}<span class="cents">{{ money_symbol }}${priceCents}</span>{% else %}${theme.Currency.formatMoney(compare_at_price_total, theme.moneyFormat)}{% endif %}`;            
+                    custom_compare_at_price_sum += compare_at_price_total 
+                  } else {
+                    let price_total = variant.price*item.quantity
+                    custom_compare_at_price_sum += price_total 
+                  }                  
+                  break;
+                }
+              }              
+            }
+          }
+          product.send();
+        }     
+      }
+    } 
+    //refresh page if element is removed from cart
+    if (quantity == 0) window.location.reload(true)   
+    if (custom_compare_at_price_sum - cart.total_price > 0){
+      document.querySelector(".summary__savings-price").innerText = Math.round((custom_compare_at_price_sum - cart.total_price) / 100)
+    } else if (document.querySelector('.summary__savings'))  {
+      this.remove();    
+    }
+  }
+  
+  //submit button + loader
+  document.querySelector('.btnCart').addEventListener('click', function(e) {
+    e.preventDefault();
+    this.querySelector('svg').classList.add('btn__svg--loading');
+    this.classList.add('btnCart--loading');
+    let discount = document.querySelector('.checkoutcode')
+    var checkoutURL = '{{ routes.cart_url | append: '/checkout' }}'
+    if(discount) { checkoutURL = '{{ routes.cart_url | append: '/checkout' }}?discount=' + discount.value;}
+    window.location.href = checkoutURL
+  })
+  
+</script>
+
+{% schema %}
+{
+  "name": "✪ Cart page by MaxDesign",
+  "settings": [
+    {
+      "type": "header",
+      "content": "©MaxDesign. All Rights Reserved."
+    },
+    {
+      "type": "paragraph",
+      "content": {
+        "en": "It is forbidden to resell or duplicate this ressource without permission of the author. Thank you to [contact me](https://5euros.com/profil/maxdesign) for additional information.",
+        "fr": "Il est interdit de copier ou revendre cette section sans l'accord de l'auteur. Pour toute demande d'information, veuillez [me contacter](https://5euros.com/profil/maxdesign). "
+      }
+    },
+{
+      "type": "header",
+      "content": "Paramètres généraux"
+    },
+    {
+      "type": "checkbox",
+      "id": "upsell_enable",
+      "label": "Activer la section upsell",
+      "info": "Configurable dans une nouvelle section (*requiert le plugin)",
+      "default": true
+    },
+    {
+       "type": "select",
+       "id": "price_format",
+       "label": "Affichage des prix",
+       "options": [
+          {
+          "value": "original",
+          "label": "Style du thème"
+          },
+          {
+          "value": "new",
+          "label": "Style de la page"
+          }
+        ],
+        "default":   "new"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "label": "Taille de la police (bureau)",
+      "default": 0
+    },
+	{
+      "type": "range",
+      "id": "font_size_mobile",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "label": "Taille de la police (mobile)",
+      "default": -10
+    },
+	{
+      "type": "header",
+      "content": "Panneau gauche"
+    },
+	{
+      "type": "checkbox",
+      "id": "ellipsis",
+      "label": "Tronquer le titre du produit sur une ligne maximum (mobile)"
+    },
+	{
+      "type": "textarea",
+      "id": "flashtext",
+      "label": "Ligne de texte/code libre",
+      "default": "<svg width='14' height='10' style='vertical-align:top' viewBox='0 0 352.62 352.62'><path d='M337.222 22.952c-15.912-8.568-33.66 7.956-44.064 17.748-23.867 23.256-44.063 50.184-66.708 74.664-25.092 26.928-48.348 53.856-74.052 80.173-14.688 14.688-30.6 30.6-40.392 48.96-22.032-21.421-41.004-44.677-65.484-63.648C28.774 167.385-.602 157.593.01 190.029c1.224 42.229 38.556 87.517 66.096 116.28 11.628 12.24 26.928 25.092 44.676 25.704 21.42 1.224 43.452-24.48 56.304-38.556 22.645-24.48 41.005-52.021 61.812-77.112 26.928-33.048 54.468-65.485 80.784-99.145 16.524-20.808 68.544-72.217 27.54-94.248zM26.937 187.581c-.612 0-1.224 0-2.448.611-2.448-.611-4.284-1.224-6.732-2.448 1.836-1.224 4.896-.612 9.18 1.837z' data-original='#000000' class='active-path' data-old_color='#000000' fill='#6FB03A'></path></svg> En stock"
+    },
+    {
+      "type": "checkbox",
+      "id": "flashtext_blink",
+      "label": "Faire flasher le texte"
+    },
+    {
+      "type": "color",
+      "id": "flashtext_color",
+      "label": "Couleur texte",
+      "default": "#6fb03a"
+    },
+	{
+      "type": "header",
+      "content": "Panneau droite"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_notes",
+      "label": "Afficher les notes de panier"
+    },
+    {
+      "type": "select",
+      "id": "paypal_mode",
+      "label": "Boutons checkout express",
+      "options": [
+        {
+          "value": "show_checkout",
+          "label": "Afficher au checkout"
+        },
+        {
+          "value": "show_cart",
+          "label": "Afficher page panier"
+        },
+        {
+          "value": "hide",
+          "label": "Cacher"
+        }
+      ],
+      "default": "hide",
+      "info": "Paypal sera toujours disponible en dernière étape du checkout"
+    },
+	{
+      "type": "text",
+      "id": "total",
+      "label": "Texte Total",
+      "default": "TOTAL"
+    },
+{
+      "type": "color",
+      "id": "total_color",
+      "label": "Couleur texte",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "free_product_text_color",
+      "label": "Couleur texte produit gratuit",
+      "default": "#ff0000"
+    },
+    {
+      "type": "text",
+      "id": "custom_text1",
+      "label": "Texte info Total",
+      "default": "Livraison offerte"
+    },
+    {
+      "type": "color",
+      "id": "custom_text1_color",
+      "label": "Couleur texte",
+      "default": "#949494"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texte bouton",
+      "default": "🔒 Commander maintenant →"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Couleur fond",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Couleur texte",
+      "default": "#fff"
+    },
+    {
+      "type": "text",
+      "id": "yousave",
+      "label": "You Save",
+      "default": "🔒 Commander maintenant →"
+    },
+    {
+      "type": "richtext",
+      "id": "reviewtext",
+      "label": "Review Text"
+    },
+    {
+      "type": "richtext",
+      "id": "reviewname",
+      "label": "Reviewer Name"
+    },
+    {
+      "type": "image_picker",
+      "id": "imagetrust",
+      "label": "Image Trust"
+    },
+    {
+      "type": "richtext",
+      "id": "emptycarttext",
+      "label": "Empty cart text"
+    },
+    {
+      "type": "text",
+      "id": "emptycartbtn",
+      "label": "Empty cart button"
+    },
+    { 
+         "type":"header",
+         "content":"Paramètres généraux Upsell"
+      },
+      { 
+         "type":"checkbox",
+         "id":"show_upsell",
+         "label":"Activer l'upsell",
+		 "default": true
+      },
+	  {
+         "type": "select",
+         "id": "upsell_cap",
+         "label": "Retirer l'upsell lorsque le panier contient déjà X produits différents",
+         "options": [
+           {
+             "value": "2",
+             "label": "2"
+           },
+           {
+             "value": "3",
+             "label": "3"
+           },
+		   {
+             "value": "4",
+             "label": "4"
+           },
+		   {
+             "value": "5",
+             "label": "5"
+           },
+		   {
+             "value": "100",
+             "label": "Toujours actif"
+           }
+         ],
+         "default":  "3"
+	  },	
+      { 
+         "type":"radio",
+         "id":"upsell_type",
+         "label":"Choisir le type d'upsell",
+         "options":[ 
+            { 
+               "value":"update_cart",
+               "label":"Mettre à jour le panier"
+            },
+            { 
+               "value":"checkout",
+               "label":"Aller au checkout"
+            }
+         ],
+         "default":"update_cart"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_atc",
+         "label":"Couleur du texte",
+         "default":"#fff"
+      },
+      { 
+         "type":"color",
+         "id":"upsell_atcbg",
+         "label":"Couleur du fond",
+         "default":"#000"
+      },
+	  {
+        "type": "header",
+        "content": "Paramètres bureau"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_color_desktop",
+         "label":"Couleur du texte"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_bg_color_desktop",
+         "label":"Couleur du fond"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_border_color_desktop",
+         "label": "Couleur de la bordure",
+	     "default":"#eeeeee"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_topcolor_text",
+         "label":"Couleur bandereau (texte)",
+         "default":"#fff"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_topcolor",
+         "label":"Couleur bandereau (fond)",
+         "default":"#000"
+      },
+	  {
+        "type": "header",
+        "content": "Paramètres mobile"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_color",
+         "label":"Couleur du texte"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_bg_color",
+         "label":"Couleur du fond",
+		 "default":"#fff"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_border_color",
+         "label":"Couleur de la bordure",
+		 "default":"#dcdcdc"
+      }
+    
+  ],
+  "blocks": [
+    {
+      "type": "bg",
+      "name": "Fond et couleurs",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "img_border",
+          "label": "Bordure autour des images"
+        },
+        {
+          "type": "header",
+          "content": "Bureau"
+        },
+        {
+          "type": "color",
+          "id": "primary_color_desktop",
+          "label": "Couleur primaire du texte",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "bg_secondary_color_desktop",
+          "label": "Couleur des panneaux",
+          "default": "#fafafa"
+        },
+        {
+          "type": "range",
+          "id": "bg_secondary_opacity_desktop",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Opacité des panneaux",
+          "default": 85
+        },
+        {
+          "type": "color",
+          "id": "bg_color_desktop",
+          "label": "Couleur de fond",
+          "default": "#fff",
+          "info": "S'applique si il n'y a pas d'image"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_img_desktop",
+          "label": "Image de fond"
+        },
+        {
+          "type": "range",
+          "id": "bg_opacity_desktop",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Opacité de l'image ou de la couleur",
+          "default": 25
+        },
+        {
+          "type": "range",
+          "id": "bg_poshorizontal_desktop",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Positionnement horizontal",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "bg_posvertical_desktop",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Positionnement vertical",
+          "default": 50
+        },
+        {
+          "type": "header",
+          "content": "Mobile"
+        },
+		{
+          "type": "color",
+          "id": "primary_color_mobile",
+          "label": "Couleur primaire du texte",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "bg_secondary_color",
+          "label": "Couleur des panneaux",
+          "default": "#fff"
+        },
+        {
+          "type": "range",
+          "id": "bg_secondary_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Opacité des panneaux",
+          "default": 100
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Couleur de fond",
+          "default": "#d7d7d7",
+          "info": "S'applique si il n'y a pas d'image"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_img",
+          "label": "Image de fond"
+        },
+        {
+          "type": "range",
+          "id": "bg_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Opacité de l'image ou de la couleur",
+          "default": 25
+        },
+        {
+          "type": "range",
+          "id": "bg_poshorizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Positionnement horizontal",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "bg_posvertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Positionnement vertical",
+          "default": 50
+        }
+      ]
+    },
+    {
+      "type": "badges",
+      "name": "Badges de paiement",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "badges_enable",
+          "label": "Activer",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "badges_color",
+          "label": "Couleur texte",
+          "default": "#989898"
+        },
+        {
+          "type": "text",
+          "id": "badges_text",
+          "label": "Texte",
+          "default": "Paiement sécurisé"
+        },
+        {
+          "type": "checkbox",
+          "id": "badges_cb",
+          "label": "Carte Bancaire",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "badges_applepay",
+          "label": "Apple Pay",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "badges_visa",
+          "label": "Visa",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "badges_mastercard",
+          "label": "Mastercard",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "badges_paypal",
+          "label": "Paypal",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "badges_amex",
+          "label": "American Express"
+        }
+      ]
+    },
+    {
+      "type": "savings",
+      "name": "Économies et promotions",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Économies réalisées"
+        },
+        {
+          "type": "checkbox",
+          "id": "savings_enable",
+          "label": "Activer",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "savings_color",
+          "label": "Couleur texte",
+          "default": "#6fb03a"
+        },
+        {
+          "type": "checkbox",
+          "id": "compare_price_enable",
+          "label": "Afficher les prix comparatifs",
+          "info": "Hors discounts automatiques",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Champ code promo"
+        },
+        {
+          "type": "checkbox",
+          "id": "promofield_enable",
+          "label": "Activer le champ code promo",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "promofield_color",
+          "label": "Couleur (en mode focus)",
+          "default": "#000"
+        },
+        {
+          "type": "text",
+          "id": "promofield_text",
+          "label": "Texte (en mode focus)",
+          "default": "Remise calculée à la prochaine étape"
+        },
+        {
+          "type": "header",
+          "content": "Discount automatique"
+        },
+        {
+          "type": "paragraph",
+          "content": "Visible uniquement lorsque vous utilisez le système de discount automatique de Shopify. Si un produit du panier est concerné, la mise à jour se fera en réactualisant la page panier."
+        },
+        {
+          "type": "checkbox",
+          "id": "discount_text_enable",
+          "label": "Afficher le texte",
+          "info": "Le texte affiché par défaut est le titre du discount, modifiable [ici](/admin/discounts/automatic).",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "discount_bg_color",
+          "label": "Couleur de fond",
+          "default": "#ec6464"
+        },
+        {
+          "type": "color",
+          "id": "discount_text_color",
+          "label": "Couleur du texte",
+          "default": "#fff"
+        }
+      ]
+    },
+    {
+      "type": "timer",
+      "name": "Compte à rebours",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "cart_show_timer",
+          "label": "Activer le timer",
+		  "default":true
+        },
+        {
+          "type": "range",
+          "id": "cart_timer_time",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "label": "Minutes :",
+          "default": 10
+        },
+        {
+          "type": "select",
+          "id": "cart_timer_renew",
+          "label": "Lorsque le timer expire :",
+          "options": [
+            {
+              "value": "",
+              "label": "Déclencher à la prochaine session"
+            },
+            {
+              "value": "60",
+              "label": "Déclencher après 1 heure"
+            },
+            {
+              "value": "180",
+              "label": "Déclencher après 3 heures"
+            },
+            {
+              "value": "360",
+              "label": "Déclencher après 6 heures"
+            },
+            {
+              "value": "720",
+              "label": "Déclencher après 12 heures"
+            },
+            {
+              "value": "1440",
+              "label": "Déclencher après 1 jour"
+            },
+            {
+              "value": "10080",
+              "label": "Déclencher après 1 semaine"
+            }
+          ],
+          "default": ""
+        },
+        {
+          "type": "text",
+          "id": "cart_timer_innerText",
+          "label": "Texte",
+          "default": "Votre panier est réservé pendant <br class='md_mobile-hide'>XX minutes.",
+          "info": "Remplacer le timer par XX"
+        },
+		{ 
+          "type": "color",
+          "id": "cart_timer_color1",
+          "label": "Couleur du texte",
+		  "default": "#262626"
+	  	},
+		{ 
+          "type": "color",
+          "id": "cart_timer_color2",
+          "label": "Couleur du compteur",
+		  "default": "#ff0000"
+	  	}
+      ]
+    },
+    {
+      "type": "customtext",
+      "name": "Texte info panier",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "custom_text2_enable",
+          "label": "Activer",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "custom_text2",
+          "label": "Texte info panier",
+          "default": "<p>Livraison à la prochaine étape</p>"
+        },
+        {
+          "type": "color",
+          "id": "custom_text2_color",
+          "label": "Couleur texte",
+          "default": "#262626"
+        }
+      ]
+    },
+    {
+      "type": "stepper",
+      "name": "Barre d'étapes",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "stepper_mobile_enable",
+          "label": "Afficher le stepper (mobile)",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "stepper_desktop_enable",
+          "label": "Afficher le stepper (bureau)",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "stepper_main_color",
+          "label": "Couleur principale",
+          "default": "#3b3b3b"
+        },
+        {
+          "type": "color",
+          "id": "stepper_secondary_color",
+          "label": "Couleur secondaire",
+          "default": "#919191"
+        },
+        {
+      "type": "text",
+      "id": "step1",
+      "label": "Barre Step 1",
+      "default": "🔒 Commander maintenant →"
+    },
+    {
+      "type": "text",
+      "id": "step2",
+      "label": "Barre Step 2",
+      "default": "🔒 Commander maintenant →"
+    },
+    {
+      "type": "text",
+      "id": "step3",
+      "label": "Barre Step 3",
+      "default": "🔒 Commander maintenant →"
+    }
+      ]
+    },
+	 {
+      "type": "announce",
+      "name": "Message d'annonce",
+      "limit": 1,
+      "settings": [
+		{
+          "type": "checkbox",
+          "id": "cart_message_enable",
+          "label": "Activer le message d'annonce",
+          "default": false
+        },
+        { 
+          "type": "color",
+          "id": "cart_message_bgcolor",
+          "label": "Couleur de fond"
+        },
+        { 
+          "type": "color",
+          "id": "cart_message_color",
+          "label": "Couleur du texte"
+        },
+        { 
+          "type": "richtext",
+          "id": "cart_message_text",
+          "label": "Texte",
+          "info": "Maj + Entrer pour sauter une ligne"
+        }
+	   ]
+	},
+    {
+      "type": "customcss",
+      "name": "Règles CSS avancées",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Ignorer ce bloc si vous n'avez pas les bases en HTML/CSS"
+        },
+        {
+          "type": "header",
+          "content": "Mobile"
+        },
+        {
+          "type": "html",
+          "id": "css_mobile",
+          "label": "Custom CSS",
+          "info": "ex: .cartItems__wrapper{border-radius: 10px}"
+        },
+        {
+          "type": "header",
+          "content": "Bureau"
+        },
+        {
+          "type": "range",
+          "id": "query",
+          "label": "media-query line break",
+          "min": 400,
+          "max": 1200,
+          "step": 50,
+          "default": 1100
+        },
+        {
+          "type": "html",
+          "id": "css_bureau",
+          "label": "Custom CSS",
+          "info": "ex: .cartItems__wrapper{border-radius: 10px}",
+          "default": ".cartItems__wrapper,.summary__wrapper{border-radius: 10px}"
+        }
+      ]
+    },
+    { 
+         "type":"upsell1",
+         "name":"Upsell (par produit)",
+         "settings":[ 
+            { 
+               "type":"header",
+               "content":"Upsell par produit"
+            },
+            {
+               "type": "product",
+               "id": "product_ref",
+               "label": "Produit référence",
+               "info": "Ce produit déclenchera l'upsell. Si vous souhaitez qu'une variante spécifique déclenche l'upsell, resmplissez le champs ci-dessous."
+			},
+{ 
+               "type":"text",
+               "id":"upsell_reference",
+               "label":"ID de la variante (optionnel)",
+               "info":"Choisir la variante qui déclenchera l'upsell. [Trouver l'ID](https://help.shopify.com/en/themes/customization/products/variants/find-variant-id)."
+            },
+            {
+               "type":"text",
+               "id":"trigger_product_id",
+               "label":"Trigger Product ID (optional)"
+            },
+            { 
+               "type":"header",
+               "content":"Produit Upsell"
+            },
+            {
+               "type": "product",
+               "id": "product_upsell",
+               "label": "Produit upsell",
+               "info": "Par défaut, la première variante disponible sera en upsell. Si vous souhaitez une variante spécifique, remplissez le champ ci-dessous."
+			},
+            { 
+               "type":"text",
+               "id":"upsell_upsell",
+               "label":"ID de la variante (optionnel)",
+               "info":"Choisir la variante correspondant à l'upsell."
+            },
+            { 
+               "type":"radio",
+               "id":"replace_reference",
+               "label":"Action de l'Upsell :",
+               "options":[ 
+                  { 
+                     "value":"add",
+                     "label":"S'ajoute au panier"
+                  },
+                  { 
+                     "value":"replace",
+                     "label":"Remplace le produit référence"
+                  }
+               ],
+               "default":"add"
+            },
+            { 
+               "type":"text",
+               "id":"upsell_header",
+               "label":"Texte bandereau",
+               "default":"Offre FLASH"
+            },
+            { 
+               "type":"image_picker",
+               "id":"upsell_img",
+               "label":"Image de l'upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_topline",
+               "label":"Titre upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_mainline",
+               "label":"Texte upsell 2"
+            },
+			{ 
+               "type":"text",
+               "id":"upsell_button",
+               "label":"Bouton ATC",
+               "default":"AJOUTER AU PANIER"
+            },
+            { 
+               "type":"checkbox",
+               "id":"show_price",
+               "label":"Afficher les prix dans le bouton",
+               "default":true
+			},
+			{ 
+               "type":"checkbox",
+               "id":"show_compare_price",
+               "label":"Afficher le prix comparatif",
+			   "info":"Attention à la largeur du bouton en mobile"
+	        }
+         ]
+      },
+      { 
+         "type":"upsell2",
+         "name":"Upsell (par collection)",
+         "settings":[ 
+            { 
+               "type":"header",
+               "content":"Upsell par collection"
+            },
+{ 
+               "type":"collection",
+               "id":"upsell_reference",
+               "label":"Collection référence",
+               "info":"La collection déclenchera l'upsell."
+            },
+            {
+               "type":"text",
+               "id":"trigger_product_id",
+               "label":"Trigger Product ID (optional)"
+            },
+            { 
+               "type":"header",
+               "content":"Produit Upsell"
+            },
+			{
+               "type": "product",
+               "id": "product_upsell",
+               "label": "Produit upsell",
+               "info": "Par défaut, la première variante disponible sera en upsell. Si vous souhaitez une variante spécifique, remplissez le champ ci-dessous."
+			},
+            { 
+               "type":"text",
+               "id":"upsell_upsell",
+               "label":"ID de la variante (optionnel)",
+               "info":"Choisir la variante correspondant à l'upsell. [Où trouver l'ID ?](https://help.shopify.com/en/themes/customization/products/variants/find-variant-id)"
+            },
+            { 
+               "type":"radio",
+               "id":"replace_reference",
+               "label":"Action de l'Upsell :",
+               "options":[ 
+                  { 
+                     "value":"add",
+                     "label":"S'ajoute au panier"
+                  }
+               ],
+               "default":"add"
+            },
+            { 
+               "type":"text",
+               "id":"upsell_header",
+               "label":"Texte bandereau",
+               "default":"🔥 Offre FLASH 🔥"
+            },
+            { 
+               "type":"image_picker",
+               "id":"upsell_img",
+               "label":"Image de l'upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_topline",
+               "label":"Titre upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_mainline",
+               "label":"Texte upsell 2"
+            },
+			{ 
+               "type":"text",
+               "id":"upsell_button",
+               "label":"Bouton ATC",
+               "default":"AJOUTER AU PANIER"
+            },
+            { 
+               "type":"checkbox",
+               "id":"show_price",
+               "label":"Afficher le prix dans le bouton",
+               "default":true
+	       },
+		   { 
+               "type":"checkbox",
+               "id":"show_compare_price",
+               "label":"Afficher le prix comparatif",
+			   "info":"Attention à la largeur du bouton en mobile"
+	       }
+         ]
+      }
+  ],
+  "presets": [
+    {
+      "name": "Cart page ",
+      "blocks": [
+        { 
+          "type": "stepper"
+        },
+        {
+          "type": "customtext"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,42 @@
+{%- comment -%}
+  Snippet: Product Save Badge
+  Calculates and displays savings (percentage or amount) when a product is on sale.
+  
+  Accepts:
+  - variant: {Object} Variant to calculate savings from (required)
+  - label: {String} Prefix text (e.g., 'Save')
+  - type: {String} 'percent' or 'amount'
+  - bg_color: {Color} Background color
+  - text_color: {Color} Text color
+{%- endcomment -%}
+
+{%- if variant.compare_at_price > variant.price -%}
+  {%- liquid
+    if type == 'amount'
+      assign savings_value = variant.compare_at_price | minus: variant.price | money
+    else
+      assign savings_value = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round | append: '%'
+    endif
+  -%}
+
+  <span class="product-save-badge" style="
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+    margin-left: 8px;
+    background-color: {{ bg_color | default: '#00237e' }};
+    color: {{ text_color | default: '#ffffff' }};
+    vertical-align: middle;
+    white-space: nowrap;
+  ">
+    {%- if label != blank -%}
+      <span class="product-save-badge__label" style="margin-right: 3px;">{{ label }}</span>
+    {%- endif -%}
+    <span class="product-save-badge__value">{{ savings_value }}</span>
+  </span>
+{%- endif -%}

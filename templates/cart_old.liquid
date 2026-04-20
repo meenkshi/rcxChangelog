@@ -1,0 +1,30 @@
+{% comment %}
+  The contents of the cart.liquid template can be found in /sections/cart-template.liquid
+{% endcomment %}
+
+{% comment %}
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+{% capture cart-content %}{% section 'cart-template-maxdesign' %}{% endcapture %}
+{% capture upsell %}{% section 'upsell-maxdesign' %}{% endcapture %}
+{% assign upsell = upsell | replace: 'class="shopify-section"', 'class="shopify-section-nested"' %}
+{% assign cart-content = cart-content | replace: '<div class="upsell_section-editor"> ⚠ SAUVEGARDER POUR CHARGER LA SECTION UPSELL </div>', upsell %}
+{{ cart-content }}
+<!-- Global site tag (gtag.js) - Adwords remarketing by oderajoseph.com -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-687353609');
+</script>
+<script>
+  gtag('event', 'page_view', {
+    'send_to': 'AW-687353609',
+	'ecomm_pagetype': 'cart',
+	'ecomm_prodid': [{% for item in cart.items %}'shopify_GB_{{ item.product_id }}_{{ item.variant_id }}',{% endfor %}],
+	'ecomm_totalvalue': {{ cart.total_price | money_without_currency | remove:',' }}
+  });
+</script>

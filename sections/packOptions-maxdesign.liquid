@@ -1,0 +1,2365 @@
+{% comment %}
+  ⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+  ⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+  ⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+  ⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+
+{% comment %}PRODUCT INDEX CAPTURE{% endcomment %}
+{% for block in section.blocks %}
+  {% assign block_product_id = block.settings.product_id | plus: 0 %}
+  {% if block_product_id == product.id %}
+    {% assign index = forloop.index0 %}
+  {% elsif block.type == 'developer' %}
+    {% assign developer = forloop.index0 %}
+  {% endif %}
+{% endfor %}
+
+{% if section.blocks[index].settings.enable %}
+  {% comment %}DISPLAY MODE & SETTINGS{% endcomment %}
+  {% assign mode_desktop = section.settings.mode_desktop %}
+  {% assign mode_mobile = section.settings.mode_mobile %}
+  {% assign fill_mode = section.settings.fill_action %}
+  {% assign radius = section.settings.border_radius | append: 'px' %}
+  {% assign font_size_desktop = section.settings.font_size_desktop | divided_by: 100.0 | plus: 1 %}
+  {% assign font_size_mobile = section.settings.font_size_mobile | divided_by: 100.0 | plus: 1 %}
+  {% capture breakPoint %}{% if developer != nil %}{{ section.blocks[developer].settings.query }}{% else %}1000{% endif %}{% endcapture -%}
+  {%- assign breakPoint = breakPoint | plus: 0 %}
+  {% if section.blocks[index].settings.description_enable_1 %}{% assign show_description_1 = true %}{% endif %}
+  {% if section.blocks[index].settings.description_enable_2 %}{% assign show_description_2 = true %}{% endif %}
+  {% if section.blocks[index].settings.description_enable_3 %}{% assign show_description_3 = true %}{% endif %}
+  {% if section.blocks[index].settings.properties_enable_1 %}{% assign show_properties_1 = true %}{% endif %}
+  {% if section.blocks[index].settings.properties_enable_2 %}{% assign show_properties_2 = true %}{% endif %}
+  {% if section.blocks[index].settings.properties_enable_3 %}{% assign show_properties_3 = true %}{% endif %}
+  {% if section.blocks[index].settings.variants_enable_1 %}{% assign show_variants_1 = true %}{% endif %}
+  {% if section.blocks[index].settings.variants_enable_2 %}{% assign show_variants_2 = true %}{% endif %}
+  {% if section.blocks[index].settings.variants_enable_3 %}{% assign show_variants_3 = true %}{% endif %}
+  {% if section.blocks[index].settings.virtual_stocks %}{% assign virtual_stocks = true %}{% endif %}
+  {% if section.settings.virtual_stocks_type == 'visits' %}{% assign virtual_stocks_visits = true %}{% endif %}
+
+  <style>
+    /* mega container styles & fixes */
+    #shopify-section-{{ section.id }}{width:100%}
+    #packsUpsell{max-width:590px;margin-top:{{ section.settings.spacing_top_desktop }}px;margin-bottom:{{ section.settings.spacing_bottom_desktop }}px;}
+    #shopify-section-{{ section.id }} label {text-transform:none}
+    {% if section.settings.main_price_disable %}{{ section.blocks[developer].settings.selector_price }}, {{ section.blocks[developer].settings.selector_compare_price }} {display:none;height:0px;overflow:hidden}{% endif %}
+
+    /* upsell label container */
+    .packsUpsell-label{color:{{ section.blocks[index].settings.text_upsell_color }};fill:{{ section.blocks[index].settings.text_upsell_color }};font-style:normal;display:flex;display:-webkit-flex;justify-content:center;align-items:center;width:100%;padding:0 0 10px;font-weight:600;font-size:1.1em;text-align:center}
+
+    /* upsell blocks container + content*/
+    {% unless section.settings.color_bg contains 'rgba(0,0,0,0)' %}.packsUpsell-tabs {background-color:{{ section.settings.color_bg }};padding:15px;border-radius:25px;}{% endunless %}
+    .packsUpsell-tabs .packsUpsell-block:first-child {margin-top:0}
+    .packsUpsell-block{position:relative;margin-top:10px;font-size:{{ font_size_desktop }}em;border-radius:{{ radius }};background:{{ section.settings.color_upsell }};-webkit-touch-callout: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;-webkit-tap-highlight-color: rgba(0,0,0,0)}
+    .packsUpsell-block > label{position:relative;font-style:normal;display:flex;align-items:center;cursor:pointer;margin:0;padding:10px;font-size:1em;border-radius:{{ radius }};transition: none;}
+    .packsUpsell-block > label > * { pointer-events:none} /*ios*/
+    .packsUpsell-block:not(.active) {box-shadow: inset 0px 0px 0 1px {{ section.settings.color_border }};}
+    .packsUpsell-input {margin-right: 10px;}
+    .packsUpsell-info {display:flex;flex-direction:column;justify-content:space-around;align-items:start;text-align:left}
+    {% unless section.settings.img_enable_desktop %}.packsUpsell-info {margin-left:10px}{% endunless %}
+    .packsUpsell-info > * {margin-bottom:3px}
+    .packsUpsell-image{margin-right:10px;min-height:60px;align-items: center;{% unless section.settings.img_enable_desktop %}display:none;{% else %}display: flex;{% endunless %}}
+    .packsUpsell-image span{border-radius:{{ section.settings.border_radius_images }}px;display:inline-block;width:60px;height:60px;padding:0px;margin:5px;background-size:cover;background-repeat:no-repeat}
+    .packsUpsell-title{font-weight:600;font-size:1.1em;display:inline-block;color:{{ section.settings.color_title }};text-transform:none;}
+    .packsUpsell-price{font-size:1em;font-weight:400;color:{{ section.settings.color_price }};}
+    .packsUpsell-comparePrice{color:{{ section.settings.color_compare_price }};padding-right: 5px;display: inline-block;text-decoration: line-through;font-weight:300}
+    .packsUpsell-line1{font-size:0.95em;color:{{ section.settings.color_flash_text }};font-weight:600;}
+    .packsUpsell-line1.packsUpsell-line1--blink{animation:blink 1.4s ease-in-out infinite;animation-duration: 0.8s;animation-direction: alternate;-webkit-animation-duration: 0.8s;-webkit-animation-direction:alternate;}
+    .packsUpsell-line2{font-size:1em;font-weight:600;color:{{ section.settings.color_customtext }};}
+
+    /* radio button checked + not checked */
+    .packsUpsell-input { display:{% unless section.settings.radio_enable_desktop %}none{% else %}block{% endunless %};}
+    .packsUpsell-input [type="radio"]:checked + span:after, .packsUpsell-input [type="radio"]:not(:checked) + span:after {content:'';width:12px;height:12px;background:{{ section.settings.color_upsell }};position:absolute;top:-11px;left:3px;border-radius:100%;-webkit-transition:all 0.2s ease;transition:all 0.2s ease;}
+    /* radio button cheked only */
+    .packsUpsell-input [type="radio"]:checked{position:absolute;left:-9999px;}
+    .packsUpsell-input [type="radio"]:checked + span{position:relative;padding-left:18px;cursor:pointer;line-height:20px;display:inline-block;color:#000;}
+    .packsUpsell-input [type="radio"]:checked + span:before{content:'';position:absolute;left:0;top:-14px;width:18px;height:18px;border:1px solid #ddd;border-radius:100%;background:#fff;}
+    .packsUpsell-input [type="radio"]:checked + span:after{content:'';width:12px;height:12px;background:{{ section.settings.color_upsell_active | color_darken: 7 }};position:absolute;top:-11px;left:3px;border-radius:100%;-webkit-transition:all 0.2s ease;transition:all 0.2s ease;opacity:1;-webkit-transform:scale(1);transform:scale(1);}
+    /* radio button not checked only */
+    .packsUpsell-input [type="radio"]:not(:checked) {position: absolute;left: -9999px;}
+    .packsUpsell-input [type="radio"]:not(:checked) + span {position: relative;padding-left: 18px;cursor: pointer;line-height: 20px;display: inline-block;color: #000;}
+    .packsUpsell-input [type="radio"]:not(:checked) + span:before {content: '';position: absolute;left: 0;top: -14px;width: 18px;height: 18px;border: 1px solid #ddd;border-radius: 100%;background: #fff;}
+    .packsUpsell-input [type="radio"]:not(:checked) + span:after {opacity: 0;transform: scale(0);}
+
+    /* upsell keyframes */
+    @keyframes blink{0%{opacity:1} 100%{opacity:0.2}}
+    @-webkit-keyframes blink{0%{opacity:1} 100%{opacity:0.2}}
+
+    /* display mode with price display on the right side */
+    {% if mode_desktop == 'original' %}
+    @media (min-width: {{ breakPoint }}px){
+      .packsUpsell-price {position: absolute;right: 0;display: flex;align-items: flex-end;justify-content: center;flex-direction: column;height: 100%;top: 0;padding-right:20px;font-weight:600;font-size:1.1em}
+      .packsUpsell-price > span {padding:0;margin-top:3px;order:1}
+      .packsUpsell-comparePrice{font-size:1em}
+      .packsUpsell-price-container {order:1;margin-bottom:0}
+      .packsUpsell-info{padding-right:85px}
+    }
+    {% endif %}
+
+    /* active blocks styles */
+    .packsUpsell-block.active {box-shadow:inset 0px 0px 0 4px {{ section.settings.color_upsell_active }};transition:box-shadow 0.15s ease 0.1s;}
+    .packsUpsell-block.active > label {pointer-events:none}
+    .packsUpsell-block.active .packsUpsell-title{color:{{ section.settings.color_title_active }};{% assign brightness = section.settings.color_title_active | color_brightness %}{% if brightness > 225 %}text-shadow: 1px 1px 0px {{ section.settings.color_upsell_active | color_darken: 3 }};{% endif %}}
+    .packsUpsell-block.active .packsUpsell-price {color:{{ section.settings.color_price_active }};{% assign brightness = section.settings.color_price_active | color_brightness %}{% if brightness > 225 %}text-shadow: 1px 1px 0px {{ section.settings.color_upsell_active | color_darken: 3 }};{% endif %}}
+    .packsUpsell-block.active .packsUpsell-comparePrice {color: {{ section.settings.color_compare_price_active }};}
+    .packsUpsell-block.active .packsUpsell-line1 {color:{{ section.settings.color_flash_text_active }};text-shadow: 1px 1px 0px {{ section.settings.color_upsell_active | color_darken: 3 }};}
+    .packsUpsell-block.active .packsUpsell-line2{color:{{ section.settings.color_customtext_active }};{% assign brightness = section.settings.color_customtext_active | color_brightness %}{% if brightness > 225 %}text-shadow: 1px 1px 0px {{ section.settings.color_upsell_active | color_darken: 3 }};{% endif %}}
+    {% if section.settings.color_style == 'full' %}.packsUpsell-block.active > label {background:{{ section.settings.color_upsell_active }};}{% endif %}
+
+    /* pack description */
+    .packsUpsell-block aside {all:unset;display:block;box-sizing:content-box;padding:0px 20px;text-align:left;transition:height .4s ease 0.1s, padding .4s ease 0.1s;overflow: hidden;}
+    .packsUpsell-block aside > * {opacity:0;transition: opacity 0.4s ease-out 0.1s}
+    .packsUpsell-block:not(.active) aside {height:0px;}
+    .packsUpsell-block.active {background-color:{{ section.settings.bgcolor_description_active }};color:{{ section.settings.color_description_active }};}
+    .packsUpsell-block.active aside {padding:10px 20px 20px;}
+    .packsUpsell-block.active aside > * {opacity:1}
+    .packsUpsell-block.active aside ul {padding-left:15px}
+    .packsUpsell-block.active aside ul li::before {content:'•';color: {{ section.settings.color_upsell }};font-weight: bold;display: inline-block;width: 1em;margin-left: -1em;}
+    .packsUpsell-block aside p {all:unset;display:block;margin:0 0 10px;font-size:0.97em}
+    .packsUpsell-block aside p:last-of-type{margin-bottom:0}
+
+    /* variants & properties inside packs */
+    .packsUpsell__options, .packsUpsell__properties {display:flex;display:-webkit-flex;flex-wrap:wrap;align-items:flex-end;}
+    .packsUpsell__select, .packsUpsell__properties > div {width:50%;margin-bottom:10px}
+    .packsUpsell__select select, .packsUpsell__properties select {width:100%;font-size:1em;background-color:rgba(255,255,255,0.85)}
+    .packsUpsell__select label {all:unset;font-size:0.95em;}
+    .packsUpsell__select:nth-child(2n + 1) {padding-right:10px;}
+
+    /* media queries */
+    @media (max-width: {{ breakPoint | minus: 1 }}px){
+      #packsUpsell{margin-top:{{ section.settings.spacing_top_mobile }}px;margin-bottom:{{ section.settings.spacing_bottom_mobile }}px;}
+      .packsUpsell-block{font-size:{{ font_size_mobile }}em;}
+      {% unless section.settings.color_bg contains 'rgba(0,0,0,0)' %}.packsUpsell-tabs {padding:12px;}{% endunless %}
+      .packsUpsell-input { display:{% unless section.settings.radio_enable_mobile %}none{% else %}block{% endunless %};}
+      .packsUpsell-info {line-height:20px;{% unless section.settings.img_enable_mobile %}margin-left:5px;{% endunless %} }
+      .packsUpsell-title {font-size:1em}
+      .packsUpsell-image{flex:0 0 60px;{% unless section.settings.img_enable_mobile %}display:none;{% endunless %}}
+      .packsUpsell-line1{display:block}
+      .packsUpsell-line2 {font-size:1em;}
+      {% if mode_mobile == 'ultracompact' %}
+      .packsUpsell-line1{display:inline;margin-left:5px}
+      {% elsif mode_mobile == 'original' %}
+      .packsUpsell-price {padding-right:15px;position: absolute;right: 0;display: flex;align-items: flex-end;justify-content: center;flex-direction: column;height: 100%;top: 0;font-weight:600;font-size:1.1em}
+      .packsUpsell-price > span {padding:0;margin-top:3px;order:1}
+      .packsUpsell-comparePrice{font-size:1em}
+      .packsUpsell-price-container {order:1}
+      {% endif %}
+    }
+
+    /* custom css */
+    @media (min-width:{{section.blocks[developer].settings.query}}px) { {{section.blocks[developer].settings.css_bureau}} }
+    @media (max-width:{{section.blocks[developer].settings.query}}px) { {{section.blocks[developer].settings.css_mobile}} }
+  </style>
+
+  <div
+    id="packsUpsell"
+    {% if section.blocks[index].settings.bundle_type == 'products' %}
+      data-upsell-type="products"
+    {% else %}
+      data-upsell-type="variants"
+    {% endif -%}
+    data-upsell-index="1"
+  >
+    <label class="packsUpsell-label">
+      <svg style="width:0.95em;margin-right:6px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 243 232">
+        <path d="M152.3 128.9c1.3-1.1 2.6-2.2 3.8-3.4 13.1-13 26.2-26.1 39.2-39.2 6.5-6.5 14.1-10.4 22.9-6.2 10.1 4.8 17.9 12.9 22.9 22.8 3.9 7.6 1.6 15.5-4.5 21.6-33.6 33.8-67.3 67.5-101.1 101-8.2 8.2-20.1 8.1-28.2 0C73.7 191.8 40 158.2 6.4 124.4c-8.8-8.8-8.6-19.9 0-28.9 3.2-3.4 6.6-6.6 9.9-9.9 9.6-9.5 20.8-9.6 30.3-.1l39.6 39.6c1.3 1.3 2.8 2.5 5.2 4.5.2-3.4.4-5.5.4-7.5 0-33.3.1-66.6-.1-100 0-8 2.4-14.5 9.3-18.6 2.9-1.7 6.5-2.6 9.8-2.9 6.8-.4 13.7-.2 20.5-.1C142.9.7 151 8.8 151 20.7c.1 33.8 0 67.6 0 101.5v5.9c.4.2.9.5 1.3.8z"/>
+      </svg>
+      <span>{{ section.blocks[index].settings.text_upsell }}</span>
+      <svg style="width:0.95em;margin-left:6px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 243 232">
+        <path d="M152.3 128.9c1.3-1.1 2.6-2.2 3.8-3.4 13.1-13 26.2-26.1 39.2-39.2 6.5-6.5 14.1-10.4 22.9-6.2 10.1 4.8 17.9 12.9 22.9 22.8 3.9 7.6 1.6 15.5-4.5 21.6-33.6 33.8-67.3 67.5-101.1 101-8.2 8.2-20.1 8.1-28.2 0C73.7 191.8 40 158.2 6.4 124.4c-8.8-8.8-8.6-19.9 0-28.9 3.2-3.4 6.6-6.6 9.9-9.9 9.6-9.5 20.8-9.6 30.3-.1l39.6 39.6c1.3 1.3 2.8 2.5 5.2 4.5.2-3.4.4-5.5.4-7.5 0-33.3.1-66.6-.1-100 0-8 2.4-14.5 9.3-18.6 2.9-1.7 6.5-2.6 9.8-2.9 6.8-.4 13.7-.2 20.5-.1C142.9.7 151 8.8 151 20.7c.1 33.8 0 67.6 0 101.5v5.9c.4.2.9.5 1.3.8z"/>
+      </svg>
+    </label>
+    <input type="hidden" id="refresh" value="no">
+    <div class="packsUpsell-tabs">
+      {% if section.blocks[index].settings.bundle_type == 'products' %}
+        <!-- 1 -->
+        {% if section.blocks[index].settings.product_upsell_1_enable %}
+          {% capture product_handle_1 %}{% if section.blocks[index].settings.product_upsell_1 == blank %}{{ product.handle}}{% else %}{{ section.blocks[index].settings.product_upsell_1 }}{% endif %}{% endcapture %}
+          {% assign upsell_product_1 = all_products[product_handle_1] %}
+          {% assign upsell_available_1 = upsell_product_1.selected_or_first_available_variant.available %}
+          {% assign upsell_img_1 = section.blocks[index].settings.img_upsell_1
+            | default: upsell_product_1.selected_or_first_available_variant.featured_media
+            | default: upsell_product_1.featured_media
+            | img_url: 'small'
+          %}
+          {% assign upsell_title_1 = upsell_product_1.title %}
+          {% assign upsell_savings_1 = upsell_product_1.selected_or_first_available_variant.compare_at_price
+            | minus: upsell_product_1.selected_or_first_available_variant.price
+            | times: 100.0
+            | divided_by: upsell_product_1.selected_or_first_available_variant.compare_at_price
+            | round
+          %}
+          {% assign upsell_inventory_1 = upsell_product_1.selected_or_first_available_variant.inventory_quantity %}
+          {% if upsell_available_1 -%}
+            {%- assign upsell_price_1 = upsell_product_1.selected_or_first_available_variant.price | money -%}
+            {%- assign upsell_comparePrice_1 = upsell_product_1.selected_or_first_available_variant.compare_at_price
+              | money
+            -%}
+          {%- else -%}
+            {%- assign upsell_price_1 = section.blocks[developer].settings.product_unavailable -%}
+            {%- assign upsell_comparePrice_1 = '' -%}
+          {%- endif %}
+          {% if virtual_stocks %}
+            {% capture virtual_stocks_1 %}[{%- for variant in upsell_product_1.variants -%}"{{- variant.metafields.inventory.daily_virtual_stock_min-max | default: upsell_inventory_1 -}}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+            {% capture variants_id_1 %}[{%- for variant in upsell_product_1.variants -%}{{- variant.id -}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+          {% endif %}
+          {% capture upsell_inventory_dom_1 %}<span class="packsUpsell-inventory">{% unless virtual_stocks %}{{ upsell_inventory_1 }}{% else %}&nbsp;&nbsp;{% endunless %}</span>{% endcapture %}
+          {% capture upsell_savings_dom_1 %}<span class="packsUpsell-savings">{{ upsell_savings_1 }}</span>%{% endcapture %}
+          <div class="packsUpsell-block active" data-block-index="1">
+            <label
+              {% if show_description_1 == null and show_properties_1 == null and show_variants_1 == null %}
+                style="border-radius:{{ radius }}"
+              {% else %}
+                style="border-radius:{{ radius }} {{ radius }} 0 0;transition: all 0.15s ease-in-out;"
+              {% endif %}
+            >
+              <div class="packsUpsell-input">
+                <input
+                  type="radio"
+                  autocomplete="off"
+                  checked
+                  value="{{ upsell_product_1.selected_or_first_available_variant.id }}"
+                  data-active="true"
+                  data-variant-price="{{ upsell_price_1 }}"
+                  {% if section.blocks[index].settings.compareprice_upsell_1 %}
+                    data-variant-compare-price="{{ upsell_comparePrice_1 }}"
+                  {% endif %}
+                  data-variant-inventory="{{ upsell_inventory_1 }}"
+                  data-variant-available="{{ upsell_available_1 }}"
+                  data-variant-savings="{{ upsell_savings_1 }}"
+                  data-variant-image="{{ upsell_img_1 }}"
+                  name="pack-upsell"
+                >
+                <span></span>
+              </div>
+              <div class="packsUpsell-image">
+                <span style="background-image: url('{{ upsell_img_1 }}')"></span>
+              </div>
+              <div class="packsUpsell-info">
+                <span class="packsUpsell-title">
+                  {%- if section.blocks[index].settings.product_title_1 != blank -%}
+                    {{- section.blocks[index].settings.product_title_1 -}}
+                  {%- else -%}
+                    {{- upsell_title_1 -}}
+                  {%- endif -%}
+                </span>
+                <div class="packsUpsell-price-container">
+                  <span class="packsUpsell-price">
+                    {%- if section.blocks[index].settings.compareprice_upsell_1 -%}
+                      <span class="packsUpsell-comparePrice" data-variant-compare-price>
+                        {{- upsell_comparePrice_1 -}}
+                      </span>
+                    {%- else -%}
+                      <span data-variant-compare-price hidden></span>
+                    {%- endif -%}
+                    <span data-variant-price>{{ upsell_price_1 }}</span></span
+                  >
+                  {% if section.blocks[index].settings.alert_upsell_1 != blank %}
+                    <span class="packsUpsell-line1 {% if section.blocks[index].settings.alert_upsell_blink_1 %}packsUpsell-line1--blink{% endif %}">
+                      {{-
+                        section.blocks[index].settings.alert_upsell_1
+                        | replace: 'XX', upsell_inventory_dom_1
+                        | replace: 'YY', upsell_savings_dom_1
+                      -}}
+                    </span>
+                  {% endif %}
+                </div>
+                {% if section.blocks[index].settings.message_upsell_1 != blank %}
+                  <span class="packsUpsell-line2">
+                    {{
+                      section.blocks[index].settings.message_upsell_1
+                      | replace: 'XX', upsell_inventory_dom_1
+                      | replace: 'YY', upsell_savings_dom_1
+                    }}
+                  </span>
+                {% endif %}
+              </div>
+            </label>
+            {% if show_description_1 or show_variants_1 or show_properties_1 %}
+              <aside class="packsUpsell-description">
+                {% if show_description_1 and section.blocks[index].settings.description_upsell_1 contains '---' %}
+                  {% assign description_1_split = true %}
+                  <div style="margin:5px 0 10px">
+                    {{ section.blocks[index].settings.description_upsell_1 | split: '---' | first }}
+                  </div>
+                {% endif %}
+                {% if upsell_product_1.has_only_default_variant == false and show_variants_1 %}
+                  <div class="packsUpsell__options">
+                    {% for option in upsell_product_1.options_with_values %}
+                      <div class="packsUpsell__select">
+                        <label for="PackOptionSelector_{{ forloop.index }}_1">{{ option.name }}</label>
+                        <select id="PackOptionSelector_{{ forloop.index }}_1">
+                          {% for value in option.values %}
+                            <option
+                              value="{{ value | escape }}"
+                              {% if option.selected_value == value %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{ value }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                {% if show_properties_1 %}
+                  {% assign options = section.blocks[index].settings.properties_items_1 | split: '/' %}
+                  {% assign options_size = options.size | minus: 1 %}
+                  <div class="packsUpsell__properties">
+                    {% for i in (0..options_size) %}
+                      <div class="packsUpsell__select">
+                        <label>{{ options[i] | split: ': ' | first }}</label>
+                        {% assign variants = options[i] | split: ':' | last | split: ',' %}
+                        {% assign variants_size = variants.size | minus: 1 %}
+                        {% for j in (0..variants_size) %}
+                          {% if forloop.first %}<select>{% endif %}
+                          <option
+                            {% if forloop.first %}
+                              selected
+                            {% endif %}
+                            value="{{ variants[j] }}"
+                          >
+                            {{ variants[j] }}
+                          </option>
+                          {% if forloop.last %}</select>{% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                <div
+                  {% if show_description_1 == null %}
+                    style="margin-top:-10px"
+                  {% else %}
+                    style="margin-top:7px"
+                  {% endif %}
+                >
+                  {% if show_description_1 %}
+                    {% if description_1_split %}
+                      {% capture description_1_split %}{{ section.blocks[index].settings.description_upsell_1 | append: '<span hidden></span>' | split: '---' | last }}{% endcapture %}
+                      {% if description_1_split != '<span hidden></span>' -%}
+                        {{- description_1_split -}}
+                      {%- else %}
+                        <div style="margin-top:-17px"></div>
+                      {% endif %}
+                    {% else %}
+                      {{ section.blocks[index].settings.description_upsell_1 }}
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </aside>
+            {% endif %}
+          </div>
+          <script data-product-json-index="1" type="application/json">
+            {{ upsell_product_1 | json }}
+          </script>
+        {% endif %}
+        <!-- 2 -->
+        {% if section.blocks[index].settings.product_upsell_2_enable %}
+          {% capture product_handle_2 %}{% if section.blocks[index].settings.product_upsell_2 == blank %}{{ product.handle}}{% else %}{{ section.blocks[index].settings.product_upsell_2 }}{% endif %}{% endcapture %}
+          {% assign upsell_product_2 = all_products[product_handle_2] %}
+          {% assign upsell_available_2 = upsell_product_2.selected_or_first_available_variant.available %}
+          {% assign upsell_img_2 = section.blocks[index].settings.img_upsell_2
+            | default: upsell_product_2.selected_or_first_available_variant.featured_media
+            | default: upsell_product_2.featured_media
+            | img_url: 'small'
+          %}
+          {% assign upsell_title_2 = upsell_product_2.title %}
+          {% assign upsell_savings_2 = upsell_product_2.selected_or_first_available_variant.compare_at_price
+            | minus: upsell_product_2.selected_or_first_available_variant.price
+            | times: 100.0
+            | divided_by: upsell_product_2.selected_or_first_available_variant.compare_at_price
+            | round
+          %}
+          {% assign upsell_inventory_2 = upsell_product_2.selected_or_first_available_variant.inventory_quantity %}
+          {% if upsell_available_2 -%}
+            {%- assign upsell_price_2 = upsell_product_2.selected_or_first_available_variant.price | money -%}
+            {%- assign upsell_comparePrice_2 = upsell_product_2.selected_or_first_available_variant.compare_at_price
+              | money
+            -%}
+          {%- else -%}
+            {%- assign upsell_price_2 = section.blocks[developer].settings.product_unavailable -%}
+            {%- assign upsell_comparePrice_2 = '' -%}
+          {%- endif %}
+          {% if virtual_stocks %}
+            {% capture virtual_stocks_2 %}[{%- for variant in upsell_product_2.variants -%}"{{- variant.metafields.inventory.daily_virtual_stock_min-max | default: upsell_inventory_2 -}}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+            {% capture variants_id_2 %}[{%- for variant in upsell_product_2.variants -%}{{- variant.id -}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+          {% endif %}
+          {% capture upsell_inventory_dom_2 %}<span class="packsUpsell-inventory">{% unless virtual_stocks %}{{ upsell_inventory_2 }}{% else %}&nbsp;&nbsp;{% endunless %}</span>{% endcapture %}
+          {% capture upsell_savings_dom_2 %}<span class="packsUpsell-savings">{{ upsell_savings_2 }}</span>%{% endcapture %}
+          <div
+            class="packsUpsell-block {% unless section.blocks[index].settings.product_upsell_1_enable %}active{% endunless %}"
+            data-block-index="2"
+          >
+            <label
+              {% if show_description_2 == null and show_properties_2 == null and show_variants_2 == null %}
+                style="border-radius:{{ radius }}"
+              {% else %}
+                style="border-radius:{{ radius }} {{ radius }} 0 0;transition: all 0.15s ease-in-out;"
+              {% endif %}
+            >
+              <div class="packsUpsell-input">
+                <input
+                  type="radio"
+                  autocomplete="off"
+                  {% unless section.blocks[index].settings.product_upsell_1_enable %}
+                    checked data-active="true"
+                  {% else %}
+                    data-active="false"
+                  {% endunless %}
+                  value="{{ upsell_product_2.selected_or_first_available_variant.id }}"
+                  data-variant-price="{{ upsell_price_2 }}"
+                  {% if section.blocks[index].settings.compareprice_upsell_2 %}
+                    data-variant-compare-price="{{ upsell_comparePrice_2 }}"
+                  {% endif %}
+                  data-variant-inventory="{{ upsell_inventory_2 }}"
+                  data-variant-available="{{ upsell_available_2 }}"
+                  data-variant-savings="{{ upsell_savings_2 }}"
+                  data-variant-image="{{ upsell_img_2 }}"
+                  name="pack-upsell"
+                >
+                <span></span>
+              </div>
+              <div class="packsUpsell-image">
+                <span style="background-image: url('{{ upsell_img_2 }}')"></span>
+              </div>
+              <div class="packsUpsell-info">
+                <span class="packsUpsell-title">
+                  {%- if section.blocks[index].settings.product_title_2 != blank -%}
+                    {{- section.blocks[index].settings.product_title_2 -}}
+                  {%- else -%}
+                    {{- upsell_title_2 -}}
+                  {%- endif -%}
+                </span>
+                <div class="packsUpsell-price-container">
+                  <span class="packsUpsell-price">
+                    {%- if section.blocks[index].settings.compareprice_upsell_2 -%}
+                      <span class="packsUpsell-comparePrice" data-variant-compare-price>
+                        {{- upsell_comparePrice_2 -}}
+                      </span>
+                    {%- else -%}
+                      <span data-variant-compare-price hidden></span>
+                    {%- endif -%}
+                    <span data-variant-price>{{ upsell_price_2 }}</span></span
+                  >
+                  {% if section.blocks[index].settings.alert_upsell_2 != blank %}
+                    <span class="packsUpsell-line1 {% if section.blocks[index].settings.alert_upsell_blink_2 %}packsUpsell-line1--blink{% endif %}">
+                      {{-
+                        section.blocks[index].settings.alert_upsell_2
+                        | replace: 'XX', upsell_inventory_dom_2
+                        | replace: 'YY', upsell_savings_dom_2
+                      -}}
+                    </span>
+                  {% endif %}
+                </div>
+                {% if section.blocks[index].settings.message_upsell_2 != blank %}
+                  <span class="packsUpsell-line2">
+                    {{
+                      section.blocks[index].settings.message_upsell_2
+                      | replace: 'XX', upsell_inventory_dom_2
+                      | replace: 'YY', upsell_savings_dom_2
+                    }}
+                  </span>
+                {% endif %}
+              </div>
+            </label>
+            {% if show_description_2 or show_variants_2 or show_properties_2 %}
+              <aside class="packsUpsell-description">
+                {% if show_description_2 and section.blocks[index].settings.description_upsell_2 contains '---' %}
+                  {% assign description_2_split = true %}
+                  <div style="margin:5px 0 10px">
+                    {{ section.blocks[index].settings.description_upsell_2 | split: '---' | first }}
+                  </div>
+                {% endif %}
+                {% if upsell_product_2.has_only_default_variant == false
+                  and section.blocks[index].settings.variants_enable_2
+                %}
+                  <div class="packsUpsell__options">
+                    {% for option in upsell_product_2.options_with_values %}
+                      <div class="packsUpsell__select">
+                        <label for="PackOptionSelector_{{ forloop.index }}_2">{{ option.name }}</label>
+                        <select id="PackOptionSelector_{{ forloop.index }}_2">
+                          {% for value in option.values %}
+                            <option
+                              value="{{ value | escape }}"
+                              {% if option.selected_value == value %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{ value }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                {% if show_properties_2 %}
+                  {% assign options = section.blocks[index].settings.properties_items_2 | split: '/' %}
+                  {% assign options_size = options.size | minus: 1 %}
+                  <div class="packsUpsell__properties">
+                    {% for i in (0..options_size) %}
+                      <div class="packsUpsell__select">
+                        <label>{{ options[i] | split: ': ' | first }}</label>
+                        {% assign variants = options[i] | split: ':' | last | split: ',' %}
+                        {% assign variants_size = variants.size | minus: 1 %}
+                        {% for j in (0..variants_size) %}
+                          {% if forloop.first %}<select>{% endif %}
+                          <option
+                            {% if forloop.first %}
+                              selected
+                            {% endif %}
+                            value="{{ variants[j] }}"
+                          >
+                            {{ variants[j] }}
+                          </option>
+                          {% if forloop.last %}</select>{% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                <div
+                  {% if show_description_2 == null %}
+                    style="margin-top:-10px"
+                  {% else %}
+                    style="margin-top:7px"
+                  {% endif %}
+                >
+                  {% if show_description_2 %}
+                    {% if description_2_split %}
+                      {% capture description_2_split %}{{ section.blocks[index].settings.description_upsell_2 | append: '<span hidden></span>' | split: '---' | last }}{% endcapture %}
+                      {% if description_2_split != '<span hidden></span>' -%}
+                        {{- description_2_split -}}
+                      {%- else %}
+                        <div style="margin-top:-17px"></div>
+                      {% endif %}
+                    {% else %}
+                      {{ section.blocks[index].settings.description_upsell_2 }}
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </aside>
+            {% endif %}
+          </div>
+          <script data-product-json-index="2" type="application/json">
+            {{ all_products[product_handle_2] | json }}
+          </script>
+        {% endif %}
+        <!-- 3 -->
+        {% if section.blocks[index].settings.product_upsell_3_enable %}
+          {% capture product_handle_3 %}{% if section.blocks[index].settings.product_upsell_3 == blank %}{{ product.handle}}{% else %}{{ section.blocks[index].settings.product_upsell_3 }}{% endif %}{% endcapture %}
+          {% assign upsell_product_3 = all_products[product_handle_3] %}
+          {% assign upsell_available_3 = upsell_product_3.selected_or_first_available_variant.available %}
+          {% assign upsell_img_3 = section.blocks[index].settings.img_upsell_3
+            | default: upsell_product_3.selected_or_first_available_variant.featured_media
+            | default: upsell_product_3.featured_media
+            | img_url: 'small'
+          %}
+          {% assign upsell_title_3 = upsell_product_3.title %}
+          {% assign upsell_savings_3 = upsell_product_3.selected_or_first_available_variant.compare_at_price
+            | minus: upsell_product_3.selected_or_first_available_variant.price
+            | times: 100.0
+            | divided_by: upsell_product_3.selected_or_first_available_variant.compare_at_price
+            | round
+          %}
+          {% assign upsell_inventory_3 = upsell_product_3.selected_or_first_available_variant.inventory_quantity %}
+          {% if upsell_available_3 -%}
+            {%- assign upsell_price_3 = upsell_product_3.selected_or_first_available_variant.price | money -%}
+            {%- assign upsell_comparePrice_3 = upsell_product_3.selected_or_first_available_variant.compare_at_price
+              | money
+            -%}
+          {%- else -%}
+            {%- assign upsell_price_3 = section.blocks[developer].settings.product_unavailable -%}
+            {%- assign upsell_comparePrice_3 = '' -%}
+          {%- endif %}
+          {% if virtual_stocks %}
+            {% capture virtual_stocks_3 %}[{%- for variant in upsell_product_3.variants -%}"{{- variant.metafields.inventory.daily_virtual_stock_min-max | default: upsell_inventory_3 -}}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+            {% capture variants_id_3 %}[{%- for variant in upsell_product_3.variants -%}{{- variant.id -}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+          {% endif %}
+          {% capture upsell_inventory_dom_3 %}<span class="packsUpsell-inventory">{% unless virtual_stocks %}{{ upsell_inventory_3 }}{% else %}&nbsp;&nbsp;{% endunless %}</span>{% endcapture %}
+          {% capture upsell_savings_dom_3 %}<span class="packsUpsell-savings">{{ upsell_savings_3 }}</span>%{% endcapture %}
+          <div class="packsUpsell-block" data-block-index="3">
+            <label
+              {% if show_description_3 == null and show_properties_3 == null and show_variants_3 == null %}
+                style="border-radius:{{ radius }}"
+              {% else %}
+                style="border-radius:{{ radius }} {{ radius }} 0 0;transition: all 0.15s ease-in-out;"
+              {% endif %}
+            >
+              <div class="packsUpsell-input">
+                <input
+                  type="radio"
+                  autocomplete="off"
+                  value="{{ upsell_product_3.selected_or_first_available_variant.id }}"
+                  data-variant-price="{{ upsell_price_3 }}"
+                  data-active="false"
+                  {% if section.blocks[index].settings.compareprice_upsell_3 %}
+                    data-variant-compare-price="{{ upsell_comparePrice_3 }}"
+                  {% endif %}
+                  data-variant-inventory="{{ upsell_inventory_3 }}"
+                  data-variant-available="{{ upsell_available_3 }}"
+                  data-variant-savings="{{ upsell_savings_3 }}"
+                  data-variant-image="{{ upsell_img_3 }}"
+                  name="pack-upsell"
+                >
+                <span></span>
+              </div>
+              <div class="packsUpsell-image">
+                <span style="background-image: url('{{ upsell_img_3 }}')"></span>
+              </div>
+              <div class="packsUpsell-info">
+                <span class="packsUpsell-title">
+                  {%- if section.blocks[index].settings.product_title_3 != blank -%}
+                    {{- section.blocks[index].settings.product_title_3 -}}
+                  {%- else -%}
+                    {{- upsell_title_3 -}}
+                  {%- endif -%}
+                </span>
+                <div class="packsUpsell-price-container">
+                  <span class="packsUpsell-price">
+                    {%- if section.blocks[index].settings.compareprice_upsell_3 -%}
+                      <span class="packsUpsell-comparePrice" data-variant-compare-price>
+                        {{- upsell_comparePrice_3 -}}
+                      </span>
+                    {%- else -%}
+                      <span data-variant-compare-price hidden></span>
+                    {%- endif -%}
+                    <span data-variant-price>{{ upsell_price_3 }}</span></span
+                  >
+                  {% if section.blocks[index].settings.alert_upsell_3 != blank %}
+                    <span class="packsUpsell-line1 {% if section.blocks[index].settings.alert_upsell_blink_3 %}packsUpsell-line1--blink{% endif %}">
+                      {{-
+                        section.blocks[index].settings.alert_upsell_3
+                        | replace: 'XX', upsell_inventory_dom_3
+                        | replace: 'YY', upsell_savings_dom_3
+                      -}}
+                    </span>
+                  {% endif %}
+                </div>
+                {% if section.blocks[index].settings.message_upsell_3 != blank %}
+                  <span class="packsUpsell-line2">
+                    {{
+                      section.blocks[index].settings.message_upsell_3
+                      | replace: 'XX', upsell_inventory_dom_3
+                      | replace: 'YY', upsell_savings_dom_3
+                    }}
+                  </span>
+                {% endif %}
+              </div>
+            </label>
+            {% if show_description_3 or show_variants_3 or show_properties_3 %}
+              <aside class="packsUpsell-description">
+                {% if show_description_3 and section.blocks[index].settings.description_upsell_3 contains '---' %}
+                  {% assign description_3_split = true %}
+                  <div style="margin:5px 0 10px">
+                    {{ section.blocks[index].settings.description_upsell_3 | split: '---' | first }}
+                  </div>
+                {% endif %}
+                {% if upsell_product_3.has_only_default_variant == false
+                  and section.blocks[index].settings.variants_enable_3
+                %}
+                  <div class="packsUpsell__options">
+                    {% for option in upsell_product_3.options_with_values %}
+                      <div class="packsUpsell__select">
+                        <label for="PackOptionSelector_{{ forloop.index }}_3">{{ option.name }}</label>
+                        <select id="PackOptionSelector_{{ forloop.index }}_3">
+                          {% for value in option.values %}
+                            <option
+                              value="{{ value | escape }}"
+                              {% if option.selected_value == value %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{ value }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                {% if show_properties_3 %}
+                  {% assign options = section.blocks[index].settings.properties_items_3 | split: '/' %}
+                  {% assign options_size = options.size | minus: 1 %}
+                  <div class="packsUpsell__properties">
+                    {% for i in (0..options_size) %}
+                      <div class="packsUpsell__select">
+                        <label>{{ options[i] | split: ': ' | first }}</label>
+                        {% assign variants = options[i] | split: ':' | last | split: ',' %}
+                        {% assign variants_size = variants.size | minus: 1 %}
+                        {% for j in (0..variants_size) %}
+                          {% if forloop.first %}<select>{% endif %}
+                          <option
+                            {% if forloop.first %}
+                              selected
+                            {% endif %}
+                            value="{{ variants[j] }}"
+                          >
+                            {{ variants[j] }}
+                          </option>
+                          {% if forloop.last %}</select>{% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                <div
+                  {% if show_description_3 == null %}
+                    style="margin-top:-10px"
+                  {% else %}
+                    style="margin-top:7px"
+                  {% endif %}
+                >
+                  {% if show_description_3 %}
+                    {% if description_3_split %}
+                      {% capture description_3_split %}{{ section.blocks[index].settings.description_upsell_3 | append: '<span hidden></span>' | split: '---' | last }}{% endcapture %}
+                      {% if description_3_split != '<span hidden></span>' -%}
+                        {{- description_3_split -}}
+                      {%- else %}
+                        <div style="margin-top:-17px"></div>
+                      {% endif %}
+                    {% else %}
+                      {{ section.blocks[index].settings.description_upsell_3 }}
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </aside>
+            {% endif %}
+          </div>
+          <script data-product-json-index="3" type="application/json">
+            {{ all_products[product_handle_3] | json }}
+          </script>
+        {% endif %}
+      {% else %}
+        <!-- début variantes -->
+        {% for variant in product.variants %}
+          {% if forloop.first %}
+            {% assign upsell_available_1 = variant.available %}
+            {% assign upsell_img_1 = section.blocks[index].settings.img_upsell_1
+              | default: variant.featured_media
+              | default: product.featured_image
+              | img_url: 'small'
+            %}
+            {% assign upsell_title_1 = variant.title %}
+            {% assign upsell_savings_1 = variant.compare_at_price
+              | minus: variant.price
+              | times: 100.0
+              | divided_by: variant.compare_at_price
+              | round
+            %}
+            {% assign upsell_inventory_1 = variant.inventory_quantity %}
+            {% if upsell_available_1 -%}
+              {%- assign upsell_price_1 = variant.price | money -%}
+              {%- assign upsell_comparePrice_1 = variant.compare_at_price | money -%}
+            {%- else -%}
+              {%- assign upsell_price_1 = section.blocks[developer].settings.product_unavailable -%}
+              {%- assign upsell_comparePrice_1 = '' -%}
+            {%- endif %}
+            {% if virtual_stocks %}
+              {% capture virtual_stocks_1 %}["{{- variant.metafields.inventory.daily_virtual_stock_min-max | default: upsell_inventory_1 -}}"]{%- endcapture -%}
+              {% capture variants_id_1 %}[{{- variant.id -}}]{%- endcapture -%}
+            {% endif %}
+            {% capture upsell_inventory_dom_1 %}<span class="packsUpsell-inventory">{% unless virtual_stocks %}{{ upsell_inventory_1 }}{% else %}&nbsp;&nbsp;{% endunless %}</span>{% endcapture %}
+            {% capture upsell_savings_dom_1 %}<span class="packsUpsell-savings">{{ upsell_savings_1 }}</span>%{% endcapture %}
+            <div class="packsUpsell-block active" data-block-index="{{ forloop.index }}">
+              <label
+                {% if show_description_1 == null and show_properties_1 == null %}
+                  style="border-radius:{{ radius }}"
+                {% else %}
+                  style="border-radius:{{ radius }} {{ radius }} 0 0;transition: all 0.15s ease-in-out;"
+                {% endif %}
+              >
+                <div class="packsUpsell-input">
+                  <input
+                    type="radio"
+                    autocomplete="off"
+                    checked
+                    value="{{ variant.id  }}"
+                    data-name="{{ upsell_title_1 }}"
+                    data-active="true"
+                    data-variant-price="{{ upsell_price_1 }}"
+                    {% if section.blocks[index].settings.compareprice_upsell_1 %}
+                      data-variant-compare-price="{{ upsell_comparePrice_1 }}"
+                    {% endif %}
+                    data-variant-inventory="{{ upsell_inventory_1 }}"
+                    data-variant-available="{{ upsell_available_1 }}"
+                    data-variant-savings="{{ upsell_savings_1 }}"
+                    data-variant-image="{{ upsell_img_1 }}"
+                    name="pack-upsell"
+                  >
+                  <span></span>
+                </div>
+                <div class="packsUpsell-image">
+                  <span style="background-image: url('{{ upsell_img_1 }}')"></span>
+                </div>
+                <div class="packsUpsell-info">
+                  <span class="packsUpsell-title">
+                    {%- if section.blocks[index].settings.product_title_1 != blank -%}
+                      {{- section.blocks[index].settings.product_title_1 -}}
+                    {%- else -%}
+                      {{- upsell_title_1 -}}
+                    {%- endif -%}
+                  </span>
+                  <div class="packsUpsell-price-container">
+                    <span class="packsUpsell-price">
+                      {%- if section.blocks[index].settings.compareprice_upsell_1 -%}
+                        <span class="packsUpsell-comparePrice" data-variant-compare-price>
+                          {{- upsell_comparePrice_1 -}}
+                        </span>
+                      {%- else -%}
+                        <span data-variant-compare-price hidden></span>
+                      {%- endif -%}
+                      <span data-variant-price>{{ upsell_price_1 }}</span></span
+                    >
+                    {% if section.blocks[index].settings.alert_upsell_1 != blank %}
+                      <span class="packsUpsell-line1 {% if section.blocks[index].settings.alert_upsell_blink_1 %}packsUpsell-line1--blink{% endif %}">
+                        {{-
+                          section.blocks[index].settings.alert_upsell_1
+                          | replace: 'XX', upsell_inventory_dom_1
+                          | replace: 'YY', upsell_savings_dom_1
+                        -}}
+                      </span>
+                    {% endif %}
+                  </div>
+                  {% if section.blocks[index].settings.message_upsell_1 != blank %}
+                    <span class="packsUpsell-line2">
+                      {{
+                        section.blocks[index].settings.message_upsell_1
+                        | replace: 'XX', upsell_inventory_dom_1
+                        | replace: 'YY', upsell_savings_dom_1
+                      }}
+                    </span>
+                  {% endif %}
+                </div>
+              </label>
+              {% if show_description_1 or show_properties_1 %}
+                <aside
+                  class="packsUpsell-description"
+                  {% if section.blocks[index].settings.description_upsell_1 == blank and show_properties_1 == null %}
+                    style="display:none"
+                  {% endif %}
+                >
+                  {% if show_description_1 and section.blocks[index].settings.description_upsell_1 contains '---' %}
+                    {% assign description_1_split = true %}
+                    <div style="margin:5px 0 10px">
+                      {{ section.blocks[index].settings.description_upsell_1 | split: '---' | first }}
+                    </div>
+                  {% endif %}
+                  {% if show_properties_1 %}
+                    {% assign options = section.blocks[index].settings.properties_items_1 | split: '/' %}
+                    {% assign options_size = options.size | minus: 1 %}
+                    <div class="packsUpsell__properties">
+                      {% for i in (0..options_size) %}
+                        <div class="packsUpsell__select">
+                          <label>{{ options[i] | split: ': ' | first }}</label>
+                          {% assign variants = options[i] | split: ':' | last | split: ',' %}
+                          {% assign variants_size = variants.size | minus: 1 %}
+                          {% for j in (0..variants_size) %}
+                            {% if forloop.first %}<select>{% endif %}
+                            <option
+                              {% if forloop.first %}
+                                selected
+                              {% endif %}
+                              value="{{ variants[j] }}"
+                            >
+                              {{ variants[j] }}
+                            </option>
+                            {% if forloop.last %}</select>{% endif %}
+                          {% endfor %}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                  <div
+                    {% if show_description_1 == null %}
+                      style="margin-top:-10px"
+                    {% else %}
+                      style="margin-top:7px"
+                    {% endif %}
+                  >
+                    {% if show_description_1 %}
+                      {% if description_1_split %}
+                        {% capture description_1_split %}{{ section.blocks[index].settings.description_upsell_1 | append: '<span hidden></span>' | split: '---' | last }}{% endcapture %}
+                        {% if description_1_split != '<span hidden></span>' -%}
+                          {{- description_1_split -}}
+                        {%- else %}
+                          <div style="margin-top:-17px"></div>
+                        {% endif %}
+                      {% else %}
+                        {{ section.blocks[index].settings.description_upsell_1 }}
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                </aside>
+              {% endif %}
+            </div>
+          {% elsif forloop.index == 2 %}
+            {% assign upsell_available_2 = variant.available %}
+            {% assign upsell_img_2 = section.blocks[index].settings.img_upsell_2
+              | default: variant.featured_media
+              | default: product.featured_image
+              | img_url: 'small'
+            %}
+            {% assign upsell_title_2 = variant.title %}
+            {% assign upsell_savings_2 = variant.compare_at_price
+              | minus: variant.price
+              | times: 100.0
+              | divided_by: variant.compare_at_price
+              | round
+            %}
+            {% assign upsell_inventory_2 = variant.inventory_quantity %}
+            {% if upsell_available_2 -%}
+              {%- assign upsell_price_2 = variant.price | money -%}
+              {%- assign upsell_comparePrice_2 = variant.compare_at_price | money -%}
+            {%- else -%}
+              {%- assign upsell_price_2 = section.blocks[developer].settings.product_unavailable -%}
+              {%- assign upsell_comparePrice_2 = '' -%}
+            {%- endif %}
+            {% if virtual_stocks %}
+              {% capture virtual_stocks_2 %}["{{- variant.metafields.inventory.daily_virtual_stock_min-max | default: upsell_inventory_2 -}}"]{%- endcapture -%}
+              {% capture variants_id_2 %}[{{- variant.id -}}]{%- endcapture -%}
+            {% endif %}
+            {% capture upsell_inventory_dom_2 %}<span class="packsUpsell-inventory">{% unless virtual_stocks %}{{ upsell_inventory_2 }}{% else %}&nbsp;&nbsp;{% endunless %}</span>{% endcapture %}
+            {% capture upsell_savings_dom_2 %}<span class="packsUpsell-savings">{{ upsell_savings_2 }}</span>%{% endcapture %}
+            <div class="packsUpsell-block" data-block-index="{{ forloop.index }}">
+              <label
+                {% if show_description_3 == null and show_properties_2 == null %}
+                  style="border-radius:{{ radius }}"
+                {% else %}
+                  style="border-radius:{{ radius }} {{ radius }} 0 0;transition: all 0.15s ease-in-out;"
+                {% endif %}
+              >
+                <div class="packsUpsell-input">
+                  <input
+                    type="radio"
+                    autocomplete="off"
+                    value="{{ variant.id }}"
+                    data-name="{{ upsell_title_2 }}"
+                    data-active="false"
+                    data-variant-price="{{ upsell_price_2 }}"
+                    {% if section.blocks[index].settings.compareprice_upsell_2 %}
+                      data-variant-compare-price="{{ upsell_comparePrice_2 }}"
+                    {% endif %}
+                    data-variant-inventory="{{ upsell_inventory_2 }}"
+                    data-variant-available="{{ upsell_available_2 }}"
+                    data-variant-savings="{{ upsell_savings_2 }}"
+                    data-variant-image="{{ upsell_img_2 }}"
+                    name="pack-upsell"
+                  >
+                  <span></span>
+                </div>
+                <div class="packsUpsell-image">
+                  <span style="background-image: url('{{ upsell_img_2 }}')"></span>
+                </div>
+                <div class="packsUpsell-info">
+                  <span class="packsUpsell-title">
+                    {%- if section.blocks[index].settings.product_title_2 != blank -%}
+                      {{- section.blocks[index].settings.product_title_2 -}}
+                    {%- else -%}
+                      {{- upsell_title_2 -}}
+                    {%- endif -%}
+                  </span>
+                  <div class="packsUpsell-price-container">
+                    <span class="packsUpsell-price">
+                      {%- if section.blocks[index].settings.compareprice_upsell_2 -%}
+                        <span class="packsUpsell-comparePrice" data-variant-compare-price>
+                          {{- upsell_comparePrice_2 -}}
+                        </span>
+                      {%- else -%}
+                        <span data-variant-compare-price hidden></span>
+                      {%- endif -%}
+                      <span data-variant-price>{{ upsell_price_2 }}</span></span
+                    >
+                    {% if section.blocks[index].settings.alert_upsell_2 != blank %}
+                      <span class="packsUpsell-line1 {% if section.blocks[index].settings.alert_upsell_blink_2 %}packsUpsell-line1--blink{% endif %}">
+                        {{-
+                          section.blocks[index].settings.alert_upsell_2
+                          | replace: 'XX', upsell_inventory_dom_2
+                          | replace: 'YY', upsell_savings_dom_2
+                        -}}
+                      </span>
+                    {% endif %}
+                  </div>
+                  {% if section.blocks[index].settings.message_upsell_2 != blank %}
+                    <span class="packsUpsell-line2">
+                      {{
+                        section.blocks[index].settings.message_upsell_2
+                        | replace: 'XX', upsell_inventory_dom_2
+                        | replace: 'YY', upsell_savings_dom_2
+                      }}
+                    </span>
+                  {% endif %}
+                </div>
+              </label>
+              {% if show_description_2 or show_properties_2 %}
+                <aside
+                  class="packsUpsell-description"
+                  {% if section.blocks[index].settings.description_upsell_2 == blank and show_properties_2 == null %}
+                    style="display:none"
+                  {% endif %}
+                >
+                  {% if show_description_2 and section.blocks[index].settings.description_upsell_2 contains '---' %}
+                    {% assign description_2_split = true %}
+                    <div style="margin:5px 0 10px">
+                      {{ section.blocks[index].settings.description_upsell_2 | split: '---' | first }}
+                    </div>
+                  {% endif %}
+                  {% if show_properties_2 %}
+                    {% assign options = section.blocks[index].settings.properties_items_2 | split: '/' %}
+                    {% assign options_size = options.size | minus: 1 %}
+                    <div class="packsUpsell__properties">
+                      {% for i in (0..options_size) %}
+                        <div class="packsUpsell__select">
+                          <label>{{ options[i] | split: ': ' | first }}</label>
+                          {% assign variants = options[i] | split: ':' | last | split: ',' %}
+                          {% assign variants_size = variants.size | minus: 1 %}
+                          {% for j in (0..variants_size) %}
+                            {% if forloop.first %}<select>{% endif %}
+                            <option
+                              {% if forloop.first %}
+                                selected
+                              {% endif %}
+                              value="{{ variants[j] }}"
+                            >
+                              {{ variants[j] }}
+                            </option>
+                            {% if forloop.last %}</select>{% endif %}
+                          {% endfor %}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                  <div
+                    {% if show_description_2 == null %}
+                      style="margin-top:-10px"
+                    {% else %}
+                      style="margin-top:7px"
+                    {% endif %}
+                  >
+                    {% if show_description_2 %}
+                      {% if description_2_split %}
+                        {% capture description_2_split %}{{ section.blocks[index].settings.description_upsell_2 | append: '<span hidden></span>' | split: '---' | last }}{% endcapture %}
+                        {% if description_2_split != '<span hidden></span>' -%}
+                          {{- description_2_split -}}
+                        {%- else %}
+                          <div style="margin-top:-17px"></div>
+                        {% endif %}
+                      {% else %}
+                        {{ section.blocks[index].settings.description_upsell_2 }}
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                </aside>
+              {% endif %}
+            </div>
+          {% elsif forloop.index == 3 %}
+            {% assign upsell_available_3 = variant.available %}
+            {% assign upsell_img_3 = section.blocks[index].settings.img_upsell_3
+              | default: variant.featured_media
+              | default: product.featured_image
+              | img_url: 'small'
+            %}
+            {% assign upsell_title_3 = variant.title %}
+            {% assign upsell_savings_3 = variant.compare_at_price
+              | minus: variant.price
+              | times: 100.0
+              | divided_by: variant.compare_at_price
+              | round
+            %}
+            {% assign upsell_inventory_3 = variant.inventory_quantity %}
+            {% if upsell_available_3 -%}
+              {%- assign upsell_price_3 = variant.price | money -%}
+              {%- assign upsell_comparePrice_3 = variant.compare_at_price | money -%}
+            {%- else -%}
+              {%- assign upsell_price_3 = section.blocks[developer].settings.product_unavailable -%}
+              {%- assign upsell_comparePrice_3 = '' -%}
+            {%- endif %}
+            {% if virtual_stocks %}
+              {% capture virtual_stocks_3 %}["{{- variant.metafields.inventory.daily_virtual_stock_min-max | default: upsell_inventory_3 -}}"]{%- endcapture -%}
+              {% capture variants_id_3 %}[{{- variant.id -}}]{%- endcapture -%}
+            {% endif %}
+            {% capture upsell_inventory_dom_3 %}<span class="packsUpsell-inventory">{% unless virtual_stocks %}{{ upsell_inventory_3 }}{% else %}&nbsp;&nbsp;{% endunless %}</span>{% endcapture %}
+            {% capture upsell_savings_dom_3 %}<span class="packsUpsell-savings">{{ upsell_savings_3 }}</span>%{% endcapture %}
+            <div class="packsUpsell-block" data-block-index="{{ forloop.index }}">
+              <label
+                {% if show_description_3 == null and show_properties_3 == null %}
+                  style="border-radius:{{ radius }}"
+                {% else %}
+                  style="border-radius:{{ radius }} {{ radius }} 0 0;transition: all 0.15s ease-in-out;"
+                {% endif %}
+              >
+                <div class="packsUpsell-input">
+                  <input
+                    type="radio"
+                    autocomplete="off"
+                    value="{{ variant.id }}"
+                    data-name="{{ upsell_title_3 }}"
+                    data-active="false"
+                    data-variant-price="{{ upsell_price_3 }}"
+                    {% if section.blocks[index].settings.compareprice_upsell_3 %}
+                      data-variant-compare-price="{{ upsell_comparePrice_3 }}"
+                    {% endif %}
+                    data-variant-inventory="{{ upsell_inventory_3 }}"
+                    data-variant-available="{{ upsell_available_3 }}"
+                    data-variant-savings="{{ upsell_savings_3 }}"
+                    data-variant-image="{{ upsell_img_3 }}"
+                    name="pack-upsell"
+                  >
+                  <span></span>
+                </div>
+                <div class="packsUpsell-image">
+                  <span style="background-image: url('{{ upsell_img_3 }}')"></span>
+                </div>
+                <div class="packsUpsell-info">
+                  <span class="packsUpsell-title">
+                    {%- if section.blocks[index].settings.product_title_3 != blank -%}
+                      {{- section.blocks[index].settings.product_title_3 -}}
+                    {%- else -%}
+                      {{- upsell_title_3 -}}
+                    {%- endif -%}
+                  </span>
+                  <div class="packsUpsell-price-container">
+                    <span class="packsUpsell-price">
+                      {%- if section.blocks[index].settings.compareprice_upsell_3 -%}
+                        <span class="packsUpsell-comparePrice" data-variant-compare-price>
+                          {{- upsell_comparePrice_3 -}}
+                        </span>
+                      {%- else -%}
+                        <span data-variant-compare-price hidden></span>
+                      {%- endif -%}
+                      <span data-variant-price>{{ upsell_price_3 }}</span></span
+                    >
+                    {% if section.blocks[index].settings.alert_upsell_3 != blank %}
+                      <span class="packsUpsell-line1 {% if section.blocks[index].settings.alert_upsell_blink_3 %}packsUpsell-line1--blink{% endif %}">
+                        {{-
+                          section.blocks[index].settings.alert_upsell_3
+                          | replace: 'XX', upsell_inventory_dom_3
+                          | replace: 'YY', upsell_savings_dom_3
+                        -}}
+                      </span>
+                    {% endif %}
+                  </div>
+                  {% if section.blocks[index].settings.message_upsell_3 != blank %}
+                    <span class="packsUpsell-line2">
+                      {{
+                        section.blocks[index].settings.message_upsell_3
+                        | replace: 'XX', upsell_inventory_dom_3
+                        | replace: 'YY', upsell_savings_dom_3
+                      }}
+                    </span>
+                  {% endif %}
+                </div>
+              </label>
+              {% if show_description_3 or show_properties_3 %}
+                <aside
+                  class="packsUpsell-description"
+                  {% if section.blocks[index].settings.description_upsell_3 == blank and show_properties_3 == null %}
+                    style="display:none"
+                  {% endif %}
+                >
+                  {% if show_description_3 and section.blocks[index].settings.description_upsell_3 contains '---' %}
+                    {% assign description_3_split = true %}
+                    <div style="margin:5px 0 10px">
+                      {{ section.blocks[index].settings.description_upsell_3 | split: '---' | first }}
+                    </div>
+                  {% endif %}
+                  {% if show_properties_3 %}
+                    {% assign options = section.blocks[index].settings.properties_items_3 | split: '/' %}
+                    {% assign options_size = options.size | minus: 1 %}
+                    <div class="packsUpsell__properties">
+                      {% for i in (0..options_size) %}
+                        <div class="packsUpsell__select">
+                          <label>{{ options[i] | split: ': ' | first }}</label>
+                          {% assign variants = options[i] | split: ':' | last | split: ',' %}
+                          {% assign variants_size = variants.size | minus: 1 %}
+                          {% for j in (0..variants_size) %}
+                            {% if forloop.first %}<select>{% endif %}
+                            <option
+                              {% if forloop.first %}
+                                selected
+                              {% endif %}
+                              value="{{ variants[j] }}"
+                            >
+                              {{ variants[j] }}
+                            </option>
+                            {% if forloop.last %}</select>{% endif %}
+                          {% endfor %}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                  <div
+                    {% if show_description_3 == null %}
+                      style="margin-top:-10px"
+                    {% else %}
+                      style="margin-top:7px"
+                    {% endif %}
+                  >
+                    {% if show_description_3 %}
+                      {% if description_3_split %}
+                        {% capture description_3_split %}{{ section.blocks[index].settings.description_upsell_3 | append: '<span hidden></span>' | split: '---' | last }}{% endcapture %}
+                        {% if description_3_split != '<span hidden></span>' -%}
+                          {{- description_3_split -}}
+                        {%- else %}
+                          <div style="margin-top:-17px"></div>
+                        {% endif %}
+                      {% else %}
+                        {{ section.blocks[index].settings.description_upsell_3 }}
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                </aside>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <script data-product-json-index="1" type="application/json">
+          {{ product | json }}
+        </script>
+        <!-- fin variantes -->
+      {% endif %}
+    </div>
+  </div>
+
+  <script type="application/json" id="packOptions-maxdesign-items"></script>
+  <script>  
+    function init() {      
+      //main variable selectors
+      let formSubmit = document.querySelectorAll('{{ section.blocks[developer].settings.selector_form }}'), atcBtn
+      let mainPriceAll = document.querySelectorAll('{{ section.blocks[developer].settings.selector_price }}')
+      let mainComparePriceAll = document.querySelectorAll('{{ section.blocks[developer].settings.selector_compare_price }}')
+      let quantityNode = document.querySelector('{{ section.blocks[developer].settings.selector_quantity }}')
+      
+      //main static selectors
+      let packArray = [document.querySelector('.packsUpsell-block[data-block-index="1"]'), document.querySelector('.packsUpsell-block[data-block-index="2"]'), document.querySelector('.packsUpsell-block[data-block-index="3"]')]
+      let packLabels = document.querySelectorAll('.packsUpsell-block > label')
+      let packPrice = document.querySelectorAll('.packsUpsell-block input[data-variant-price]')
+      let packComparePrice = document.querySelectorAll('.packsUpsell-block [data-variant-compare-price]')
+      let packAvailability = document.querySelectorAll('.packsUpsell-block [data-variant-available]')
+      let inventory = document.querySelectorAll('.packsUpsell-block [data-variant-inventory]')
+      let masterSelector = document.querySelector('select[name="id"]')
+      let newOption = document.createElement("option")
+      var description = packLabels[0].parentElement.querySelector('aside')
+	  
+      //update prices on load & vstocks
+      mainPriceAll.forEach((mainPrice) => {mainPrice.textContent = packArray[0].querySelector("span[data-variant-price]").textContent})
+      mainComparePriceAll.forEach((mainComparePrice) => {mainComparePrice.textContent = packArray[0].querySelector("span[data-variant-compare-price]").textContent})
+      /*cc*/{% unless virtual_stocks %}if(document.querySelector('.product_left_counter')) {document.querySelector('.product_left_counter').textContent = inventory[0].getAttribute('data-variant-inventory')}{% endunless %}
+      
+      
+      {%- if virtual_stocks -%}
+      //define product handles and stock arrays
+      let decrement, vStocksDefault, vStocksTrue, vStocksDefaultMin, vStocksDefaultMax, evalDecrement;
+      let variantsID = [{{ variants_id_1 | default: '[]' }}, {{ variants_id_2 | default: '[]' }}, {{ variants_id_3 | default: '[]' }}];
+      let vStocks = [{{ virtual_stocks_1 | default: '[]' }}, {{ virtual_stocks_2 | default: '[]' }}, {{ virtual_stocks_3 | default: '[]' }}];
+      let masterDict = {
+        variantsID: [variantsID[0], variantsID[1], variantsID[2]],
+        vStocks: [vStocks[0], vStocks[1], vStocks[2]]
+      }
+      let vStocksVisits = {{ virtual_stocks_visits | default: false }}
+      let pageLoad = true
+      
+      //fetch Dict in storage if it exist
+      masterDict = localStorage.getItem("vStocks") !== null && vStocksVisits ? JSON.parse(localStorage.getItem("vStocks")) : masterDict   
+      
+      function vStocksDecrement(newVisit, valueToDecrement) {
+        if(!vStocksVisits && newVisit) {
+          let currentDate = new Date()
+          let timeToday = (currentDate.getTime() - currentDate.setHours({{ section.settings.virtual_stocks_start }},0,0,0))/1000/60/60/24
+          let timeTodayMin = timeToday < 0 ? 0 : timeToday
+          let decrement = Math.round(valueToDecrement*timeTodayMin)
+          return decrement; 
+        } else if(newVisit && ("time" in masterDict)) {
+          //check last time it was updated
+          let timeTreshold = {{ section.settings.virtual_stocks_interval }}
+          let timeDiff = +new Date - masterDict.time
+          let timeDiffMns = Math.floor(timeDiff / 1000)
+          if(timeDiffMns >= timeTreshold) {
+            return Math.floor(Math.random() * 2) + 1;
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      }
+	 
+      //push new key/values in Dict if they don't exist
+      function isArrayInArray(x, check) {var result = x.find(function(ele) {return (JSON.stringify(ele) === JSON.stringify(check))});return result !=null}
+      for (var i = 0, n = variantsID.length; i < n; i++) {if(!isArrayInArray(masterDict.variantsID, variantsID[i])){masterDict.variantsID.push(variantsID[i]);masterDict.vStocks.push(vStocks[i])}}
+      
+      //decrement virtual stock in Dom & update storage
+      function getVirtualStocks(packID, inventoryNode, newVisit, packIndex) {
+        let firstVariant = newVisit ? true : false;
+        //loop through all set of product variants
+        for (var i = 0, m = masterDict.variantsID.length; i < m; i++) {
+          let variantsID = masterDict.variantsID[i]
+          let packIDinVariantsID = variantsID.includes(+packID)
+		  //loop through current product variants  
+          for (var j = 0, v = variantsID.length; j < v; j++) {
+            //decrement variant max vStocks
+            vStocksDefault = masterDict.vStocks[i][j]
+            vStocksTrue = vStocksDefault.includes('-')
+            vStocksDefaultMin = vStocksTrue ? +vStocksDefault.split('-')[0] : vStocksDefault
+            vStocksDefaultMax = vStocksTrue ? +vStocksDefault.split('-')[1] - vStocksDecrement(newVisit, +vStocksDefault.split('-')[1]) : vStocksDefault
+            //if vStocks can be decremented on newVisit & enabled & packID belongs to array of variants
+            if(vStocksDefaultMax >= vStocksDefaultMin && vStocksTrue && packIDinVariantsID) {
+              //write first vstock value on load
+              if(newVisit && firstVariant) {
+                console.log(vStocksDefaultMax);
+                if(inventoryNode) {inventoryNode.textContent = vStocksDefaultMax;}firstVariant=false;
+                /*cc*/if(document.querySelector('.product_left_counter') && pageLoad) {pageLoad = false;document.querySelector('.product_left_counter').textContent = vStocksDefaultMax}
+              } 
+              //else if variant change & updated packID matches array value  
+              else if(!newVisit && !firstVariant && variantsID[j] == packID) {
+                if(inventoryNode) {inventoryNode.textContent = vStocksDefaultMax;}
+                /*cc*/if(document.querySelector('.product_left_counter')) {console.log('22');document.querySelector('.product_left_counter').textContent = vStocksDefaultMax}
+              }
+              //update Dict vStocks forEach variant on newVisit
+              if(newVisit) {masterDict.vStocks[i][j] = `${vStocksDefaultMin}-${vStocksDefaultMax}`} 
+            //else if vStocks disabled or can't be decremented & belongs to array of variants
+            } else if(packIDinVariantsID) {
+              //update min or default inventory value, then reset Dict vStocks for this variant (replaced i with packIndex)
+              if(newVisit && firstVariant) {firstVariant=false}
+              if(variantsID[j] == packID) {
+                if(inventoryNode) {inventoryNode.textContent = vStocksDefaultMin}
+                /*cc*/if(document.querySelector('.product_left_counter') && pageLoad || !newVisit) {document.querySelector('.product_left_counter').textContent = vStocksDefaultMin}
+              }
+              if(vStocksVisits) {
+                masterDict.vStocks[i][j] = vStocks[packIndex][j]
+              } else {
+                if(newVisit) {masterDict.vStocks[i][j] = `${vStocksDefaultMin}-${vStocksDefaultMax}`}
+              }
+            }
+          }
+        }
+      }
+      
+      //init vStocks on newVisit
+      packLabels.forEach(function(pack, index) {
+        let inventoryNode = pack.querySelector('.packsUpsell-inventory')
+        if(inventoryNode || document.querySelector('.product_left_counter')) {getVirtualStocks(pack.querySelector('input').value, inventoryNode, true, index)}
+      })
+      
+      //update time and reset vStocks storage
+      masterDict.time = +new Date
+      window.localStorage.setItem('vStocks', JSON.stringify(masterDict))
+      {%- endif -%}
+      
+      
+      //fix first slideDown animation
+      if (description) {description.style.height = window.getComputedStyle(description, null).getPropertyValue("height")}
+
+      //toggle active class & attributes to checked pack
+      packLabels.forEach(pack => {
+        pack.querySelector('input').addEventListener('input', function(checked) {
+          let selectedPackValue = checked.target.value
+          let selectedPackValueNode = document.querySelector(`.packsUpsell-input input[value="${selectedPackValue}"]:checked`)
+          
+          packLabels.forEach(el => {
+            if(el.parentElement.classList.contains('active')) {el.parentElement.classList.remove('active')}
+            if(el.querySelector('input').getAttribute('data-active') == 'true') {el.querySelector('input').setAttribute('data-active', 'false')}
+            description = el.parentElement.querySelector('.packsUpsell-description')
+            if (description && !checked.cancelable) {description.style.height = "0px"}
+          })
+          
+          //update attribute to dispatch mutation observer & toggle description
+          selectedPackValueNode.closest('.packsUpsell-block').classList.add('active')
+          selectedPackValueNode.setAttribute('data-active', 'true')
+          description = selectedPackValueNode.closest('.packsUpsell-block').querySelector('.packsUpsell-description')
+          if (description && !checked.cancelable) {description.style.height = "auto";let height = description.offsetHeight + "px";description.style.height = "0px";setTimeout(function() {description.style.height = height}, 15)}
+          
+          //update main selector for express checkout buttons
+		  newOption.value = selectedPackValue;
+		  masterSelector.add(newOption); 
+          masterSelector.value = selectedPackValue;
+        })
+      })
+
+      //prevent form submission
+      formSubmit.forEach(form => {
+        form.addEventListener("submit", function(e){
+          e.preventDefault()
+          e.stopImmediatePropagation()
+        })
+      });
+      
+      //update pack dataset on variant change
+      for(const [index, pack] of packArray.entries()) {
+        if(pack) {
+          pack.querySelectorAll('.packsUpsell__options select').forEach(function(option) {
+            option.addEventListener('change', function() {
+              var id = "",price = "",available = "",inventory = "",input = pack.querySelector('input'),image = "",comparePrice = "",savings = 0; 
+              if(index == 0) {
+                 {%- for option in upsell_product_1.options_with_values -%}var option_{{ forloop.index }}_1 = document.querySelector("#PackOptionSelector_{{ forloop.index }}_1").value;{%- endfor -%}
+                 {%- for variant in upsell_product_1.variants -%}
+                 if({%- for option in variant.options -%}option_{{ forloop.index }}_1 == "{{ option }}"{%- unless forloop.last -%} && {%- endunless -%}{%- endfor -%}) {id = {{ variant.id }};inventory = {{ variant.inventory_quantity }};image = "{{ variant.image | default: upsell_product_1.featured_image | img_url: 'small' }}";{% if variant.available %} price = "{{ variant.price | money }}";{% if section.blocks[index].settings.compareprice_upsell_1 and variant.compare_at_price != blank %}comparePrice = "{{ variant.compare_at_price | money }}";savings = {{ variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round }}{% else %}comparePrice = ""{% endif %};available = true;{% else %}price = "{{ section.blocks[developer].settings.product_unavailable }}";comparePrice = "";savings = 0;available = false;{% endif %}}
+                 {%- endfor -%}  
+              } else if(index == 1) {
+                  {%- for option in upsell_product_2.options_with_values -%}var option_{{ forloop.index }}_2 = document.querySelector("#PackOptionSelector_{{ forloop.index }}_2").value;{%- endfor -%}
+                  {%- for variant in upsell_product_2.variants -%}
+                  if({%- for option in variant.options -%}option_{{ forloop.index }}_2 == "{{ option }}"{%- unless forloop.last -%} && {%- endunless -%}{%- endfor -%}) {id = {{ variant.id }};inventory = {{ variant.inventory_quantity }};image = "{{ variant.image | default: upsell_product_2.featured_image | img_url: 'small' }}";{% if variant.available %}price = "{{ variant.price | money }}";{% if section.blocks[index].settings.compareprice_upsell_2 and variant.compare_at_price != blank %}comparePrice = "{{ variant.compare_at_price | money }}";savings = {{ variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round }}{% else %}comparePrice = ""{% endif %};available = true;{% else %}price = "{{ section.blocks[developer].settings.product_unavailable }}";comparePrice = "";savings = 0;available = false;{% endif %}}
+                  {%- endfor -%}
+              } else if(index == 2) {
+                  {%- for option in upsell_product_3.options_with_values -%}var option_{{ forloop.index }}_3 = document.querySelector("#PackOptionSelector_{{ forloop.index }}_3").value;{%- endfor -%}
+                  {%- for variant in upsell_product_3.variants -%}
+                  if({%- for option in variant.options -%}option_{{ forloop.index }}_3 == "{{ option }}"{%- unless forloop.last -%} && {%- endunless -%}{%- endfor -%}) {id = {{ variant.id }};inventory = {{ variant.inventory_quantity }};image = "{{ variant.image | default: upsell_product_3.featured_image | img_url: 'small' }}";{% if variant.available %}price = "{{ variant.price | money }}";{% if section.blocks[index].settings.compareprice_upsell_3 and variant.compare_at_price != blank %}comparePrice = "{{ variant.compare_at_price | money }}";savings = {{ variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round }}{% else %}comparePrice = ""{% endif %};available = true;{% else %}price = "{{ section.blocks[developer].settings.product_unavailable }}";comparePrice = "";savings = 0;available = false;{% endif %}}
+                  {%- endfor -%}
+              }
+              input.value = id;input.setAttribute("data-variant-available", available);input.setAttribute("data-variant-inventory", inventory);input.setAttribute("data-variant-price", price);input.setAttribute("data-variant-compare-price", comparePrice);input.setAttribute("data-variant-savings", savings);input.setAttribute("data-variant-image",image);option.parentElement.parentElement.parentElement.previousElementSibling.querySelector('input').setAttribute('data-active', 'true');
+              newOption.value = id;masterSelector.add(newOption);masterSelector.value = id;
+            })
+          })
+        }
+        
+      }
+    
+       //post add to cart request when ATC button is rendered
+       var waitForAtc = setInterval(function () {
+        atcBtn = document.querySelectorAll('{{ section.blocks[developer].settings.selector_atc }}')
+        atcBtn.forEach(btn => {
+          if (btn !== null) {
+            clearInterval(waitForAtc);
+            if(packAvailability[0].getAttribute('data-variant-available') == 0){btn.disabled = true} else {btn.disabled = false}
+            btn.addEventListener('click', submit)
+            function submit(e) {
+              e.preventDefault();
+              e.stopImmediatePropagation()            
+              let selectedPack = document.querySelector('.packsUpsell-block input[name="pack-upsell"]:checked')
+              let selectedPackValue = selectedPack.value
+              let propertiesNode = selectedPack.parentElement.parentElement.nextElementSibling
+              let quantityValue = quantityNode ? quantityNode.value : 1
+              var textParams = `{"quantity":${quantityValue}, "id": ${selectedPackValue}}`  
+              {% if section.settings.atc_action == 'original' %}
+                let inputEl = document.querySelectorAll('.packOptions_input') 
+                if(inputEl[0]) {inputEl.forEach(function(input) {input.parentNode.removeChild(input)})}
+                if(propertiesNode) {
+                  let properties = propertiesNode.querySelectorAll('.packsUpsell__properties select')
+                  properties.forEach(property => {btn.insertAdjacentHTML('beforebegin', `<input class="packOptions_input" type="hidden" name="properties[${property.previousElementSibling.innerText}]" value="${property.value}">`)})
+                }
+                btn.removeEventListener('click', submit)
+                btn.click();
+                btn.addEventListener('click', submit)
+              {% else %}
+                {% if section.settings.atc_action != 'custom' %}
+                  if(propertiesNode) {
+                    let properties = propertiesNode.querySelectorAll('.packsUpsell__properties select')
+                    var dict = []
+                    properties.forEach(property => {dict.push({[property.previousElementSibling.innerText] : property.value})})
+                    let productProperties = JSON.stringify(dict)
+                    productProperties = productProperties.replace(/[\{\}\[\]]/gi, '')
+                    textParams = `{"quantity":${quantityValue}, "id": ${selectedPackValue}, "properties":{${productProperties}}}`
+                  }
+                  var http = new XMLHttpRequest()
+                  var url = '/cart/add.js'
+                  var params = textParams
+                  http.open('POST', url, true)
+                  http.setRequestHeader('Content-type', 'application/json;charset=UTF-8')
+                  http.onreadystatechange = function() {
+                    if (http.readyState == 4) {
+                      if (http.status == 200) {
+                        {% if section.settings.atc_action == 'cart' %}window.location = '/cart';{% else %}window.location = '/checkout';{% endif %}
+                      } else {
+                        alert("Désolé, ce produit ne peut pas être ajouté au panier. Contactez-nous pour plus d'informations.")
+                      }
+                    }
+                  }
+                  http.send(params)
+                {% else %}
+                  if(propertiesNode) {
+                    let properties = propertiesNode.querySelectorAll('.packsUpsell__properties select')
+                    var dict = []
+                    properties.forEach(property => {dict.push({[property.previousElementSibling.innerText] : property.value})})
+                    let productProperties = JSON.stringify(dict)
+                    productProperties = productProperties.replace(/[\{\}\[\]]/gi, '')
+                    textParams = `{"quantity":${quantityValue}, "id": ${selectedPackValue}, "properties":{${productProperties}}}`
+                  }
+                  document.querySelector('#packOptions-maxdesign-items').innerHTML = `{"quantity":1, "id": ${selectedPackValue}, "properties":{${productProperties}}}`
+                  /* for ajax data :
+                let textParams = document.querySelector('#packOptions-maxdesign-items').text
+                let jsonParams = JSON.parse(textParams); */
+                {% endif %}
+              {% endif %}
+            }
+          }
+        })
+       }, 100)
+      
+      // observe input change & update DOM
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.target.dataset.active == 'true') {
+            let mutedPack = mutation.target.parentElement.parentElement
+            let updatedPrice = mutation.target.dataset.variantPrice
+            let updatedComparePrice = mutation.target.dataset.variantComparePrice
+            let updatedInventory = mutation.target.dataset.variantInventory
+            let updatedSavings = mutation.target.dataset.variantSavings
+            let updatedImage = mutation.target.dataset.variantImage
+            //update prices
+            mutedPack.querySelector("span[data-variant-price]").textContent = updatedPrice
+            console.log(updatedPrice)
+            mutedPack.querySelector("span[data-variant-compare-price]").textContent = updatedComparePrice
+            mainPriceAll.forEach((mainPrice) => {mainPrice.textContent = updatedPrice})
+            document.getElementById("testpriceold" ).innerHTML = updatedComparePrice;
+            document.getElementById("testprice" ).innerHTML = updatedPrice;
+            mainComparePriceAll.forEach((mainComparePrice) => {mainComparePrice.textContent = updatedComparePrice})
+            //update btn
+            if(mutation.target.dataset.variantAvailable == 'true') {atcBtn.forEach(btn => {btn.disabled = false})} else {atcBtn.forEach(btn => {btn.disabled = true})}
+            //update image
+            mutedPack.querySelector('.packsUpsell-image > span').style.backgroundImage = `url("${updatedImage}")`
+            //update savings & inventory
+            if(mutedPack.querySelector('.packsUpsell-savings')){mutedPack.querySelector('.packsUpsell-savings').textContent = updatedSavings}
+            if(mutedPack.querySelector('.packsUpsell-inventory') || document.querySelector('.product_left_counter')){
+              {% unless virtual_stocks %}
+              mutedPack.querySelector('.packsUpsell-inventory').textContent = updatedInventory
+              /*cc*/if(document.querySelector('.product_left_counter')) {document.querySelector('.product_left_counter').textContent = updatedInventory}
+              {% else %}
+              getVirtualStocks(mutation.target.value, mutedPack.querySelector('.packsUpsell-inventory'), false, parseInt(mutedPack.parentElement.getAttribute('data-block-index')) - 1)
+              {% endunless %}
+            }
+          }
+        })
+      })
+      observer.observe(document.querySelector('.packsUpsell-tabs'), {attributes:true, attributeFilter: ['data-active'], childList:true, subtree: true})
+
+   } init()
+
+   //update inside Shopify editor
+   document.addEventListener('shopify:section:select', function(evt) {
+     init()
+   })
+  </script>
+{% endif %}
+
+{% schema %}
+{
+   "name":"✪ Bundles by MaxDesign",
+   "settings":[
+      {
+         "type":"header",
+         "content":"©MaxDesign. All Rights Reserved."
+      },
+      {
+         "type":"paragraph",
+         "content":{
+            "en":"It is forbidden to resell or duplicate this ressource without permission of the author. Thank you to [contact me](https://5euros.com/profil/maxdesign) for additional information.",
+            "fr":"Il est interdit de copier ou revendre cette section sans l'accord de l'auteur. Pour toute demande d'information, veuillez [me contacter](https://5euros.com/profil/maxdesign). "
+         }
+      },
+      {
+         "type":"header",
+         "content":{"en":"Main settings","fr":"Paramètres principaux"}
+      },
+      {
+         "type":"select",
+         "id":"atc_action",
+         "label":{"en":"ATC action","fr":"Action de l'ATC"},
+         "options":[
+			{
+               "value":"original",
+               "label":{"en":"Theme config.","fr":"Config. thème"}
+            },
+            {
+               "value":"cart",
+               "label":{"en":"Go to cart","fr":"Aller au panier"}
+            },
+            {
+               "value":"checkout",
+               "label":{"en":"Go to checkout","fr":"Aller au checkout"}
+            },
+            {
+               "value":"custom",
+               "label":{"en":"Other (developer)","fr":"Autre action (développeur)"}
+            }
+         ],
+         "default":"original"
+      },
+	  {
+		"type": "checkbox",
+		"id": "main_price_disable",
+		"label":{"en":"Hide original price","fr": "Cacher le prix original"}
+	  },
+      {
+         "type":"range",
+         "id":"border_radius",
+         "min":0,
+         "max":100,
+         "step":1,
+         "unit":"px",
+         "label":{"en":"Packs border radius","fr":"Arrondir les angles des packs"},
+         "default":5
+      },
+	  {
+         "type":"range",
+         "id":"border_radius_images",
+         "min":0,
+         "max":50,
+         "step":1,
+         "unit":"px",
+         "label":{"en":"Images border radius","fr":"Arrondir les angles des images"},
+         "default":50
+      },
+	  {
+         "type":"select",
+         "id":"color_style",
+         "label":{"en":"Main color","fr":"Couleur principale"},
+         "options":[
+            {
+               "value":"full",
+               "label":{"en":"Full","fr":"Pleine"}
+            },
+            {
+               "value":"outline",
+               "label":{"en":"Outline","fr":"Bordure"}
+            }
+         ],
+         "default":"outline"
+      },
+      {
+         "type":"color",
+         "id":"color_bg",
+         "label":{"en":"Background color","fr":"Couleur de fond"},
+         "default":"#F5F5F5",
+         "info":{"en":"Select \"none\" to reset to default","fr":"Choisir \"aucune\" pour réinitialiser"}
+      },
+      {
+         "type":"header",
+         "content":{"en":"Inactive pack color","fr":"Couleurs packs inactifs"}
+      },
+      {
+         "type":"color",
+         "id":"color_upsell",
+         "label":{"en":"Main color","fr":"Couleur principale"},
+         "default":"#fff"
+      },
+      {
+         "type":"color",
+         "id":"color_border",
+         "label":{"en":"Border color","fr":"Couleur bordure"},
+         "default":"#ddd"
+      },
+      {
+         "type":"color",
+         "id":"color_title",
+         "label":{"en":"Title color","fr":"Couleur titre"},
+         "default":"#1c1c1c"
+      },
+      {
+         "type":"color",
+         "id":"color_price",
+         "label":{"en":"Price color","fr":"Couleur prix"},
+         "default":"#1c1c1c"
+      },
+      {
+         "type":"color",
+         "id":"color_compare_price",
+         "label":{"en":"Compare at price color","fr":"Couleur prix comparatif"},
+         "default":"#999999"
+      },
+      {
+         "type":"color",
+         "id":"color_flash_text",
+         "label":{"en":"Text line 1 color","fr":"Couleur ligne de texte 1"},
+         "default":"#920000"
+      },
+	  {
+         "type":"color",
+         "id":"color_customtext",
+         "label":{"en":"Text line 2 color","fr":"Couleur line de texte 2"},
+         "default":"#96BEED"
+      },
+      {
+         "type":"header",
+         "content":{"en":"Active pack color","fr":"Couleurs pack actif"}
+      },
+      {
+         "type":"color",
+         "id":"color_upsell_active",
+         "label":{"en":"Main color","fr":"Couleur principale"},
+         "default":"#96BEED"
+      },
+      {
+         "type":"color",
+         "id":"color_title_active",
+         "label":{"en":"Title color","fr":"Couleur titre"},
+         "default":"#1c1c1c"
+      },
+      {
+         "type":"color",
+         "id":"color_price_active",
+         "label":{"en":"Price color","fr":"Couleur prix"},
+         "default":"#1c1c1c"
+      },
+      {
+         "type":"color",
+         "id":"color_compare_price_active",
+         "label":{"en":"Compare at price color","fr":"Couleur prix comparatif"},
+         "default":"#fff"
+      },
+      {
+         "type":"color",
+         "id":"color_flash_text_active",
+         "label":{"en":"Text line 1 color","fr":"Couleur ligne de texte 1"},
+         "default":"#920000"
+      },
+	  {
+         "type":"color",
+         "id":"color_customtext_active",
+         "label":{"en":"Text line 2 color","fr":"Couleur ligne de texte 2"},
+         "default":"#fff"
+      },
+      {
+         "type":"color",
+         "id":"bgcolor_description_active",
+         "label":{"en":"Description color (bg)","fr":"Couleur description (fond)"},
+         "default":"#FFF"
+      },
+      {
+         "type":"color",
+         "id":"color_description_active",
+         "label":{"en":"Description color (text)","fr":"Couleur description (texte)"},
+         "default":"#1C1C1C"
+      },
+      {
+         "type":"header",
+         "content":{"en":"Desktop settings","fr":"Paramètres Bureau"}
+      },
+      {
+         "type":"select",
+         "id":"mode_desktop",
+         "label":{"en":"Display style","fr":"Style d'affichage :"},
+         "options":[
+            {
+               "value":"original",
+               "label":{"en":"Original","fr":"Modèle original"}
+            },
+            {
+               "value":"compact",
+               "label":{"en":"Compact","fr":"Modèle compact"}
+            }
+         ],
+         "default":"original"
+      },
+      {
+         "type":"checkbox",
+         "id":"radio_enable_desktop",
+         "label":{"en":"Show radio buttons","fr":"Afficher les boutons radios"},
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"img_enable_desktop",
+         "label":{"en":"Show images","fr":"Afficher les images"},
+         "default":true
+      },
+	  {
+        "type": "range",
+        "id": "font_size_desktop",
+        "min": -50,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "label":{"en":"Font size","fr": "Taille de la police"},
+        "default":0
+      },
+      {
+         "type":"range",
+         "id":"spacing_top_desktop",
+         "min":-200,
+         "max":200,
+         "step":5,
+         "unit":"px",
+         "label":{"en":"Margin top","fr":"Espacement section haut"},
+         "default":0
+      },
+      {
+         "type":"range",
+         "id":"spacing_bottom_desktop",
+         "min":-200,
+         "max":200,
+         "step":5,
+         "unit":"px",
+         "label":{"en":"Margin bottom","fr":"Espacement section bas"},
+         "default":0
+      },
+      {
+         "type":"header",
+         "content":{"en":"Mobile settings","fr":"Paramètres Mobile"}
+      },
+      {
+         "type":"select",
+         "id":"mode_mobile",
+         "label":{"en":"Display style","fr":"Style d'affichage :"},
+         "options":[
+            {
+               "value":"original",
+               "label":{"en":"Original","fr":"Modèle original"}
+            },
+            {
+               "value":"compact",
+               "label":{"en":"Compact","fr":"Modèle compact"}
+            },
+            {
+               "value":"ultracompact",
+               "label":{"en":"Ultracompact","fr":"Modèle ultra compact"}
+            }
+         ],
+         "default":"ultracompact"
+      },
+      {
+         "type":"checkbox",
+         "id":"radio_enable_mobile",
+         "label":{"en":"Show radio buttons","fr":"Afficher les boutons radios"}
+      },
+      {
+         "type":"checkbox",
+         "id":"img_enable_mobile",
+         "label":{"en":"Show images","fr":"Afficher les images"},
+         "default":true
+      },
+	  {
+        "type": "range",
+        "id": "font_size_mobile",
+        "min": -50,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "label":{"en":"Font size","fr": "Taille de la police"},
+        "default":0
+      },
+      {
+         "type":"range",
+         "id":"spacing_top_mobile",
+         "min":-200,
+         "max":200,
+         "step":5,
+         "unit":"px",
+         "label":{"en":"Margin top","fr":"Espacement section haut"},
+         "default":0
+      },
+      {
+         "type":"range",
+         "id":"spacing_bottom_mobile",
+         "min":-200,
+         "max":200,
+         "step":5,
+         "unit":"px",
+         "label":{"en":"Margin bottom","fr":"Espacement section bas"},
+         "default":0
+      },
+      {
+        "type":"header",
+        "content":{"en":"Stock settings","fr":"Paramètres stocks"}
+      },
+      {
+        "type": "paragraph",
+        "content":{"en":"For each product variants, you can create min. and max. virtual stocks. This option can be enabled independently for each bundle. Reminder: fake stocks are not allowed in EU. [Set virtual stocks.](/admin/bulk?resource_name=ProductVariant&edit=metafields.inventory.daily_virtual_stock_min-max%3Astring%2Cinventory_policy%2Cprice%2Ccompare_at_price&show=image%2Cfull_title&ids=&app_context=&metafield_titles=&metafield_options=)", "fr": "Pour chaque variante de produits, vous pouvez créer des stocks min. et max. virtuels. Cette option peut être activé indépendamment pour chaque Bundle. Rappel: les faux stocks ne sont pas autorisé en EU. [Configurer les stocks virtuels.](/admin/bulk?resource_name=ProductVariant&edit=metafields.inventory.daily_virtual_stock_min-max%3Astring%2Cinventory_policy%2Cprice%2Ccompare_at_price&show=image%2Cfull_title&ids=&app_context=&metafield_titles=&metafield_options=)"}
+      },
+	  {
+           "type": "select",
+           "id": "virtual_stocks_type",
+           "label": "Décrémentation des stocks",
+           "options": [
+			 {
+               "value": "time",
+               "label": {"en":"Based on time of the day","fr":"Basé sur l'heure de la journée"}
+             },
+             {
+               "value": "visits",
+               "label": {"en":"Based on each visit","fr":"Lors de chaque visite"}
+             }
+           ],
+           "default": "time"
+      },
+	  {
+       "type": "paragraph",
+       "content":{"en":"◈ Based on time of the day","fr":"◈ Basé sur l'heure de la journée"}
+      },
+	  {
+        "type":"select",
+        "id":"virtual_stocks_start",
+        "label":{"en":"Effective starting time", "fr":"Heure effective de déclenchement"},
+        "options":[
+		  {
+            "value":"0",
+            "label":"00:00"
+          },
+          {
+            "value":"1",
+            "label":"01:00"
+          },
+          {
+            "value":"2",
+            "label":"02:00"
+          },
+          {
+            "value":"3",
+            "label":"03:00"
+          },
+          {
+            "value":"4",
+            "label":"04:00"
+          },
+          {
+            "value":"5",
+            "label":"05:00"
+          },
+          {
+          	"value":"6",
+          	"label":"06:00"
+          },
+          {
+          	"value":"7",
+          	"label":"07:00"
+          },
+          {
+          	"value":"8",
+          	"label":"08:00"
+          },
+          {
+          	"value":"9",
+          	"label":"09:00"
+          },
+          {
+          	"value":"10",
+          	"label":"10:00"
+          },
+          {
+          	"value":"11",
+          	"label":"11:00"
+          },
+          {
+          	"value":"12",
+          	"label":"12:00"
+          },
+		  {
+            "value":"13",
+            "label":"13:00"
+          },
+          {
+            "value":"14",
+            "label":"14:00"
+          },
+          {
+            "value":"15",
+            "label":"15:00"
+          },
+          {
+            "value":"16",
+            "label":"16:00"
+          },
+          {
+            "value":"17",
+            "label":"17:00"
+          },
+          {
+            "value":"18",
+            "label":"18:00"
+          }
+        ],
+        "default":"6"
+      },
+	  {
+       "type": "paragraph",
+       "content":{"en":"◈ Based on each visit","fr":"◈ Lors de chaque visite"}
+      },
+	  {
+        "type": "range",
+        "id": "virtual_stocks_interval",
+        "min": 0,
+        "max": 600,
+        "step": 10,
+        "unit":"sec",
+        "label":{"en":"Minimum time interval before page refresh", "fr":"Intervalle de temps minimum avant de rafraîchir la page"},
+        "default": 30
+      }
+   ],
+   "blocks":[
+      {
+         "type":"pack-upsell",
+         "name":{"en":"New product","fr":"Nouvelle fiche produit"},
+         "settings":[
+            {
+               "type":"product",
+               "id":"product",
+               "label":{"en":"Product page","fr":"Page produit"}
+            },
+            {
+               "type":"text",
+               "id":"product_id",
+               "label":{"en":"Product ID* (required)","fr":"Identifiant du produit* (requis)"},
+               "info":{"en":"[Where to find product ID?](https://cdn.shopify.com/s/files/1/0284/8951/5082/files/PLxkkbykb4.png?v=1588950334)","fr":"[Où trouver l'ID produit ?](https://cdn.shopify.com/s/files/1/0284/8951/5082/files/PLxkkbykb4.png?v=1588950334)"}
+            },
+			{
+               "type":"header",
+               "content":{"en":"Main settings","fr":"Paramètres principaux"}
+            },
+            {
+               "type":"checkbox",
+               "id":"enable",
+               "label":{"en":"Enable Bundles","fr":"Activer le système de Bundle"},
+			   "default":true
+            },
+			{
+               "type":"checkbox",
+               "id":"virtual_stocks",
+               "label":{"en":"Enable virtual stocks","fr":"Activer les stocks virtuels"},
+			   "info": {"en":"Settings in main section","fr":"Paramètres dans la section principale"}
+            },
+            {
+               "type": "select",
+               "id": "bundle_type",
+               "label":{"en":"Display mode","fr": "Affichage des bundle"},
+               "options": [
+                 {
+                   "value": "products",
+                   "label":{"en":"With products","fr": "Par produits"}
+                 },
+                 {
+                   "value": "variants",
+                   "label":{"en":"With variants (first 3 variants)","fr": "Par variantes (les 3 premières)"}
+                 }
+               ],
+               "default":"products",
+               "info":{"en":"Recommended with products","fr": "Recommandé : par produits"}
+            },
+            {
+               "type":"text",
+               "id":"text_upsell",
+               "label":{"en":"Headline","fr":"Texte présentation du pack"},
+               "default":{"en":"Select your pack","fr":"Choisissez votre pack"}
+            },
+            {
+               "type":"color",
+               "id":"text_upsell_color",
+               "label":{"en":"Text color","fr":"Couleur du texte"},
+               "default":"#1c1c1c"
+            },
+            {
+               "type":"header",
+               "content":{"en":"◈ Product n°1","fr":"◈ Produit n°1"}
+            },
+            {
+               "type":"checkbox",
+               "id":"product_upsell_1_enable",
+               "label":{"en":"Enable pack n°1","fr":"Activer le pack n°1"}
+            },
+			{
+              "type": "checkbox",
+              "id": "variants_enable_1",
+              "label":{"en":"Show variants","fr": "Afficher les variantes"},
+			  "default":true
+            },
+			{
+               "type":"checkbox",
+               "id":"compareprice_upsell_1",
+               "label":{"en":"Show compare at price","fr":"Afficher le prix comparatif"}
+            },
+            {
+               "type":"product",
+               "id":"product_upsell_1",
+               "label":{"en":"Product","fr":"Produit"}
+            },
+            {
+               "type":"text",
+               "id":"product_title_1",
+               "label":{"en":"Modify title","fr":"Modifier le titre"}
+            },
+            {
+               "type":"image_picker",
+               "id":"img_upsell_1",
+               "label":{"en":"Modify image","fr":"Modifier l'image"}
+            },
+            {
+               "type":"text",
+               "id":"message_upsell_1",
+               "label":{"en":"Text line 1","fr":"Ligne de texte 1"},
+			   "info": {"en":"XX = available stock, YY = % discount", "fr": "XX = stock disponible, YY = % remise"},
+			   "default": {"en":"You save YY", "fr": "Vous économisez YY"}
+            },
+			{
+               "type":"checkbox",
+               "id":"alert_upsell_blink_1",
+               "label":{"en":"Text line 2: blinking effect","fr":"Ligne de texte 2 : effet clignotant"}
+            },
+            {
+               "type":"text",
+               "id":"alert_upsell_1",
+               "label":{"en":"Text line 2","fr":"Ligne de texte 2"},
+			   "info": {"en":"XX = available stock, YY = % discount", "fr": "XX = stock disponible, YY = % remise"},
+			   "default": {"en":"Only XX left in stock", "fr": "XX articles restant"}
+            },
+			{
+               "type":"checkbox",
+               "id":"description_enable_1",
+               "label":{"en":"Show description","fr":"Afficher la description"}
+            },
+            {
+               "type":"html",
+               "id":"description_upsell_1",
+               "label":{"en":"Description","fr":"Description"},
+               "default":{"en":"<p style=\"margin:0 0 10px\"><b>Key benefits:</b></p>\n- Benefit that triggers emotions n°1<br>\n- Benefit that triggers emotions n°2<br>\n- Benefit that triggers emotions n°3<br>","fr":"<p style=\"margin:0 0 10px\"><b>Ses points forts :</b></p>\n- Bénéfice qui suscite l'émotion n°1<br>\n- Bénéfice qui suscite l'émotion n°2<br>\n- Bénéfice qui suscite l'émotion n°3<br>"}
+            },
+			{
+              "type": "checkbox",
+              "id": "properties_enable_1",
+              "label":{"en":"Show properties","fr": "Afficher les propriétés"}
+            },
+            {
+               "type":"textarea",
+               "id":"properties_items_1",
+               "label":{"en":"Add properties","fr":"Ajouter des propriétés"},
+               "default":{"en":"Size: S, L, XL / \n Color: Black, White","fr":"Taille : S, L, XL / \nCouleur : Noir, Blanc"},
+               "info":{"en":"Each property has one label and values. Here is the syntax to follow : Label 1: value x, value y, value z / Label 2: value x, ... The properties do not modify the price. They are accessible from your orders panel and transferable to your supplier by message or csv file.","fr":"Chaque propriété a un label et des valeurs. Voici la syntaxe à respecter : Label 1 : valeur x, valeur y, valeur z / Label 2 : valeur x, ... Les propriétés ne modifient pas le prix. Elles sont accessibles depuis vos commandes et transférable à votre fournisseur par message ou via fichier csv."}
+            },
+            {
+               "type":"header",
+               "content":{"en":"◈ Product n°2","fr":"◈ Produit n°2"}
+            },
+            {
+               "type":"checkbox",
+               "id":"product_upsell_2_enable",
+               "label":{"en":"Enable pack n°2","fr":"Activer le pack n°2"}
+            },
+			{
+              "type": "checkbox",
+              "id": "variants_enable_2",
+              "label":{"en":"Show variants","fr": "Afficher les variantes"},
+			  "default":true
+            },
+			{
+               "type":"checkbox",
+               "id":"compareprice_upsell_2",
+               "label":{"en":"Show compare at price","fr":"Afficher le prix comparatif"}
+            },
+            {
+               "type":"product",
+               "id":"product_upsell_2",
+               "label":{"en":"Product","fr":"Produit"}
+            },
+            {
+               "type":"text",
+               "id":"product_title_2",
+               "label":{"en":"Modify title","fr":"Modifier le titre"}
+            },
+            {
+               "type":"image_picker",
+               "id":"img_upsell_2",
+               "label":{"en":"Modify image","fr":"Modifier l'image"}
+            },
+            {
+               "type":"text",
+               "id":"message_upsell_2",
+               "label":{"en":"Text line 1","fr":"Ligne de texte 1"},
+			   "info": {"en":"XX = available stock, YY = % discount", "fr": "XX = stock disponible, YY = % remise"},
+			   "default": {"en":"You save YY", "fr": "Vous économisez YY"}
+            },
+			{
+               "type":"checkbox",
+               "id":"alert_upsell_blink_2",
+               "label":{"en":"Text line 2: blinking effect","fr":"Ligne de texte 2 : effet clignotant"}
+            },
+            {
+               "type":"text",
+               "id":"alert_upsell_2",
+               "label":{"en":"Text line 2","fr":"Ligne de texte 2"},
+			   "info": {"en":"XX = available stock, YY = % discount", "fr": "XX = stock disponible, YY = % remise"},
+			   "default": {"en":"Only XX left in stock", "fr": "XX articles restant"}
+            },
+			{
+               "type":"checkbox",
+               "id":"description_enable_2",
+               "label":{"en":"Show description","fr":"Afficher la description"}
+            },
+            {
+               "type":"html",
+               "id":"description_upsell_2",
+               "label":{"en":"Description","fr":"Description"},
+               "default":{"en":"<p style=\"margin:0 0 10px\"><b>Key benefits:</b></p>- Benefit that triggers emotions n°1<br>- Benefit that triggers emotions n°2<br>- Benefit that triggers emotions n°3<br>","fr":"<p style=\"margin:0 0 10px\"><b>Ses points forts :</b></p>- Bénéfice qui suscite l'émotion n°1<br>- Bénéfice qui suscite l'émotion n°2<br>- Bénéfice qui suscite l'émotion n°3<br>"}
+            },
+            {
+              "type": "checkbox",
+              "id": "properties_enable_2",
+              "label":{"en":"Show properties","fr": "Afficher les propriétés"}
+            },
+            {
+               "type":"textarea",
+               "id":"properties_items_2",
+               "label":{"en":"Add properties","fr":"Ajouter des propriétés"},
+               "default":{"en":"Size: S, L, XL / \n Color: Black, White","fr":"Taille : S, L, XL / \nCouleur : Noir, Blanc"},
+               "info":{"en":"Each property has one label and values. Here is the syntax to follow : Label 1: value x, value y, value z / Label 2: value x, ... The properties do not modify the price. They are accessible from your orders panel and transferable to your supplier by message or csv file.","fr":"Chaque propriété a un label et des valeurs. Voici la syntaxe à respecter : Label 1 : valeur x, valeur y, valeur z / Label 2 : valeur x, ... Les propriétés ne modifient pas le prix. Elles sont accessibles depuis vos commandes et transférable à votre fournisseur par message ou via fichier csv."}
+            },
+            {
+               "type":"header",
+               "content":{"en":"◈ Product n°3","fr":"◈ Produitn°3"}
+            },
+            {
+               "type":"checkbox",
+               "id":"product_upsell_3_enable",
+               "label":{"en":"Enable pack n°3","fr":"Activer le pack n°3"}
+            },
+			{
+              "type": "checkbox",
+              "id": "variants_enable_3",
+              "label":{"en":"Show variants","fr": "Afficher les variantes"},
+			  "default":true
+            },
+			{
+               "type":"checkbox",
+               "id":"compareprice_upsell_3",
+               "label":{"en":"Show compare at price","fr":"Afficher le prix comparatif"}
+            },
+            {
+               "type":"product",
+               "id":"product_upsell_3",
+               "label":{"en":"Product","fr":"Produit"}
+            },
+            {
+               "type":"text",
+               "id":"product_title_3",
+               "label":{"en":"Modify title","fr":"Modifier le titre"}
+            },
+            {
+               "type":"image_picker",
+               "id":"img_upsell_3",
+               "label":{"en":"Modify image","fr":"Modifier l'image"}
+            },
+            {
+               "type":"text",
+               "id":"message_upsell_3",
+               "label":{"en":"Text line 1","fr":"Ligne de texte 1"},
+			   "info": {"en":"XX = available stock, YY = % discount", "fr": "XX = stock disponible, YY = % remise"},
+			   "default": {"en":"You save YY", "fr": "Vous économisez YY"}
+            },
+			{
+               "type":"checkbox",
+               "id":"alert_upsell_blink_3",
+               "label":{"en":"Text line 2: blinking effect","fr":"Ligne de texte 2 : effet clignotant"}
+            },
+            {
+               "type":"text",
+               "id":"alert_upsell_3",
+               "label":{"en":"Text line 2","fr":"Ligne de texte 2"},
+			   "info": {"en":"XX = available stock, YY = % discount", "fr": "XX = stock disponible, YY = % remise"},
+			   "default": {"en":"Only XX left in stock", "fr": "XX articles restant"}
+            },
+			{
+               "type":"checkbox",
+               "id":"description_enable_3",
+               "label":{"en":"Show description","fr":"Afficher la description"}
+            },
+            {
+               "type":"html",
+               "id":"description_upsell_3",
+               "label":{"en":"Description","fr":"Description"},
+               "default":{"en":"<p style=\"margin:0 0 10px\"><b>Key benefits:</b></p>- Benefit that triggers emotions n°1<br>- Benefit that triggers emotions n°2<br>- Benefit that triggers emotions n°3<br>","fr":"<p style=\"margin:0 0 10px\"><b>Ses points forts :</b></p>- Bénéfice qui suscite l'émotion n°1<br>- Bénéfice qui suscite l'émotion n°2<br>- Bénéfice qui suscite l'émotion n°3<br>"}
+            },
+            {
+              "type": "checkbox",
+              "id": "properties_enable_3",
+              "label":{"en":"Show properties","fr": "Afficher les propriétés"}
+            },
+            {
+               "type":"textarea",
+               "id":"properties_items_3",
+               "label":{"en":"Add properties","fr":"Ajouter des propriétés"},
+               "default":{"en":"Size: S, L, XL / \n Color: Black, White","fr":"Taille : S, L, XL / \nCouleur : Noir, Blanc"},
+               "info":{"en":"Each property has one label and values. Here is the syntax to follow : Label 1: value x, value y, value z / Label 2: value x, ... The properties do not modify the price. They are accessible from your orders panel and transferable to your supplier by message or csv file.","fr":"Chaque propriété a un label et des valeurs. Voici la syntaxe à respecter : Label 1 : valeur x, valeur y, valeur z / Label 2 : valeur x, ... Les propriétés ne modifient pas le prix. Elles sont accessibles depuis vos commandes et transférable à votre fournisseur par message ou via fichier csv."}
+            }
+         ]
+      },
+      {
+         "type":"developer",
+         "name":{"en":"Developer","fr":"Développeur"},
+         "limit":1,
+         "settings":[
+            {
+               "type":"paragraph",
+               "content":{"en":"Ignore this bloc if you do not understand HTML/CSS","fr":"Ignorer ce bloc si vous n'avez pas les bases en HTML/CSS"}
+            },
+            {
+               "type":"header",
+               "content":{"en":"Mobile","fr":"Mobile"}
+            },
+            {
+               "type":"html",
+               "id":"css_mobile",
+               "label":{"en":"Custom CSS","fr":"Custom CSS"},
+               "info":{"en":"ex: font-size: 20px;","fr":"ex: font-size: 20px;"}
+            },
+            {
+               "type":"header",
+               "content":{"en":"Desktop","fr":"Bureau"}
+            },
+            {
+               "type":"range",
+               "id":"query",
+               "label":"Media-query breakpoint",
+               "min":400,
+               "max":1500,
+               "step":50,
+               "default":750
+            },
+            {
+               "type":"html",
+               "id":"css_bureau",
+               "label":"Custom CSS",
+               "info":{"en":"ex: font-size: 35px;","fr":"ex: font-size: 35px;"}
+            },
+			{
+               "type":"header",
+               "content":{"en":"Selectors","fr":"Sélecteurs"}
+            },
+			{
+              "type": "text",
+              "id": "selector_form",
+              "label":"Form",
+			  "default":"form[action=\"/cart/add\"]"
+            },
+			{
+              "type": "text",
+              "id": "selector_atc",
+              "label":"ATC",
+			  "default":"input[name=\"add\"], button[name=\"add\"], button[type=\"submit\"].add-to-cart-btn"
+            },
+            {
+              "type": "text",
+              "id": "selector_price",
+              "label":{"en":"Main price","fr": "Prix original"},
+			  "default":"NA"
+            },
+			{
+              "type": "text",
+              "id": "selector_compare_price",
+              "label":{"en":"Main compare at price","fr": "Prix comparatif"},
+			  "default":"NA"
+            },
+			{
+              "type": "text",
+              "id": "selector_quantity",
+              "label":{"en":"Quantity","fr": "Quantité"},
+			  "default":"NA"
+            },
+			{
+               "type":"header",
+               "content":{"en":"Translation","fr":"Traduction"}
+            },
+			{
+              "type": "text",
+              "id": "product_unavailable",
+              "label":{"en":"Out of stock","fr": "Produit épuisé"},
+			  "default":{"en":"Out of stock","fr":"Épuisé"}
+            }
+         ]
+      }
+   ],
+  "presets": [{
+      "name": "Bundle"
+    }]
+}
+{% endschema %}

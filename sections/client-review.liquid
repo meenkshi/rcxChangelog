@@ -1,0 +1,171 @@
+{% style %}
+
+#shopify-section-{{ section.id }} .cv_custom_main_heading {
+    color: {{ section.settings.titlecolor }};
+	font-size:{{ section.settings.heading_size }}px;
+}
+#shopify-section-{{ section.id }}{
+	    background: {{ section.settings.bg }};
+margin: 0px 0;
+    padding-bottom: 30px;
+}
+#shopify-section-{{ section.id }} .cv__line {
+    background-color: {{ section.settings.cvcolor }};
+}
+#shopify-section-{{ section.id }} .cv_custom_heading_title h3{
+	color:{{ section.settings.review_color }};
+	font-size:{{ section.settings.review_size }}px;
+}
+
+#shopify-section-{{ section.id }} .cv_custom_main_paragraph_reviews p{
+	color:{{ section.settings.review_desc_color }};
+	font-size:{{ section.settings.review_desc_size }}px;
+}
+{% endstyle %}
+<div class="review_slider cv_custom_main_wrapper_reviews"
+  data-section-id="{{ section.id }}"
+  data-section-type="review-section"
+  data-align-top="true"
+  {% if section.settings.parallax %}data-parallax="true"{% endif %}>
+
+  {% if section.blocks.size > 0 %}
+	<div class="cv_page-width">
+
+      <div class="mob-review-image">
+             <div class="rate_first only_rate">
+				<img src="https://cdn.shopify.com/s/files/1/0494/6798/1992/files/onlystar_134x134_crop_center@2x.png?v=1603347103">
+				<h2 style="color:#303030; text-transform: initial;">Trustpilot</h2>
+          	 </div>
+        	<div class="rate_first">
+        		
+              <img src="https://cdn.shopify.com/s/files/1/0494/6798/1992/files/fullstar_134x134_crop_center@2x.png?v=1603347111">
+              <img src="https://cdn.shopify.com/s/files/1/0494/6798/1992/files/fullstar_134x134_crop_center@2x.png?v=1603347111">
+              <img src="https://cdn.shopify.com/s/files/1/0494/6798/1992/files/fullstar_134x134_crop_center@2x.png?v=1603347111">
+              <img src="https://cdn.shopify.com/s/files/1/0494/6798/1992/files/fullstar_134x134_crop_center@2x.png?v=1603347111">
+              <img src="https://cdn.shopify.com/s/files/1/0494/6798/1992/files/half-star_134x134_crop_center@2x.png?v=1603347108">
+
+        	 </div>
+        	<div class="avarage_rate">
+              <p> 4.8/5 {{section.settings.total_review_title}} </p>
+        	</div>
+        		
+        </div>
+    </div>
+  {% endif %}
+
+  {% if section.blocks.size == 0 %}
+    
+  {% endif %}
+</div>
+
+{% schema %}
+  {
+    "name": "Client Review",
+    "class": "index-section",
+    "max_blocks": 50,
+	"settings": [
+      {
+        "type": "text",
+        "id": "review_title",
+        "label": "Review Title",
+        "default": "+170.000 Clients Satisfaits"
+      },
+	{
+        "type": "text",
+        "id": "total_review_title",
+        "label": "Total Review Title",
+        "default": "Comentarios Verificados"
+      },
+	  {
+         "type": "color",
+         "id": "titlecolor",
+         "label": "Heading color",
+         "default": "#000000"
+      },
+	  {
+        "type": "range",
+        "min": 10,
+        "max": 60,
+        "id": "heading_size",
+        "label": "Heading Font Size",
+        "default": 24,
+    	"unit": "px"
+      },
+	  {
+         "type": "color",
+         "id": "cvcolor",
+         "label": "CV line color",
+         "default": "#5BC1AB"
+      },
+      {
+         "type": "color",
+         "id": "bg",
+         "label": "background color",
+         "default": "#ffffff"
+      },
+	  {
+         "type": "color",
+         "id": "review_color",
+         "label": "Review Title color",
+         "default": "#000000"
+      },
+	  {
+        "type": "range",
+        "min": 10,
+        "max": 60,
+        "id": "review_size",
+        "label": "Review Title Font Size",
+        "default": 18,
+    	"unit": "px"
+      },
+	  {
+         "type": "color",
+         "id": "review_desc_color",
+         "label": "Review Description color",
+         "default": "#000000"
+      },
+	 {
+        "type": "range",
+        "min": 10,
+        "max": 60,
+        "id": "review_desc_size",
+        "label": "Review Description Font Size",
+        "default": 12,
+    	"unit": "px"
+      }
+	  
+	],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Slide",
+        "settings": [
+		  {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+		  {
+            "type": "text",
+            "id": "name",
+            "label": "Client Name"
+          },
+          {
+            "type": "textarea",
+            "id": "description",
+            "label": "Client Description"
+          },
+		  {
+            "type": "text",
+            "id": "rate",
+            "label": "Rate (Out of 5)",
+            "default": "5"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Client Review"
+    }]
+  }
+{% endschema %}

@@ -1,0 +1,510 @@
+{% comment %} 
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+
+{% if settings.stickyATC_show and template.name == 'product' or template.name == 'index' and settings.stickyATC_featured_product_enable %}
+{% assign btn_brightness = settings.stickyATC_atc_bgcolor | color_brightness | plus:0 | round %}
+{% if btn_brightness > 40 %}{% assign btn_color_hover =  settings.stickyATC_atc_bgcolor | color_darken: 10 %}{% else %}{% assign btn_color_hover = settings.stickyATC_atc_bgcolor | color_lighten: 15 %}{% endif %}
+{% if template.name == 'index' %}{% assign product = all_products[settings.stickyATC_featured_product] %}{% endif %} 
+{% capture breakPoint %}{{ settings.stickyATC_css_query }}{% endcapture %}
+
+{% case request.locale.iso_code %}
+  {% when 'en' %}
+    {% assign sticky_atc_text = 'BUY NOW' %}
+    {% assign sticky_soldout_text = 'SOLD OUT' %}
+    {% assign sticky_packs_text = 'Choose your car' %}
+  {% when 'fr' %}
+    {% assign sticky_atc_text = 'ACHETER MAINTENANT' %}
+    {% assign sticky_soldout_text = 'ÉPUISÉ' %}
+    {% assign sticky_packs_text = 'Choisissez votre voiture' %}
+  {% when 'nl' %}
+    {% assign sticky_atc_text = 'KOOP NU' %}
+    {% assign sticky_soldout_text = 'UITVERKOCHT' %}
+    {% assign sticky_packs_text = 'Kies uw auto' %}
+  {% when 'de' %}
+    {% assign sticky_atc_text = 'JETZT KAUFEN' %}
+    {% assign sticky_soldout_text = 'AUSVERKAUFT' %}
+    {% assign sticky_packs_text = 'Wählen Sie Ihr Auto' %}
+  {% when 'es' %}
+    {% assign sticky_atc_text = 'COMPRAR AHORA' %}
+    {% assign sticky_soldout_text = 'AGOTADO' %}
+    {% assign sticky_packs_text = 'Elige tu coche' %}
+  {% when 'sv' %}
+    {% assign sticky_atc_text = 'KÖP NU' %}
+    {% assign sticky_soldout_text = 'SLUTSÅLD' %}
+    {% assign sticky_packs_text = 'Välj din bil' %}
+  {% else %}
+    {% assign sticky_atc_text = settings.stickyATC_text %}
+    {% assign sticky_soldout_text = 'SOLD OUT' %}
+    {% assign sticky_packs_text = settings.stickyATC_packs_text %}
+{% endcase %}
+
+<style>  
+  /* Wrappers & extra styles */
+  .stickyatc__wrapper{margin:0;cursor:default;top:auto;background-color:{{ settings.stickyATC_bgcolor }};{% if settings.stickyATC_pos_mobile == 'bottom' %}box-shadow:0px -2px 15px -5px rgba(0, 0, 0, 0.2);{% else %}box-shadow:0px 2px 15px -5px rgba(0, 0, 0, 0.2);{% endif %}font-size:0.9em;font-weight:500;padding:0;border:none;list-style-type:none;position:fixed;z-index:999;left:0;right:0;text-align:center;width:100%;color:#000;outline:none;-webkit-appearance: none;transition: all 0.2s ease-out}
+  .stickyatc__container{display:flex;display: -webkit-flex;justify-content:space-between;align-items:center;margin: auto;}
+
+  /*** LEFT SIDE ***/
+  .stickyatc__leftSide{text-align:left;padding: 10px 13px 0;width:70%;margin-bottom:-10px;}
+  /* text */
+  .stickyatc__title {font-weight:700}
+  .stickyatc__vendor{margin-bottom:0;font-size:1em;line-height:18px;color:#a6a6a6;}
+
+  /*** RIGHT SIDE ***/
+  .stickyatc__rightSide {display:block;height:auto;width:100%;padding:12px}  
+  /* options */
+  .stickyatc__options {display: inline-flex;display: -webkit-inline-flex;width: 100%;align-items: center;justify-content: space-between;} 
+  .stickyatc__options--select-outer {display: flex;display: -webkit-flex;{% if product.options_with_values.size == 1 %}width:100%;{% elsif product.options_with_values.size == 2 %}width:calc(50% - 5px);{% elsif product.options_with_values.size == 3 %}width:calc(33% - 6.6px){% endif %}}
+  .stickyatc__options select {all:unset;box-sizing:border-box;-webkit-appearance: none;-moz-appearance: none;appearance: none;background-position:calc(100% - 12px) 55%;background-repeat:no-repeat;background-color:rgba(0,0,0,0);background-size:11px;text-indent: 0.01px;cursor:pointer;color:inherit;background-image:url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxzdmcgd2lkdGg9IjQ5OXB4IiBoZWlnaHQ9IjI4NXB4IiB2aWV3Qm94PSIwIDAgNDk5IDI4NSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgPHBhdGggZD0iTS0yLjY2NDUzNTI2ZS0xNCwzNSBDLTAuMDA1MDY3ODgzNDMsMjAuODQxMjE2NiA4LjUyMDkzNzUzLDguMDc0MDgyNzUgMjEuNjAxMTE3MSwyLjY1Mzc0Mzg5IEMzNC42ODEyOTY3LC0yLjc2NjU5NDk3IDQ5LjczODczOTQsMC4yMjc3MTU5MzggNTkuNzUsMTAuMjQgTDI0OS40OSwxOTkuOTkgTDQzOS4yMywxMC4yNCBDNDQ4LjA3MjMyMywxLjM5NzY3NjIxIDQ2MC45NjAyOTEsLTIuMDU1NjQ0NDkgNDczLjAzOTEyOSwxLjE4MDg3MDQzIEM0ODUuMTE3OTY4LDQuNDE3Mzg1MzUgNDk0LjU1MjYxNSwxMy44NTIwMzIzIDQ5Ny43ODkxMywyNS45MzA4NzA5IEM1MDEuMDI1NjQ0LDM4LjAwOTcwOTUgNDk3LjU3MjMyNCw1MC44OTc2NzY3IDQ4OC43Myw1OS43NCBMMjc0LjI0LDI3NC4yNCBDMjY3LjY3NjEyNCwyODAuODA0NTQ2IDI1OC43NzMxOTYsMjg0LjQ5MjUyNSAyNDkuNDksMjg0LjQ5MjUyNSBDMjQwLjIwNjgwNCwyODQuNDkyNTI1IDIzMS4zMDM4NzYsMjgwLjgwNDU0NiAyMjQuNzQsMjc0LjI0IEwxMC4yNSw1OS43NCBDMy42Nzg1NTg1Nyw1My4xODUwMjk1IC0wLjAxMDEzNzU1ODYsNDQuMjgxNzc2NiAtMi42NjQ1MzUyNmUtMTQsMzUgWiIgZmlsbD0iIzAwMDAwMCIgZmlsbC1ydWxlPSJub256ZXJvIj48L3BhdGg+DQo8L3N2Zz4NCg==');}
+  .stickyatc__options select {font-size:1em!important;height:35px;line-height:35px;color:{{ settings.stickyATC_variants_color }};border: 1px solid {{ settings.stickyATC_variants_bgcolor | color_darken: 2 }};width: 100%;padding: 0 25px 0 12px;border-radius: 50px;background-color:{{ settings.stickyATC_variants_bgcolor }};outline: none;}
+  /* qty */
+  .stickyatc__qty {display:none;width:86px;margin-right:10px;}
+  .stickyatc__qty input {all:unset;color:{{ settings.stickyATC_variants_color }};width:28px;font-size:1em!important;line-height: calc(100% + 22px);}
+  .stickyatc__qty--outer {height:42px;display:inline-flex;display: -webkit-inline-flex;background-color:{{ settings.stickyATC_variants_bgcolor }};border-radius: 50px;border: 1px solid {{ settings.stickyATC_variants_bgcolor | color_darken: 2 }};font-size: 1em;line-height: 1em;}
+  .stickyatc__qty--outer input:not([type='number']) {cursor:pointer}
+  .stickyatc__qty input[type='number'],.stickyatc__qty input[type='number']::-webkit-outer-spin-button, .stickyatc__qty input[type='number']::-webkit-inner-spin-button {-moz-appearance:textfield;-webkit-appearance: none;}
+  /* action */
+  .stickyatc__action {height:42px;line-height:42px;background-color:{{ settings.stickyATC_atc_bgcolor }};color:{{ settings.stickyATC_atc_color }};width:100%;padding: 0 20px 0 40px;{% unless product.has_only_default_variant %}margin-top: 10px;{% endunless %}cursor: pointer;border: 1px solid rgba(0,0,0,0);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;-o-user-select: none;user-select: none;-webkit-appearance: none;-moz-appearance: none;border-radius: 50px;display: inline-block;text-decoration: none;text-align: center;white-space: nowrap;font-size: 1em;letter-spacing:1px;}
+  .stickyatc__action:hover, .stickyatc__action:hover {background-color:{{ btn_color_hover }}}   
+  .stickyatc__action[disabled="true"] {opacity:0.4;cursor:default;pointer-events:none}
+  
+  
+  /*** MEDIA QUERIES ***/
+  @media (max-width:{{ breakPoint | minus: 1 }}px) {
+    .stickyatc__wrapper--packs .stickyatc__leftSide{margin-bottom:-12px;}
+    .stickyatc__title, .stickyatc__vendor{display:none}
+    .stickyatc__wrapper--packs .stickyatc__title {text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display: block;}
+    .stickyatc__image {width:38px;border-radius:50px;position: absolute;left:14px;bottom:14px;{% unless settings.stickyATC_image_mobile_enable %}display:none{% endunless %}}
+    .stickyatc__image[disabled="true"] {opacity:0.4;z-index:1}
+    .stickyatc__wrapper--packs .stickyatc__image {width:40px;left:15px;bottom:15px;}
+    .stickyatc__price--left{display:none}
+    .stickyatc__wrapper--packs .stickyatc__action {height:46px;line-height:46px;}
+    .stickyatc__wrapper--packs .stickyatc__top--anchor {width:30%;position:absolute;right:14px;bottom:69px;text-align:right;text-decoration:underline;color:gray}
+    .stickyatc__qty.stickyatc__qty--mobile{display:inline-block;}
+    .stickyatc__action.stickyatc__qty--mobile{width:calc(100% - 96px);}
+    .stickyatc__image.stickyatc__qty--mobile{left:110px;bottom:15px;}
+    {% if settings.stickyATC_price_mobile == 'disable' %}
+    .stickyatc__action > span {display:none;}
+    {% elsif settings.stickyATC_price_mobile == 'button' %}
+    .stickyatc__price--compare {display:none;}
+    {% endif %}
+  }
+  @media (min-width:{{ breakPoint }}px) {
+    .stickyatc__wrapper{padding:10px 20px;{% if settings.stickyATC_pos_desktop == 'bottom' %}box-shadow:0 -2px 15px -5px #e3e1e1;{% else %}box-shadow:0 2px 15px -5px #e3e1e1;{% endif %}}
+    .stickyatc_container {display:flex;display: -webkit-flex;justify-content: space-between;align-items: center;width: 100%;{% unless settings.stickyATC_maxwidth == '1800' %}max-width:{{ settings.stickyATC_maxwidth }}px;{% endunless %}margin:auto}
+    .stickyatc__leftSide {display: flex;display: -webkit-flex;align-items: center;width:auto;margin-bottom:0;margin-right:20px;padding:0;height: auto;}
+ 	.stickyatc__leftSide > div {display:flex;display: -webkit-flex;flex-direction:column;justify-content:space-evenly;min-height:55px}
+    .stickyatc__image {float:left; margin-right:1rem;width:55px;border-radius:2px} 
+    .stickyatc__rightSide {display:inline-flex;display: -webkit-inline-flex;align-items:center;justify-content:flex-end;width:auto;padding:0} 
+    .stickyatc__rightSide > div {margin:0 0 0 15px;}
+    .stickyatc__options--select-outer {width: auto;min-width: 130px;margin-left: 15px;height:42px;}
+    .stickyatc__options select {padding:0 28px 0 12px;height:42px;line-height:42px}
+    .stickyatc__qty {display:none;}
+    .stickyatc__qty.stickyatc__qty--desktop{display:inline-block;}
+    .stickyatc__qty--outer {height:42px}
+    .stickyatc__qty input {line-height: calc(100% + 26px);}
+    .stickyatc__action{margin-top:0px;padding:0 30px;width:auto;height:42px;line-height:42px}
+    .stickyatc__wrapper--packs .stickyatc__top--anchor {position:relative;color:gray;height:42px;line-height:42px;text-indent: 0.01px;cursor:pointer;color:inherit;padding: 0 38px 0 20px;background-color:{{ settings.stickyATC_variants_bgcolor }};border-radius: 50px;}
+    .stickyatc__wrapper--packs .stickyatc__top--anchor::after{content:"";background-repeat: no-repeat;background-color: rgba(0,0,0,0);background-size: 11px;transform: rotate(180deg) translateY(60%);position: absolute;width: 11px;height: 11px;top: 50%;right: 15px;background-image:url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxzdmcgd2lkdGg9IjQ5OXB4IiBoZWlnaHQ9IjI4NXB4IiB2aWV3Qm94PSIwIDAgNDk5IDI4NSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgPHBhdGggZD0iTS0yLjY2NDUzNTI2ZS0xNCwzNSBDLTAuMDA1MDY3ODgzNDMsMjAuODQxMjE2NiA4LjUyMDkzNzUzLDguMDc0MDgyNzUgMjEuNjAxMTE3MSwyLjY1Mzc0Mzg5IEMzNC42ODEyOTY3LC0yLjc2NjU5NDk3IDQ5LjczODczOTQsMC4yMjc3MTU5MzggNTkuNzUsMTAuMjQgTDI0OS40OSwxOTkuOTkgTDQzOS4yMywxMC4yNCBDNDQ4LjA3MjMyMywxLjM5NzY3NjIxIDQ2MC45NjAyOTEsLTIuMDU1NjQ0NDkgNDczLjAzOTEyOSwxLjE4MDg3MDQzIEM0ODUuMTE3OTY4LDQuNDE3Mzg1MzUgNDk0LjU1MjYxNSwxMy44NTIwMzIzIDQ5Ny43ODkxMywyNS45MzA4NzA5IEM1MDEuMDI1NjQ0LDM4LjAwOTcwOTUgNDk3LjU3MjMyNCw1MC44OTc2NzY3IDQ4OC43Myw1OS43NCBMMjc0LjI0LDI3NC4yNCBDMjY3LjY3NjEyNCwyODAuODA0NTQ2IDI1OC43NzMxOTYsMjg0LjQ5MjUyNSAyNDkuNDksMjg0LjQ5MjUyNSBDMjQwLjIwNjgwNCwyODQuNDkyNTI1IDIzMS4zMDM4NzYsMjgwLjgwNDU0NiAyMjQuNzQsMjc0LjI0IEwxMC4yNSw1OS43NCBDMy42Nzg1NTg1Nyw1My4xODUwMjk1IC0wLjAxMDEzNzU1ODYsNDQuMjgxNzc2NiAtMi42NjQ1MzUyNmUtMTQsMzUgWiIgZmlsbD0iIzAwMDAwMCIgZmlsbC1ydWxlPSJub256ZXJvIj48L3BhdGg+DQo8L3N2Zz4NCg==');}
+    {% if settings.stickyATC_price_desktop == 'disable' %}
+    .stickyatc__action > span {display:none;}
+    {% elsif settings.stickyATC_price_desktop == 'leftside' %}
+    .stickyatc__price--left s {display:none}
+    .stickyatc__action > span {display:none;}
+    {% elsif settings.stickyATC_price_desktop == 'leftside_compare' %}
+    .stickyatc__action > span {display:none;}
+    {% elsif settings.stickyATC_price_desktop == 'button' %}
+    .stickyatc__price--compare {display:none;}
+    .stickyatc__price--left {display:none;}
+    {% elsif settings.stickyATC_price_desktop == 'button_compare' %}
+     .stickyatc__price--left {display:none;}
+    {% endif %}  
+    {% unless settings.stickyATC_image_enable %}
+    .stickyatc__image{display:none}
+    {% endunless %}  
+  }
+  
+  /*** CUSTOM CSS ***/
+  @media (min-width:{{ breakPoint }}px) { {{ settings.stickyATC_css_desktop }} }
+  @media (max-width:{{ breakPoint | minus: 1 }}px) { {{ settings.stickyATC_css_mobile }} }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<div class="stickyatc__wrapper">
+  <div class="stickyatc_container">
+    <!-- LEFT SIDE -->
+    <div class="stickyatc__leftSide">
+      <img class="stickyatc__image" {% unless product.available %}disabled="true"{% endunless %} src="{{ product.selected_or_first_available_variant.featured_media | default: product.featured_media  | img_url: 'small' }}">
+      <div>
+        {% if settings.stickyATC_vendor_enable %}
+        <span class="stickyatc__vendor">{{ product.vendor }}</span>
+        {% endif %}
+        {% comment %}
+        <span class="stickyatc__reviews"></span>
+        {% endcomment %}
+        {% if settings.stickyATC_title_enable %}
+        <span class="stickyatc__title">{{ product.title }}</span>
+        {% endif %}
+        <span class="stickyatc__price--left"><s>{{ product.compare_at_price | money }}</s> {{ product.price | money }}</span>
+      </div>
+    </div>
+    <!-- RIGHT SIDE + MOBILE 100% -->
+    <div class="stickyatc__rightSide">  
+      {% unless product.has_only_default_variant %}
+      <div class="stickyatc__options">       
+        {% for option in product.options_with_values %}
+          <div class="stickyatc__options--select-outer">
+            <select class="stickyatc__options--select">
+              {% for value in option.values %}
+              {% assign variant_label_state = true %}{% if product.options.size == 1 %}{% unless product.variants[forloop.index0].available %}{% assign variant_label_state = false %}{% endunless %}{% endif %}
+              <option value="{{ value | escape }}"
+                      {% if option.selected_value == value %} selected="selected"{% endif %}
+                      {% unless variant_label_state %} disabled="true"{% endunless %}
+                      name="{{ option.name }}"
+                      class="stickyatc__options--input"
+                      data-option>
+                {{ value }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endfor %}
+      </div>
+      {% endunless %}
+      <div class="stickyatc__qty {% if settings.stickyATC_qty_mobile_enable %}stickyatc__qty--mobile{% endif %} {% if settings.stickyATC_qty_desktop_enable %}stickyatc__qty--desktop{% endif %}">
+        <div class="stickyatc__qty--outer">
+          <input type="button" value="&minus;" id="stickyatc__qty--minus">
+          <input type="number" min="1" size="25" value="1" id="stickyatc__qty--value" data-option style="border-left: 1px solid #fff;border-right: 1px solid #fff;">
+          <input type="button" value="+" id="stickyatc__qty--plus">
+        </div>
+</div><div class="stickyatc__action {% if settings.stickyATC_qty_mobile_enable %}stickyatc__qty--mobile{% endif %} {% if settings.stickyATC_qty_desktop_enable %}stickyatc__qty--desktop{% endif %} animation__pulse" {% unless product.available %}disabled="true"{% endunless %}>{% if product.available %}{{ sticky_atc_text }}{% else %}{{ sticky_soldout_text }}{% endif %}<span> &nbsp;•&nbsp; <s class="stickyatc__price--compare">{{- product.compare_at_price | money -}}</s> <span class="stickyatc__price">{{- product.price | money -}}</span></span></div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" data-product-json>{{ product | json }}</script>
+<script>
+  addEventListener('load', function() {
+    let query = document.querySelector.bind(document);
+    let queryAll = document.querySelectorAll.bind(document);
+    let config = {
+      "animation": "none",
+      "display": "{{ settings.stickyATC_medium }}",
+      "display_when": "scroll_past",
+      "location_mobile": "{{ settings.stickyATC_pos_mobile }}",
+      "location_desktop": "{{ settings.stickyATC_pos_desktop }}",
+      "show_price_desktop": "{{ settings.stickyATC_price_desktop }}",
+      "show_price_mobile": "{{ settings.stickyATC_price_mobile }}",
+"show_image_desktop": {{ settings.stickyATC_image_enable }},
+      "show_image_mobile": {{ settings.stickyATC_image_mobile_enable }},
+      "atc_text": "{{ sticky_atc_text }}"
+    };
+    let domEl = {
+      formEl: query('form[action*="/cart/add"]'),
+      formChildren: [...query('form[action*="/cart/add"]').querySelectorAll('input:not([type="hidden"]), select:not([name="id"])')],
+      formID: query('select[name="id"]'),
+      stickySelect: queryAll('.stickyatc__options--select, #stickyatc__qty--value'),
+      stickyOptions: [...queryAll('.stickyatc__wrapper [data-option]')],
+      formSubmitButton: query('form[action="/cart/add"] button[name="add"]'),
+      productTitle: query('.stickyatc__title'),
+      productVendor: query('.stickyatc__vendor'),
+      productImage: query('.stickyatc__image'),
+      productPrice: query('.stickyatc__price--left'),
+      reviews: query('.vreviews'),
+      atcButton: query('.stickyatc__action')
+    };
+    let productData = [JSON.parse(query('[data-product-json]').innerText)]
+    var original_button = null
+    let sticky_button = document.querySelector('.stickyatc__wrapper')
+    var animation_interval = -1
+    var text_copy_interval = -1
+
+    //Shopify money format
+    var Shopify=Shopify||{};Shopify.money_format={{ shop.money_format | json }},Shopify.formatMoney=function(a,g){function d(a,b){return a===void 0?b:a;}function c(a,c,e,f){if(c=d(c,2),e=d(e,','),f=d(f,'.'),isNaN(a)||a==null)return 0;a=(a/100).toFixed(c);var b=a.split('.'),g=b[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g,'$1'+e),h=b[1]?f+b[1]:'';return g+h;}typeof a=='string'&&(a=a.replace('.',''));var b='';var e=/\{\{\s*(\w+)\s*\}\}/;var f=g||this.money_format;switch(f.match(e)[1]){case'amount':b=c(a,2);break;case'amount_no_decimals':b=c(a,0);break;case'amount_with_comma_separator':b=c(a,2,'.',',');break;case'amount_no_decimals_with_comma_separator':b=c(a,0,'.',',');break;}return f.replace(e,b);};
+
+    //check if medium is mobile
+    function is_mobile() {
+      var check = false;
+      (function(a) {
+        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+      })(navigator.userAgent || navigator.vendor || window.opera);
+      return check;
+    }
+
+    //animate sticky button
+    function animate() {
+      if (config.animation != 'none') {
+        sticky_button.classList.remove('animated');
+        sticky_button.classList.remove(config.animation);
+
+        setTimeout(function() {
+          sticky_button.classList.add('animated');
+          sticky_button.classList.add(config.animation);
+        }, 10);
+      }
+    }
+
+    //update scroll position
+    function scroll(e) {
+      if (!find_button()) {return;}
+      var original_rect = original_button.getBoundingClientRect();
+      var sticky_rect = sticky_button.getBoundingClientRect();
+      var location = -10 * sticky_rect.height;
+      var document_height = document.documentElement.scrollHeight || document.body.scrollHeight;
+      var scroll_top = document.documentElement.scrollTop || document.body.scrollTop;
+      var client_height = document.documentElement.clientHeight;
+      var original_button_top = original_rect.top + scroll_top;
+      var target = -1;
+      switch (config.display_when) {
+        case 'scroll_past': target = original_button_top;break;
+        case 'always': target = (-1 * sticky_rect.height);break;
+        case 'scroll_10': target = (document_height - client_height) * 0.1;break;
+        case 'scroll_20': target = (document_height - client_height) * 0.2;break;
+        case 'scroll_30': target = (document_height - client_height) * 0.3;break;
+        case 'scroll_40': target = (document_height - client_height) * 0.4;break;
+        case 'scroll_50': target = (document_height - client_height) * 0.5;break;
+        case 'scroll_60': target = (document_height - client_height) * 0.6;break;
+        case 'scroll_70': target = (document_height - client_height) * 0.7;break;
+        case 'scroll_80': target = (document_height - client_height) * 0.8;break;
+        case 'scroll_90': target = (document_height - client_height) * 0.9;break;
+      }
+      location = (-1 * sticky_rect.height) - (target - scroll_top);
+      if (location >= (-1 * sticky_rect.height)) {
+        if (location >= 0) {
+          location = 0;
+          if (animation_interval == -1) {animation_interval = setInterval(animate, 5000);}
+        } else {
+          clearInterval(animation_interval);
+          animation_interval = -1;
+        }
+      } else {
+        clearInterval(animation_interval);
+        animation_interval = -1;
+      }
+      if (is_mobile()) {
+        sticky_button.style[config.location_desktop] = 'auto';
+        sticky_button.style[config.location_mobile] = location + 'px';
+      } else {
+        sticky_button.style[config.location_desktop] = location + 'px';
+      }
+      if(document.documentElement.scrollHeight - (window.pageYOffset + window.innerHeight) < 200) {
+        sticky_button.style.bottom = (window.matchMedia("(min-width:{{ breakPoint }}px)").matches && config.location_desktop != 'top' || window.matchMedia("(max-width:{{ breakPoint | minus:1 }}px)").matches && config.location_mobile != 'top') ? '-125px' : 'auto'
+      } 
+    }
+
+    //find button to allow progressive scroll
+    function find_button() {
+      var selectors = ['form[action="/cart/add"] [type="submit"]','form button.add-to-cart','form[action="/cart/add"] button[name="add"]','.addtocart-js','#AddToCart-product-template','#AddToCart','[data-shopify="payment-button"] div[role="button"]','form[action="/cart/add"] .shg-btn','form[action="/cart"] button[name="checkout"]','form button[name="add"]'];
+      for (var i = 0; i < selectors.length; i++) {
+        var buttons = document.querySelectorAll(selectors[i]);
+        for (var j = 0; j < buttons.length; j++) {
+          var button = buttons[j];
+          if (button) {
+            var button_rect = button.getBoundingClientRect();
+            if (button_rect.width > 0 && button_rect.height > 0) {
+              original_button = button;
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    //initialize all
+    function init() { 
+
+      //check if button is allowed in current display, otherwise stop
+      if (config.display == 'mobile' && !is_mobile()) {return;}
+      if (config.display == 'desktop' && is_mobile()) {return;}
+
+      //check if original button exist, if not, restart in 1 second
+      if (!find_button()) {setTimeout(init, 1000);}
+
+      //check if pack Plugin is running
+      let packPlugin = document.querySelector('#packsUpsell[data-upsell-type="products"]') ? "products" : document.querySelector('#packsUpsell[data-upsell-type="variants"]') ? "variants" : false;
+      if(packPlugin) {
+        //redefine productData json
+        if (packPlugin == 'products' || document.querySelector('.packsUpsell__properties')) {
+          productData = []
+          let productsJson = queryAll('[data-product-json-index]')
+          for (var i = 0; i < productsJson.length; i++) {
+            productData.push(JSON.parse(productsJson[i].innerText));
+          }
+          //redefine formChildren
+          domEl.formChildren = [...document.querySelector('#packsUpsell').querySelectorAll('input:not([type="hidden"]), select:not([name="id"])')]
+//update layout
+          document.querySelector('.stickyatc__wrapper').classList.add('stickyatc__wrapper--packs')
+          document.querySelector('.stickyatc__options').style.display = 'none'
+          document.querySelector('.stickyatc__rightSide').insertAdjacentHTML('afterbegin', '<a href="#packsUpsell" class="stickyatc__top--anchor">{{ sticky_packs_text }}</a>');
+          } else if (packPlugin == 'variants') {
+            let stickySelect = document.querySelector('.stickyatc__options')
+            stickySelect.innerHTML = ''
+            //Create array of options to be added
+            var array = {}
+            document.querySelectorAll('.packsUpsell-block').forEach(function(block) {
+              array[block.querySelector('input[type="radio"]').value] = block.querySelector('input[type="radio"]').dataset.name
+            })
+            //Create and append select list
+            var selectList = document.createElement("select")
+            selectList.classList.add('stickyatc__options--select')
+            stickySelect.appendChild(selectList)
+            //Create and append the options
+            Object.entries(array).forEach(([key, value]) => {
+              var option = new Option(value, key)
+              option.setAttribute('data-option','');
+              selectList.appendChild(option)
+            })
+            //redefine variables
+            domEl.stickySelect = queryAll('.stickyatc__options--select')
+            domEl.stickyOptions = [...queryAll('.stickyatc__wrapper [data-option]')]
+          }
+          // remove quantity button if enabled (not supported yet)
+          let qtyNodes = document.querySelectorAll('.stickyatc__qty--mobile, .stickyatc__qty--desktop')
+          qtyNodes.forEach(function(el) {
+            el.classList.remove('stickyatc__qty--mobile')
+            el.classList.remove('stickyatc__qty--desktop')
+          })   
+        } else {
+          // quantity updates
+          var minusQty = document.querySelector('#stickyatc__qty--minus')
+          var plusQty = document.querySelector('#stickyatc__qty--plus')
+          var countEl = document.querySelector('#stickyatc__qty--value')
+          minusQty.addEventListener('click', function() {var count = countEl.value;if (count > 1) {count--;countEl.value = count;countEl.dispatchEvent(new Event('change', { 'bubbles': false }))}});
+          plusQty.addEventListener('click', function() {var count = countEl.value;count++;countEl.value = count;countEl.dispatchEvent(new Event('change', { 'bubbles': false}))});
+        }
+
+        //update variant image and texts on change. Timeout to put the request at the end of the thread
+        function updateStickyBanner(packIndex) {
+          for (let key in productData[packIndex].variants) {
+            let variantID = productData[packIndex].variants[key].id;
+            //update stickATC DOM
+            if(domEl.formID.value == variantID) {
+              if(packPlugin) {
+                var prop = ' - ';
+                if(document.querySelector('.packsUpsell-block.active .packsUpsell__properties')) {
+                   document.querySelectorAll('.packsUpsell-block.active .packsUpsell__properties select').forEach(function(select) {prop += select.value + ' /'})
+                }
+                if(domEl.productTitle) {domEl.productTitle.textContent = productData[packIndex].variants[key].name + prop.slice(0, -2)}
+                if(domEl.productVendor) {domEl.productVendor.textContent = productData[packIndex].vendor}
+              }
+              if(config.show_image_desktop || config.show_image_mobile) {
+                domEl.productImage.src = productData[packIndex].variants[key].featured_image ? productData[packIndex].variants[key].featured_image.src.replace(/(\.[^\.]+)$/, '_small$1') : productData[packIndex].featured_image.replace(/(\.[^\.]+)$/, '_small$1')
+              }
+              if ((config.show_price_desktop != 'disable' && window.matchMedia("(min-width:{{ breakPoint }}px)").matches) || (config.show_price_mobile != 'disable' && window.matchMedia("(max-width:{{ breakPoint | minus: 1 }}px)").matches)) {
+                var price = Shopify.formatMoney(productData[packIndex].variants[key].price, Shopify.money_format).replace(' ', '')
+                var comparePrice = productData[packIndex].variants[key].compare_at_price != null ? Shopify.formatMoney(productData[packIndex].variants[key].compare_at_price, Shopify.money_format).replace(' ', '') : '';
+                domEl.productPrice.innerHTML = '<s>' + comparePrice + '</s> ' + price + '</span>'
+                domEl.atcButton.innerHTML = config.atc_text + '<span> &nbsp;•&nbsp; <s class="stickyatc__price--compare">' + comparePrice + '</s> <span class="stickyatc__price">' + price + '</span></span>'             
+              }
+if(productData[packIndex].variants[key].available) {
+                domEl.atcButton.textContent = '{{ sticky_atc_text }}';
+                domEl.atcButton.setAttribute("disabled", "false");
+                domEl.productImage.setAttribute("disabled", "false");
+              } else {
+                domEl.atcButton.textContent = original_button.textContent
+                domEl.atcButton.setAttribute("disabled", "true");
+                domEl.productImage.setAttribute("disabled", "true");
+              }	
+            } else if (domEl.formID.value == '') {
+			    domEl.atcButton.textContent = original_button.textContent
+                domEl.atcButton.setAttribute("disabled", "true");
+                domEl.productImage.setAttribute("disabled", "true");
+            }
+          }
+        }
+     
+      //update variants both ways
+        domEl.stickySelect.forEach(function(stickyOption) {
+          stickyOption.addEventListener('change', function() {
+            domEl.formChildren.some(function(formOption) { 
+              if (formOption.nodeName == 'INPUT' && formOption.value == stickyOption.value) {
+                formOption.checked = true
+                formOption.dispatchEvent(new Event('change', { 'bubbles': true }))
+                formOption.dispatchEvent(new Event('input', { 'bubbles': true }))
+                updateStickyBanner(0);
+                return true;
+              } else if (formOption.nodeName == 'SELECT') {
+                var breakLoop = false
+                Array.from(formOption.options).forEach(function(optionItem) {
+                  if(optionItem.value == stickyOption.value) {
+                    formOption.value = optionItem.value
+                    formOption.dispatchEvent(new Event('change', { 'bubbles': true }))
+                    updateStickyBanner(0);
+                    breakLoop = true       
+                  }
+                })
+                return (breakLoop) ? true : false;
+              } else if (formOption.nodeName == 'INPUT' && formOption.getAttribute('type') == 'text') {
+                formOption.value = stickyOption.value
+                formOption.dispatchEvent(new Event('change', { 'bubbles': true }))
+                updateStickyBanner(0)
+                return true;
+              }
+            })
+          })
+        })
+        domEl.formChildren.forEach(function(formOption) {
+          formOption.addEventListener('change', function(e) {
+            setTimeout(function() { /* evaluate masterSelector first */
+              domEl.stickyOptions.some(function(stickyOption) {
+                if(packPlugin == 'products' && formOption.nodeName == 'INPUT') {
+                  var packIndex = formOption.parentElement.parentElement.parentElement.dataset.blockIndex - 1
+                  updateStickyBanner(packIndex);
+                  return true;
+                } else if (packPlugin == 'products' && formOption.nodeName == 'SELECT') {
+                  var packIndex = formOption.parentElement.parentElement.parentElement.parentElement.dataset.blockIndex - 1
+                  updateStickyBanner(packIndex);
+                  return true;
+                } else if (packPlugin == 'variants' && document.querySelector('.packsUpsell__properties')) {
+                  updateStickyBanner(0);
+                  return true;
+                } else if (stickyOption.nodeName == 'OPTION' && stickyOption.value == formOption.value) {
+                  stickyOption.selected = 'selected'
+                  updateStickyBanner(0);
+                  return true;
+                } else if (stickyOption.nodeName == 'INPUT' && !isNaN(formOption.value) && !packPlugin) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  stickyOption.value = formOption.value;
+                  updateStickyBanner(0);
+                  return true;
+                }
+              })
+            },0)
+          })
+        })
+       
+        {% comment %}
+        domEl.formChildren.forEach(function(child) {
+          let inputDispatched, selectDispatched;
+          console.log(inputDispatched)
+          if (child.nodeNAME == 'INPUT') {child.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }))}
+          else if(child.nodeNAME == 'SELECT') {child.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }))}
+        })
+        if (domEl.formChildren.length == 0) {updateStickyBanner(0)}
+      	{% endcomment %}
+
+        //custom
+        document.querySelectorAll('.js-qty__adjust').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            document.querySelector('#Quantity').dispatchEvent(new Event('change', { bubbles: true }))
+          })
+        })
+        
+        //sumbit main form on ATC click
+        domEl.atcButton.addEventListener('click', function() {if(packPlugin) {original_button.click()} else {domEl.formEl.submit()}})
+
+        //update scroll
+        var sticky_rect = sticky_button.getBoundingClientRect();
+        document.addEventListener('scroll', scroll);
+        scroll();    
+      } 
+      init()
+    })
+</script>
+{% endif %}

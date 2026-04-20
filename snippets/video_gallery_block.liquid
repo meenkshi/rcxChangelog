@@ -1,0 +1,377 @@
+<script src="https://www.youtube.com/iframe_api"></script>
+<div class="video-gallery-block" id="block-{{ block.id }}">
+{% if block.settings.heading != blank %}
+    <h2 class="video-gallery-block__heading">{{ block.settings.heading }}</h2>
+  {% endif %}
+
+  {% if block.settings.subheading != blank %}
+    <div class="video-gallery-block__subheading">
+      {% if block.settings.subheading_icon != blank %}
+        <img src="{{ block.settings.subheading_icon | image_url: width: 40 }}" alt="Icon" class="video-gallery-block__subheading-icon" loading="lazy">
+      {% endif %}
+      <span>{{ block.settings.subheading }}</span>
+    </div>
+  {% endif %}
+
+  <div class="video-gallery-block__slider-container">
+<div class="video-gallery-block__slider" id="slider-{{ block.id }}">
+{%- for i in (1..6) -%}
+        {%- assign video_setting = 'video_' | append: i -%}
+        {%- assign thumbnail_setting = 'thumbnail_' | append: i -%}
+        {%- assign video_url = block.settings[video_setting] | text -%}
+        {%- assign thumbnail_img = block.settings[thumbnail_setting] -%}
+        {%- if video_url != blank -%}
+          {%- assign video_id = '' -%}
+          {%- if video_url contains 'shorts/' -%}
+            {%- assign video_id = video_url | split: 'shorts/' | last | split: '?' | first | split: '/' | first -%}
+          {%- elsif video_url contains 'v=' -%}
+            {%- assign video_id = video_url | split: 'v=' | last | split: '&' | first -%}
+          {%- elsif video_url contains 'youtu.be/' -%}
+            {%- assign video_id = video_url | split: 'youtu.be/' | last | split: '?' | first -%}
+          {%- else -%}
+            {%- assign video_id = video_url | split: '/' | last | split: '?' | first -%}
+          {%- endif -%}
+<div class="video-gallery-block__item" 
+               data-video-id="{{ video_id }}"
+          >
+<div class="video-gallery-block__card" style="background-color: {{ block.settings.card_background_color }}; border-radius: {{ block.settings.video_border_radius }}px;">
+<div class="video-gallery-block__video-wrapper">
+{%- if block.settings.verified_label != blank -%}
+                <div class="video-gallery-block__badge">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" fill="#22C55E"/>
+                    <path d="M8 12.5L10.5 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ block.settings.verified_label }}</span>
+                </div>
+              {%- endif -%}
+              {%- if thumbnail_img != blank -%}
+                <div class="video-gallery-block__thumbnail" style="background-image: url('{{ thumbnail_img | image_url: width: 600 }}');"></div>
+              {%- endif -%}
+<iframe 
+                class="video-gallery-block__video" 
+                src="https://www.youtube.com/embed/{{ video_id }}?autoplay=1&mute=1&controls=0&loop=1&playlist={{ video_id }}&modestbranding=1&rel=0&enablejsapi=1&playsinline=1" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                loading="lazy"
+              ></iframe>
+            </div>
+            {%- assign client_name_setting = 'client_name_' | append: i -%}
+            {%- assign review_text_setting = 'review_text_' | append: i -%}
+            {%- if block.settings[client_name_setting] != blank or block.settings[review_text_setting] != blank -%}
+              <div class="video-gallery-block__info">
+                {%- if block.settings[client_name_setting] != blank -%}
+                  <span class="video-gallery-block__client-name">{{ block.settings[client_name_setting] }}</span>
+                {%- endif -%}
+                {%- if block.settings.stars_icon != blank -%}
+                  <img 
+                    src="{{ block.settings.stars_icon | image_url: width: 200 }}" 
+                    alt="Stars" 
+                    class="video-gallery-block__stars-icon"
+                    loading="lazy"
+                  >
+                {%- endif -%}
+                {%- if block.settings[review_text_setting] != blank -%}
+                  <p class="video-gallery-block__review-text">{{ block.settings[review_text_setting] }}</p>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+</div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+{%- if block.settings.enable_mobile_controls -%}
+<button class="video-gallery-block__next" aria-label="Next">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 6L15 12L9 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    {%- endif -%}
+  </div>
+
+</div>
+
+<style>
+#block-{{ block.id }} {
+    padding-top: {{ block.settings.padding_top_mobile }}px;
+    padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+    padding-left: {{ block.settings.padding_left_mobile }}px;
+    padding-right: {{ block.settings.padding_right_mobile }}px;
+    margin-top: {{ block.settings.margin_top_mobile }}px;
+    margin-bottom: {{ block.settings.margin_bottom_mobile }}px;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.background_border_radius }}px;
+  }
+#block-{{ block.id }} .video-gallery-block__heading {
+    font-size: {{ block.settings.heading_size_mobile }}px;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    text-align: {{ block.settings.heading_alignment }};
+    letter-spacing: -0.02em;
+    color: #000;
+    text-transform: uppercase;
+  }
+#block-{{ block.id }} .video-gallery-block__subheading {
+    display: flex;
+    align-items: center;
+    justify-content: {% if block.settings.heading_alignment == 'center' %}center{% elsif block.settings.heading_alignment == 'right' %}flex-end{% else %}flex-start{% endif %};
+    gap: 8px;
+    font-size: {{ block.settings.subheading_size_mobile }}px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 24px;
+  }
+  .video-gallery-block__subheading-icon {
+    width: 24px;
+    height: auto;
+  }
+  .video-gallery-block__card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .video-gallery-block__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: {{ block.settings.verified_size_mobile }}px;
+    font-weight: 500;
+    z-index: 5;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .video-gallery-block__badge svg {
+    width: {{ block.settings.verified_icon_size_mobile }}px;
+    height: {{ block.settings.verified_icon_size_mobile }}px;
+  }
+.video-gallery-block__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    background: transparent;
+    text-align: center;
+  }
+.video-gallery-block__client-name {
+    font-weight: 700;
+    color: #000;
+    font-size: {{ block.settings.name_size_mobile }}px;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .video-gallery-block__client-name img {
+    height: 1em;
+    width: auto;
+    object-fit: contain;
+    vertical-align: middle;
+  }
+  .video-gallery-block__stars-icon {
+    display: block;
+    width: {{ block.settings.stars_icon_width_mobile }}px;
+    height: auto;
+    margin: 2px 0;
+  }
+  .video-gallery-block__review-text {
+    font-size: {{ block.settings.review_size_mobile }}px;
+    color: #4A5568;
+    margin: 0;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  .video-gallery-block__slider-container {
+    position: relative;
+    padding: 0 10px;
+  }
+#slider-{{ block.id }} {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - (12px * ({{ block.settings.videos_to_show_mobile | minus: 1 }}))) / {{ block.settings.videos_to_show_mobile }});
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  #slider-{{ block.id }}::-webkit-scrollbar {
+    display: none;
+  }
+.video-gallery-block__item {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: center;
+  }
+  .video-gallery-block__video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9/16;
+    overflow: hidden;
+    background: #f0f0f0;
+    flex-shrink: 0;
+  }
+.video-gallery-block__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: none;
+    pointer-events: none;
+  }
+  .video-gallery-block__thumbnail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+  .video-gallery-block__thumbnail.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+.video-gallery-block__next {
+    display: flex;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    width: {{ block.settings.arrow_width_mobile }}px;
+    height: {{ block.settings.arrow_height_mobile }}px;
+    border-radius: 12px;
+    background-color: {{ block.settings.arrow_background_color | color_modify: 'alpha', 0.8 }};
+    cursor: pointer;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+@media (min-width: 769px) {
+    #block-{{ block.id }} {
+      padding-top: {{ block.settings.padding_top }}px;
+      padding-bottom: {{ block.settings.padding_bottom }}px;
+      margin-top: {{ block.settings.margin_top }}px;
+      margin-bottom: {{ block.settings.margin_bottom }}px;
+    }
+#block-{{ block.id }} .video-gallery-block__heading {
+      font-size: {{ block.settings.heading_size_desktop }}px;
+    }
+#block-{{ block.id }} .video-gallery-block__subheading {
+      font-size: {{ block.settings.subheading_size_desktop }}px;
+    }
+    .video-gallery-block__client-name {
+      font-size: {{ block.settings.name_size_desktop }}px;
+    }
+    .video-gallery-block__review-text {
+      font-size: {{ block.settings.review_size_desktop }}px;
+    }
+    .video-gallery-block__stars-icon {
+      width: {{ block.settings.stars_icon_width_desktop }}px;
+    }
+    .video-gallery-block__badge {
+      font-size: {{ block.settings.verified_size_desktop }}px;
+    }
+    .video-gallery-block__badge svg {
+      width: {{ block.settings.verified_icon_size_desktop }}px;
+      height: {{ block.settings.verified_icon_size_desktop }}px;
+    }
+    .video-gallery-block__slider-container {
+      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+#slider-{{ block.id }} {
+      grid-auto-columns: calc((100% - (12px * ({{ block.settings.videos_to_show_desktop | minus: 1 }}))) / {{ block.settings.videos_to_show_desktop }});
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    const blockId = '{{ block.id }}';
+const container = document.getElementById('slider-' + blockId);
+    const nextBtn = document.querySelector('#block-' + blockId + ' .video-gallery-block__next');
+    const items = document.querySelectorAll('#block-' + blockId + ' .video-gallery-block__item');
+
+if (nextBtn && container) {
+      nextBtn.addEventListener('click', () => {
+        const scrollAmount = container.offsetWidth;
+        const isAtEnd = container.scrollLeft + container.offsetWidth >= container.scrollWidth - 5;
+
+        if (isAtEnd) {
+          container.scrollTo({
+            left: 0,
+            behavior: 'smooth'
+          });
+        } else {
+          container.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+          });
+        }
+      });
+    }
+
+const players = {};
+    
+    const onYouTubeIframeAPIReady = () => {
+      items.forEach(item => {
+        const videoId = item.getAttribute('data-video-id');
+        const iframe = item.querySelector('iframe');
+        iframe.id = 'yt-' + Math.random().toString(36).substr(2, 9);
+        
+players[iframe.id] = new YT.Player(iframe.id, {
+          events: {
+            'onReady': (event) => {
+              event.target.mute();
+              event.target.playVideo();
+            },
+            'onStateChange': (event) => {
+              const thumb = item.querySelector('.video-gallery-block__thumbnail');
+              if (event.data === YT.PlayerState.PLAYING) {
+                if (thumb) thumb.classList.add('is-hidden');
+              }
+            }
+          }
+        });
+      });
+    };
+
+if (window.YT && window.YT.Player) {
+      onYouTubeIframeAPIReady();
+    } else {
+      const existingCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (existingCallback) existingCallback();
+        onYouTubeIframeAPIReady();
+      };
+    }
+
+})();
+</script>

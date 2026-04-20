@@ -1,0 +1,806 @@
+{% comment %}
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+
+{% if section.settings.show_upsell %}
+
+  {% assign btn_brightness = section.settings.upsell_atcbg | color_brightness | plus:0 | round %}
+  {% if btn_brightness > 40 and btn_brightness != 255 %}{% assign btn_color_hover = section.settings.upsell_atcbg | color_darken: 10 %}{% else %}{% assign btn_color_hover = section.settings.upsell_atcbg | color_lighten: 15 %}{% endif %}
+        
+  {% comment %}
+  Make a loop that goes through all different items in the cart. 
+  Forloop last is necessary to get only the final number and times:1 to convert string to a number
+  This will be used later to show or hide the upsell.
+  {% endcomment %}
+  {% for item in cart.items %} 
+    {% if forloop.last %}	
+      {% capture number_lineitems %}{{ forloop.index }}{% endcapture %}	
+      {% assign number_lineitems = number_lineitems | times: 1 %}	
+    {% endif %}	
+  {% endfor %}
+
+
+  {% comment %}
+  Capture the max items before the upsell is hidden, and multiply by one to convert from string to integer.
+  This will be used later to show or hide the upsell.
+  {% endcomment %}
+  {% capture upsell_cap %}{{ section.settings.upsell_cap }}{% endcapture %}
+  {% assign upsell_cap = upsell_cap | times:1 %}
+
+
+  {% comment %}
+  Make an array of all product ID in the cart. This will be used to check if the upsell we want to add is not already in the cart
+  {% endcomment %}
+  {% capture arr %}{% for item in cart.items %}{{-item.product.id-}},{% endfor %}{% endcapture %}
+  {% assign array1 = arr | split: ',' %}
+
+
+  {% comment %}
+  Go through the cart items and break the loop once an item meet conditions for upsell. Assign break_loop is to break the parent loop.
+  The loop is set to not break when the upsell found is already in the cart, so that we check next line_item for upsell
+  {% endcomment %}
+  {% assign break_loop = true %}
+  {% for item in cart.items %}
+
+        {% comment %}
+        Capture collection_handle of item in the current loop
+        {% endcomment %}
+        {% capture collection_handle %}{% for collection in item.product.collections %}{{ collection.handle }}{% endfor %}{% endcapture %}
+	
+          {% comment %}
+          => Loop through blocks (child loop) to check if current item in parent loop matches referent variant or product or collection.
+          => When true, take the ID of the upsell and check if it is not already contained in the cart (check with array1 created above).
+              => If true, it means the upsell for the line_item in cart is already inside the cart. Therefore, reset the childloop and restart main loop for next line_item
+              => If false, item is matching for upsell and it is not in cart, break main loop and capture ID to render relevant content later on in html. 
+		      => capture blockIndex is to assign to eligible upsell, in order to retrieve the exact upsell blocks in case the same product is upselled multiple times with different settings
+          {% endcomment %}
+		  {% comment %}=> item iteration{% endcomment %}
+          {% assign break_childloop = false %}
+          {% for block in section.blocks %}{% comment %}=> block iteration {% endcomment %}
+			  {% capture blockIndex %}{{ forloop.index }}{% endcapture %}
+			  {% unless block.type == 'customcss' %}
+                      {% comment %}
+                      Define upsell-ref based if it's product or collection block. If collection, keep collection handle, otherwise check if product field id blank. If blank, assign product id by default
+                      {% endcomment %}
+              
+                      {% if block.type == 'upsell1' %}
+                        {% if block.settings.upsell_reference == blank %}
+                        	{% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].id %}
+                        {% else %}
+                        	{% assign upsell_ref = block.settings.upsell_reference | times:1 %}
+                        {% endif %}
+                      {% else %}
+                      	{% assign upsell_ref = block.settings.upsell_reference %}
+                      {% endif %} 
+                      {% if item.id == upsell_ref or item.product.id == upsell_ref or collection_handle contains upsell_ref %} {% comment %}=> item {{ forloop.index }} déclencheur {% endcomment %}
+                        {% assign my_handle = block.settings.product_upsell %}
+                        {% capture item_id %}{{ all_products[my_handle].id }}{% endcapture %}
+                        {% assign upsell_id = item_id | times:1 %}
+                          {% for myitem in array1 %} 
+                            {% assign cartItem_id = myitem | times: 1 %} 
+                            {% if cartItem_id == upsell_id %} {% comment %}=> product {{ upsell_id }} already in cart {% endcomment %}
+                              {% assign variant_id = 0 %}	
+                              {% assign product_id = 0 %}
+                              {% assign eligible_upsell = 0 %}
+                              {% assign break_loop = false %}
+                              {% assign break_childloop = false %}
+                              {% break %}                            
+                            {% else %}  {% comment %}=> product {{ upsell_id }} not in cart {% endcomment %}
+                              {% capture variant_id %}{{ item.id }}{% endcapture %}	
+                              {% capture product_id %}{{ item.product.id }}{% endcapture %}											 
+                              {% capture eligible_upsell %}{{ upsell_id }}-{{ blockIndex }}{% endcapture %}		
+                              {% assign break_childloop = true %}
+                              {% assign break_loop = true %}
+                            {% endif %}
+                          {% endfor %}                              
+                        {% else %} {% comment %} => item {{ forloop.index }} non déclencheur (item.id : {{ item.id }} && {{ block.settings.upsell_reference }}, item.product.id: {{ item.product.id }} && {{ upsell_ref }}, collection_handle: {{ collection_handle }} && {{ block.settings.upsell_reference }} {% endcomment %}
+                             {% assign break_loop = false %}
+                        {% endif %}
+              		{% if break_childloop %}{% break %}{% comment %}=> break child loop{% endcomment %}{% endif %}                         		                         
+             {% endunless %}
+		{% endfor %}
+     	{% if break_loop %}{% break %}{% comment %}=> break main loop (no next item){% endcomment %}{% endif %} 	
+  {% endfor %}
+
+
+<style>
+  /* main styles */
+  .upsell-section{width:100%;max-width:1000px;margin:0 auto;}
+  .upsell-wrapper{position:relative;text-align:center;padding: 20px 15px;}
+  .upsell-header{color:{{ section.settings.upsell_color | color_lighten: 35 }};font-size: 0.8em;letter-spacing: 1px;text-transform: uppercase;font-weight:600;margin-bottom:8px;}
+  .upsell-content{display:flex;align-items:center;margin:0;line-height:inherit;}
+  .upsell-text{color:{{ section.settings.upsell_color }};text-align:left;margin:0 12px}
+  .upsell-topline {margin-bottom:15px;font-weight:600;font-size:1em;}
+  .upsell-topline p {margin-bottom:5px;display:inline-block}
+  .upsell-mainline p, .upsell-mainline{margin-bottom:0;font-size:1em}
+  .upsell-mainline .unset > * {all:unset}  
+  .upsell-image{display:flex;max-width: 60px;flex: 0 0 60px;height:auto}
+  .upsell-image img {width:100%;height: auto;align-self: flex-start;}
+  .upsell-subline{margin:20px 0 5px}
+  .upsell-subline p, .upsell-subline{font-size:1em}
+  .upsell_compare-price{color:{{ section.settings.upsell_atc | color_modify: 'alpha', 0.7 }};font-size: 1em;margin:0 3px}
+   button.submit_upsell.submit_upsell--loading span, .upsell-svg.submit_upsell--loading > g:first-child {opacity:0; transition: opacity 0.1s ease-in}
+   button.submit_upsell svg.submit_upsell--loading, .upsell-svg.submit_upsell--loading > g:last-child > svg {opacity: 1;transition: opacity 0.2s ease-out 0.1s;}
+  .upsell-svg.submit_upsell--loading, .btn__svg--loader.submit_upsell--loading{-webkit-animation: rotate 0.5s linear infinite;animation: rotate 0.5s linear infinite;}
+  .upsell-svg.submit_upsell--loading svg.btn__svg--loader{fill:#000}
+  .md_desktop-hide {display:inherit;}
+  .md_mobile-hide {display:none;}
+  @keyframes rotate {0% {-webkit-transform: rotate(0);transform: rotate(0);}100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}}
+  
+  /* media queries */
+  @media(min-width:1100px) {
+    #shopify-section-upsell-maxdesign{order:2}
+    .upsell-header{background-color:{{ section.settings.upsell_topcolor}};color:{{ section.settings.upsell_topcolor_text}};white-space: nowrap;position: absolute;left: 50%;transform: translateX(-50%);top: -14px;z-index: 2;border-radius: 40px;padding: 4px 30px;}
+    .upsell-wrapper{width:400px;float:left;border:1px solid {{ section.settings.upsell_border_color_desktop }};background-color:{{ section.settings.upsell_bg_color_desktop }};margin:50px 0 0;padding:25px 20px;}
+    .upsell-wrapper button{width:350px}
+    .upsell-content{width:350px;justify-content:space-around;margin:5px auto 15px;line-height:1.3em}
+    .upsell-topline {margin-bottom:10px}
+    .upsell-mainline p, .upsell-mainline{font-size:0.95em}
+    .upsell-image{float:left;width:35%;max-width: 82px;flex: 0 0 auto;}
+    .upsell-text {color:{{ section.settings.upsell_color_desktop }};width:65%;margin:0}
+    button.submit_upsell {position:relative;margin:0;color:{{ section.settings.upsell_atc}};background-color:{{ section.settings.upsell_atcbg}};border:1px solid {{ section.settings.upsell_atc}};letter-spacing:1.5px;width:100%;font-weight:600;font-size:0.9em;padding:11px 20px;border-radius:50px;display:inline-block;text-decoration:none;text-align:center;vertical-align:middle;white-space:nowrap;cursor:pointer;-moz-user-select:none;-webkit-user-select:none;user-select:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none}
+    button.submit_upsell:hover,button.submit_upsell:focus {background-color:{{ btn_color_hover }}}
+    button.submit_upsell.submit_upsell--loading {pointer-events:none}
+    button.submit_upsell svg {position: absolute;fill:{{ section.settings.upsell_atc}};width: 20px;height: 20px;left: calc(50% - 10px);top: calc(50% - 10px);-webkit-transition: opacity 0.3s ease-in-out;transition: opacity 0.3s ease-in-out;opacity: 0;}
+    .md_desktop-hide {display:none;}
+    .md_mobile-hide {display:inherit;}
+  }
+  @media (min-width: 640px) and (max-width: 1099px) {
+    .upsell-header{background-color:{{ section.settings.upsell_topcolor}};color:{{ section.settings.upsell_topcolor_text}};white-space: nowrap;position: absolute;left: 50%;transform: translateX(-50%);top: -14px;z-index: 2;border-radius: 40px;padding: 4px 30px;}
+    .upsell-wrapper {width: 640px;margin-left:auto;margin-right:auto;}
+  }
+  @media(max-width:1099px) {
+    .upsell-header{background-color:{{ section.settings.upsell_topcolor}};color:{{ section.settings.upsell_topcolor_text}};white-space: nowrap;position: absolute;left: 50%;transform: translateX(-50%);top: 5px;z-index: 2;border-radius: 40px;padding: 4px 30px;}
+    .upsell-container{top:14px;font-size:0.9em;background-color:{{ section.settings.upsell_bg_color }};border: 1px solid {{ section.settings.upsell_border_color }};padding: 15px;position: relative;}
+    .upsell-svg {width:25px;height:25px;flex:1 0 auto;position:relative;fill:#000;}
+    button.submit_upsell1 {position:relative;margin:0;color:{{ section.settings.upsell_atc}};background-color:{{ section.settings.upsell_atcbg}};border:1px solid {{ section.settings.upsell_atc}};letter-spacing:1.5px;width:100%;font-weight:600;font-size:0.8em;padding:11px 20px;border-radius:50px;text-decoration:none;text-align:center;vertical-align:left;white-space:nowrap;cursor:pointer;-moz-user-select:none;-webkit-user-select:none;user-select:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none}
+    button.submit_upsell1:hover,button.submit_upsell:focus {background-color:{{ btn_color_hover }}}
+    button.submit_upsell1.submit_upsell--loading {pointer-events:none}
+    button.submit_upsell1 svg {position: absolute;fill:{{ section.settings.upsell_atc}};width: 20px;height: 20px;left: calc(50% - 10px);top: calc(50% - 10px);-webkit-transition: opacity 0.3s ease-in-out;transition: opacity 0.3s ease-in-out;opacity: 0;}
+
+  }
+  /* custom css */
+  {% for block in section.blocks %}{% if block.type == 'customcss' %}{% assign customcss = forloop.index0 %}{% endif %}{% endfor %}
+  @media (min-width:{{ section.blocks[customcss].settings.query}}px) { {{section.blocks[customcss].settings.css_bureau}} }
+  @media (max-width:{{ section.blocks[customcss].settings.query | minus: 1 }}px) { {{section.blocks[customcss].settings.css_mobile}} }
+</style>
+
+
+    {% comment %}
+    Render the html if upsell exist and based of number of items in cart
+        DEBUG TEXT  
+        ==> {{ forloop.index }} • variantid : {{ variant_id }} ==? {{ upsell_ref }} • productID:{{ product_id }} ==? {{ upsell_ref }} • eligibleupsell :{{ eligible_upsell }} ==? {{ myupsell_id }}
+        • eligible_upsell: {{ eligible_upsell }} ==? {{ myupsell_id }} 
+        {% if eligible_upsell == myupsell_id %} WORKS {% endif %}
+        UPSELLREF : {{ upsell_ref }}
+	{% endcomment %}
+
+
+
+  {% if number_lineitems < upsell_cap %}
+	{% for block in section.blocks %} 
+    {% capture blockIndex %}{{ forloop.index }}{% endcapture %}
+	  {% unless block.type == 'customcss' %}
+	    {% capture priceTag %}
+          {% if block.settings.show_price %}                  
+            {% comment %}
+            Loop through all products/variants and see if it matches upsell ID. When true, return the product price.
+            If upsell ID is left blank in editor, then use the first available variant as upsell.
+            {% endcomment %}
+            {% if block.settings.upsell_upsell != blank %}
+              {% assign upsell_id = block.settings.upsell_upsell | times: 1 %}
+            {% else %}
+              {% assign my_handle = block.settings.product_upsell %}
+              {% assign upsell_id = all_products[my_handle].first_available_variant.id | times:1 %}
+            {% endif %}
+            {% for product in collections["all"].products %}
+              {% if product.id == upsell_id %}
+                &nbsp; • &nbsp;{% if product.compare_at_price and block.settings.show_compare_price %}<s class="upsell_compare-price">{{ product.compare_at_price | money | strip }}</s>&nbsp;{% endif %}{{ product.price | money }}                         
+                {% break %}
+              {% endif %}
+              {% for variant in product.variants %}          			
+                {% if variant.id == upsell_id %}  
+                  &nbsp; • &nbsp;{% if variant.compare_at_price and block.settings.show_compare_price %}<s class="upsell_compare-price">{{ variant.compare_at_price | money | strip }}</s>&nbsp;{% endif %}{{ variant.price | money  }}
+                  {% break %}  
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+            {% endif %}                 
+		{% endcapture %}
+        {% assign upsell_handle = block.settings.product_upsell %}
+        {% capture myupsell_id %}{{ all_products[upsell_handle].id }}-{{ blockIndex }}{% endcapture %}
+		
+        {% comment %}FIND UPSELL TYPE COLLECTION OR PRODUCT{% endcomment %}
+        {% if block.type == 'upsell1' %}
+			{% if block.settings.upsell_reference == blank %}{% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].id %}{% else %}{% assign upsell_ref = block.settings.upsell_reference | times:1 %}{% endif %}
+        {% elsif block.type == 'upsell2' %}
+        	{% assign upsell_ref = block.settings.upsell_reference %}
+        {% endif %}	
+
+          {% if variant_id == upsell_ref or product_id == upsell_ref or eligible_upsell == myupsell_id and all_products[upsell_handle].available %}
+            <section class="upsell-section">	
+              <div class="upsell-wrapper">	
+                <div class="upsell-header"><span>{{ block.settings.upsell_header }}</span></div>	
+                  <div class="upsell-container">
+                    <div class="upsell-topline md_desktop-hide">{% if block.settings.upsell_topline == blank %}{{ all_products[upsell_handle].title }}{% else %}{{ block.settings.upsell_topline }}{% endif %}{{ priceTag | strip }}</div> 
+                    <div class="upsell-content">
+                      <a class="upsell-image" href="{{ all_products[upsell_handle].url }}">
+                        <img src="{{ block.settings.upsell_img | default: all_products[upsell_handle].featured_image | product_img_url: '300x' }}">	
+                      </a>
+                      <div class="upsell-text">	
+                        <div class="upsell-topline md_mobile-hide">{% if block.settings.upsell_topline == blank %}{{ all_products[upsell_handle].title }}{% else %}{{ block.settings.upsell_topline }}{% endif %}</div> 
+                        <div class="upsell-mainline">{% if block.settings.upsell_mainline == blank %}<span class="unset">{{ all_products[upsell_handle].content | truncatewords: 10 | strip_html }}</span>{% else %}{{ block.settings.upsell_mainline }}{% endif %}</div>	
+                      </div>
+                      <button name="upsell" type="button" class="submit_upsell1 md_desktop-hide">
+                        <span>{{ block.settings.upsell_button }}{{ priceTag }}</span>
+                        <svg class="btn__svg--loader" viewBox="0 0 20 20"><path d="M20 10c0 5.523-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0v2c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8h2z"></path></svg>
+                      </button>
+                  </div>
+                  <button name="upsell" type="button" class="submit_upsell md_mobile-hide">
+                    <span>{{ block.settings.upsell_button }}{{ priceTag }}</span>
+                    <svg class="btn__svg--loader" viewBox="0 0 20 20"><path d="M20 10c0 5.523-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0v2c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8h2z"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </section>  
+            <div style="clear:both"></div>
+            {% break %}
+          {% endif %}
+	  {% endunless %}
+	{% endfor %}
+  {% endif %}
+
+
+  {% comment %}
+  	Decides which script to execute depending on upsell choosen
+  {% endcomment %}
+
+  {% if section.settings.upsell_type == 'update_cart' %}
+   <script>  
+     addEventListener("load", function(){
+         (function fetchCart() {
+           fetch('/cart.js').then(function(response) {
+             return response.json();
+           }).then(function(cart) {
+             if (cart.item_count === 0) {
+               console.log('cart empty');
+             } else {     
+               LoadUpsell(cart); 
+             }
+           }).catch(function() {
+             console.log("Cart error. Contact maxdesign.");
+           });
+         })();
+       
+         function LoadUpsell(cart) {
+          cart.items.forEach(function(item, index) {            
+            {% for block in section.blocks %}  
+            {% assign upsell_handle = block.settings.product_upsell %}
+            {% capture myupsell_id %}{{ all_products[upsell_handle].id }}-{{ blockIndex }}{% endcapture %}
+               {% unless block.type == 'customcss' %}
+                  {% if variant_id == block.settings.upsell_reference or product_id == block.settings.upsell_reference or eligible_upsell == myupsell_id %}
+                    {% comment %}Convert product id to first available variant id if only product is selected{% endcomment %}
+                    {% if block.settings.upsell_upsell != blank %}
+                    {% assign upsell_id = block.settings.upsell_upsell | times: 1 %}
+                    {% else %}
+                    {% assign my_handle = block.settings.product_upsell %}
+                    {% assign upsell_id = all_products[my_handle].first_available_variant.id | times:1 %}
+                    {% endif %} 
+                    {% if block.type == 'upsell1' %}
+                    {% if block.settings.upsell_reference == blank %}
+                    {% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].first_available_variant.id %}
+                    {% else %}
+                    {% assign upsell_ref = block.settings.upsell_reference | times:1 %}
+                    {% endif %}
+                    {% elsif block.type == 'upsell2' %}
+                    {% assign upsell_ref = block.settings.upsell_reference %}
+                    {% endif %}	
+                      {% if block.settings.replace_reference contains 'replace' %}           		
+                      	document.querySelectorAll('.submit_upsell').forEach(submit => {
+                          submit.addEventListener('click', function() {
+                              if (window.matchMedia("(min-width: 1100px)").matches) {
+                                this.querySelector('svg').classList.add('submit_upsell--loading');
+                                this.classList.add('submit_upsell--loading');
+                              } else {
+                                this.classList.add('submit_upsell--loading');
+                              }  
+                             fetch('/cart/change.js', {
+                               method: 'POST',
+                               credentials: 'same-origin',
+                               headers: { 'Content-Type': 'application/json' },
+                               body: JSON.stringify({"quantity": 0,"id":"{% if block.settings.upsell_reference != blank %}{{ block.settings.upsell_reference }}{% else %}{{ upsell_ref }}{% endif %}"})
+                              }).then(function (data) {
+                                 if (data.status == 200) {
+                                   fetch('/cart/add.js', {
+                                     method: 'post',
+                                     headers: { 'Content-Type': 'application/json' },
+                                     body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                   }).then(res=>res.json())
+                                   .then(res => document.location = '/cart');
+                                 } else {console.error('Request returned an error', data)}
+                               }).catch(function (error) {console.error('Request failed', error)})
+                             })
+                          })
+                      {% else %}
+                          document.querySelectorAll('.submit_upsell').forEach(submit => {
+                            submit.addEventListener('click', function() {
+                                if (window.matchMedia("(min-width: 1100px)").matches) {
+                                 this.querySelector('svg').classList.add('submit_upsell--loading');
+                                 this.classList.add('submit_upsell--loading');
+                                } else {
+                                 this.classList.add('submit_upsell--loading');
+                                }
+                                fetch('/cart/add.js', {
+                                  method: 'post',
+                                  credentials: 'same-origin',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                }).then(res=>res.json())
+                                .then(res => document.location = '/cart')
+                                .catch(function (error) {console.error('Request failed', error)})
+                              })
+                            })
+                      {% endif %}
+                      {% break %}
+                  {% endif %}
+                {% endunless %}
+             {% endfor %}    
+          })
+        }
+    })
+  </script>
+  {% else %}
+   <script>
+    addEventListener("load", function(){
+       (function fetchCart() {
+           fetch('/cart.js').then(function(response) {
+             return response.json();
+           }).then(function(cart) {
+             if (cart.item_count === 0) {
+               console.log('cart empty');
+             } else {     
+               LoadUpsell(cart); 
+             }
+           }).catch(function() {
+             console.log("Cart error. Contact maxdesign.");
+           });
+         })();
+      
+        function LoadUpsell(cart) {
+          cart.items.forEach(function(item, index) {            
+            {% for block in section.blocks %}
+               {% unless block.type == 'customcss' %}
+                   {% if variant_id == block.settings.upsell_reference or product_id == block.settings.upsell_reference or collection_handle contains block.settings.upsell_reference %}
+            		{% comment %}Convert product id to first available variant id if only product is selected{% endcomment %}
+                    {% if block.settings.upsell_upsell != blank %}
+                    {% assign upsell_id = block.settings.upsell_upsell | times: 1 %}
+                    {% else %}
+                    {% assign my_handle = block.settings.product_upsell %}
+                    {% assign upsell_id = all_products[my_handle].first_available_variant.id | times:1 %}
+                    {% endif %} 
+                    {% if block.type == 'upsell1' %}
+                    {% if block.settings.upsell_reference == blank %}
+                    {% assign myref = block.settings.product_ref %}{% assign upsell_ref = all_products[myref].first_available_variant.id %}
+                    {% else %}
+                    {% assign upsell_ref = block.settings.upsell_reference | times:1 %}
+                    {% endif %}
+                    {% elsif block.type == 'upsell2' %}
+                    {% assign upsell_ref = block.settings.upsell_reference %}
+                    {% endif %}	
+                    {% if block.settings.replace_reference contains 'replace' %}
+                        document.querySelectorAll('.submit_upsell').forEach(submit => {
+                            submit.addEventListener('click', function() {
+                              if (window.matchMedia("(min-width: 1100px)").matches) {
+                                this.querySelector('svg').classList.add('submit_upsell--loading');
+                                this.classList.add('submit_upsell--loading');
+                              } else {
+                                this.classList.add('submit_upsell--loading');
+                              } 
+                             fetch('/cart/change.js', {
+                               method: 'POST',
+                               credentials: 'same-origin',
+                               headers: { 'Content-Type': 'application/json' },
+                               body: JSON.stringify({"quantity": 0,"id":"{% if block.settings.upsell_reference != blank %}{{ block.settings.upsell_reference }}{% else %}{{ upsell_ref }}{% endif %}"})
+                              }).then(function (data) {
+                                 if (data.status == 200) {
+                                   fetch('/cart/add.js', {
+                                     method: 'post',
+                                     headers: { 'Content-Type': 'application/json' },
+                                     body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                   }).then(res=>res.json())
+                                   .then(res => document.location = '/cart/checkout');
+                                 } else {console.error('Request returned an error', data)}
+                               }).catch(function (error) {console.error('Request failed', error)})
+                             })
+                            })
+                      {% else %}
+                            document.querySelectorAll('.submit_upsell').forEach(submit => {
+                              submit.addEventListener('click', function() {
+                                if (window.matchMedia("(min-width: 1100px)").matches) {
+                                  this.querySelector('svg').classList.add('submit_upsell--loading');
+                                  this.classList.add('submit_upsell--loading');
+                                } else {
+                                  this.classList.add('submit_upsell--loading');
+                                } 
+                                fetch('/cart/add.js', {
+                                  method: 'post',
+                                  credentials: 'same-origin',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({"id": "{{ upsell_id }}", "quantity": 1})
+                                }).then(res=>res.json())
+                                .then(res => document.location = '/cart/checkout')
+                                .catch(function (error) {console.error('Request failed', error)})
+                              })
+                            })
+                      {% endif %}        
+                  {% endif %}
+                {% endunless %}
+             {% endfor %}    
+          })
+        }
+    })
+  </script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{ 
+   "name":"✪ Upsell by MaxDesign",
+   "settings":[ 
+      {
+      "type": "header",
+      "content": "©MaxDesign. All Rights Reserved."
+     },
+     {
+      "type": "paragraph",
+      "content": {
+        "en": "It is forbidden to resell or duplicate this ressource without permission of the author. Thank you to [contact me](https://5euros.com/profil/maxdesign) for additional information.",
+        "fr": "Il est interdit de copier ou revendre cette section sans l'accord de l'auteur. Pour toute demande d'information, veuillez [me contacter](https://5euros.com/profil/maxdesign). "
+      }
+      },
+      { 
+         "type":"header",
+         "content":"Paramètres généraux"
+      },
+      { 
+         "type":"checkbox",
+         "id":"show_upsell",
+         "label":"Activer l'upsell",
+		 "default": true
+      },
+	  {
+         "type": "select",
+         "id": "upsell_cap",
+         "label": "Retirer l'upsell lorsque le panier contient déjà X produits différents",
+         "options": [
+           {
+             "value": "2",
+             "label": "2"
+           },
+           {
+             "value": "3",
+             "label": "3"
+           },
+		   {
+             "value": "4",
+             "label": "4"
+           },
+		   {
+             "value": "5",
+             "label": "5"
+           },
+		   {
+             "value": "100",
+             "label": "Toujours actif"
+           }
+         ],
+         "default":  "3"
+	  },	
+      { 
+         "type":"radio",
+         "id":"upsell_type",
+         "label":"Choisir le type d'upsell",
+         "options":[ 
+            { 
+               "value":"update_cart",
+               "label":"Mettre à jour le panier"
+            },
+            { 
+               "value":"checkout",
+               "label":"Aller au checkout"
+            }
+         ],
+         "default":"update_cart"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_atc",
+         "label":"Couleur du texte",
+         "default":"#fff"
+      },
+      { 
+         "type":"color",
+         "id":"upsell_atcbg",
+         "label":"Couleur du fond",
+         "default":"#000"
+      },
+	  {
+        "type": "header",
+        "content": "Paramètres bureau"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_color_desktop",
+         "label":"Couleur du texte"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_bg_color_desktop",
+         "label":"Couleur du fond"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_border_color_desktop",
+         "label": "Couleur de la bordure",
+	     "default":"#eeeeee"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_topcolor_text",
+         "label":"Couleur bandereau (texte)",
+         "default":"#fff"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_topcolor",
+         "label":"Couleur bandereau (fond)",
+         "default":"#000"
+      },
+	  {
+        "type": "header",
+        "content": "Paramètres mobile"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_color",
+         "label":"Couleur du texte"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_bg_color",
+         "label":"Couleur du fond",
+		 "default":"#fff"
+      },
+	  { 
+         "type":"color",
+         "id":"upsell_border_color",
+         "label":"Couleur de la bordure",
+		 "default":"#dcdcdc"
+      }
+   ],
+   "blocks":[ 
+      { 
+         "type":"upsell1",
+         "name":"Upsell (par produit)",
+         "settings":[ 
+            { 
+               "type":"header",
+               "content":"Upsell par produit"
+            },
+            {
+               "type": "product",
+               "id": "product_ref",
+               "label": "Produit référence",
+               "info": "Ce produit déclenchera l'upsell. Si vous souhaitez qu'une variante spécifique déclenche l'upsell, resmplissez le champs ci-dessous."
+			},
+            { 
+               "type":"text",
+               "id":"upsell_reference",
+               "label":"ID de la variante (optionnel)",
+               "info":"Choisir la variante qui déclenchera l'upsell. [Trouver l'ID](https://help.shopify.com/en/themes/customization/products/variants/find-variant-id)."
+            },
+            { 
+               "type":"header",
+               "content":"Produit Upsell"
+            },
+            {
+               "type": "product",
+               "id": "product_upsell",
+               "label": "Produit upsell",
+               "info": "Par défaut, la première variante disponible sera en upsell. Si vous souhaitez une variante spécifique, remplissez le champ ci-dessous."
+			},
+            { 
+               "type":"text",
+               "id":"upsell_upsell",
+               "label":"ID de la variante (optionnel)",
+               "info":"Choisir la variante correspondant à l'upsell."
+            },
+            { 
+               "type":"radio",
+               "id":"replace_reference",
+               "label":"Action de l'Upsell :",
+               "options":[ 
+                  { 
+                     "value":"add",
+                     "label":"S'ajoute au panier"
+                  },
+                  { 
+                     "value":"replace",
+                     "label":"Remplace le produit référence"
+                  }
+               ],
+               "default":"add"
+            },
+            { 
+               "type":"text",
+               "id":"upsell_header",
+               "label":"Texte bandereau",
+               "default":"Offre FLASH"
+            },
+            { 
+               "type":"image_picker",
+               "id":"upsell_img",
+               "label":"Image de l'upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_topline",
+               "label":"Titre upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_mainline",
+               "label":"Texte upsell 2"
+            },
+			{ 
+               "type":"text",
+               "id":"upsell_button",
+               "label":"Bouton ATC",
+               "default":"AJOUTER AU PANIER"
+            },
+            { 
+               "type":"checkbox",
+               "id":"show_price",
+               "label":"Afficher les prix dans le bouton",
+               "default":true
+			},
+			{ 
+               "type":"checkbox",
+               "id":"show_compare_price",
+               "label":"Afficher le prix comparatif",
+			   "info":"Attention à la largeur du bouton en mobile"
+	        }
+         ]
+      },
+      { 
+         "type":"upsell2",
+         "name":"Upsell (par collection)",
+         "settings":[ 
+            { 
+               "type":"header",
+               "content":"Upsell par collection"
+            },
+            { 
+               "type":"collection",
+               "id":"upsell_reference",
+               "label":"Collection référence",
+               "info":"La collection déclenchera l'upsell."
+            },
+            { 
+               "type":"header",
+               "content":"Produit Upsell"
+            },
+			{
+               "type": "product",
+               "id": "product_upsell",
+               "label": "Produit upsell",
+               "info": "Par défaut, la première variante disponible sera en upsell. Si vous souhaitez une variante spécifique, remplissez le champ ci-dessous."
+			},
+            { 
+               "type":"text",
+               "id":"upsell_upsell",
+               "label":"ID de la variante (optionnel)",
+               "info":"Choisir la variante correspondant à l'upsell. [Où trouver l'ID ?](https://help.shopify.com/en/themes/customization/products/variants/find-variant-id)"
+            },
+            { 
+               "type":"radio",
+               "id":"replace_reference",
+               "label":"Action de l'Upsell :",
+               "options":[ 
+                  { 
+                     "value":"add",
+                     "label":"S'ajoute au panier"
+                  }
+               ],
+               "default":"add"
+            },
+            { 
+               "type":"text",
+               "id":"upsell_header",
+               "label":"Texte bandereau",
+               "default":"🔥 Offre FLASH 🔥"
+            },
+            { 
+               "type":"image_picker",
+               "id":"upsell_img",
+               "label":"Image de l'upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_topline",
+               "label":"Titre upsell"
+            },
+            { 
+               "type":"html",
+               "id":"upsell_mainline",
+               "label":"Texte upsell 2"
+            },
+			{ 
+               "type":"text",
+               "id":"upsell_button",
+               "label":"Bouton ATC",
+               "default":"AJOUTER AU PANIER"
+            },
+            { 
+               "type":"checkbox",
+               "id":"show_price",
+               "label":"Afficher le prix dans le bouton",
+               "default":true
+	       },
+		   { 
+               "type":"checkbox",
+               "id":"show_compare_price",
+               "label":"Afficher le prix comparatif",
+			   "info":"Attention à la largeur du bouton en mobile"
+	       }
+         ]
+      },
+	  {
+        "type": "customcss",
+        "name": "Règles CSS avancées",
+		"limit": 1,
+        "settings": [
+		  {
+			"type":"paragraph",
+			"content":"Ignorer ce bloc si vous n'avez pas les bases en HTML/CSS"
+		  },
+		  {
+            "type": "header",
+            "content": "Mobile"
+		  },
+          {
+            "type": "html",
+            "id": "css_mobile",
+            "label": "Custom CSS",
+            "info": "ex: .upsell-wrapper{border-radius:10px;border:0px;}"		
+		  },
+		  {
+            "type": "header",
+            "content": "Bureau"
+		  },
+		  {
+            "type": "range",
+            "id": "query",
+            "label": "media-query line break",
+            "min": 400,
+            "max": 1200,
+            "step": 50,
+            "default": 1100
+    	  },
+		  {
+            "type": "html",
+            "id": "css_bureau",
+            "label": "Custom CSS",
+            "info": "ex: .upsell-wrapper{border-radius:10px;border:0px}",
+			"default":".upsell-wrapper{border-radius:10px;border:0px;background-color: rgba(250, 250, 250, 0.85);}"
+		  }		  		  
+		]
+	  }
+   ]
+}
+{% endschema %}

@@ -1,0 +1,2455 @@
+{% comment %}
+  RCXBuggy - Page Avis (Reviews Page) - Block Architecture
+  Refactored for Responsiveness and Modular CSS.
+{% endcomment %}
+
+{% assign align = section.settings.section_alignment | default: 'center' %}
+{% assign text_align_class = 'rcxbuggy-text-' | append: align %}
+
+{% assign justify_class = 'rcxbuggy-justify-center' %}
+{% assign items_class = 'rcxbuggy-items-center' %}
+
+{% if align == 'left' %}
+  {% assign justify_class = 'rcxbuggy-justify-start' %}
+  {% assign items_class = 'rcxbuggy-items-start' %}
+{% elsif align == 'right' %}
+  {% assign justify_class = 'rcxbuggy-justify-end' %}
+  {% assign items_class = 'rcxbuggy-items-end' %}
+{% endif %}
+
+<style>
+  .rcxbuggy-wrapper * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .rcxbuggy-wrapper {
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* Color utilities */
+  .rcxbuggy-bg-white { background-color: #ffffff; }
+  .rcxbuggy-bg-gray-50 { background-color: #f9fafb; }
+  .rcxbuggy-bg-gray-100 { background-color: #f3f4f6; }
+  .rcxbuggy-bg-gray-200 { background-color: #e5e7eb; }
+  .rcxbuggy-bg-gray-300 { background-color: #d1d5db; }
+  .rcxbuggy-bg-blue-50 { background-color: #eff6ff; }
+  .rcxbuggy-bg-blue-600 { background-color: #2563eb; }
+  .rcxbuggy-bg-blue-500 { background-color: #3b82f6; }
+  .rcxbuggy-bg-blue-700 { background-color: #1d4ed8; }
+  .rcxbuggy-bg-green-100 { background-color: #dcfce7; }
+  .rcxbuggy-bg-yellow-400 { background-color: #facc15; }
+  .rcxbuggy-bg-gray-900 { color: #111827; }
+
+  .rcxbuggy-text-white { color: #ffffff; }
+  .rcxbuggy-text-gray-900 { color: #111827; }
+  .rcxbuggy-text-gray-800 { color: #1f2937; }
+  .rcxbuggy-text-gray-700 { color: #374151; }
+  .rcxbuggy-text-gray-600 { color: #4b5563; }
+  .rcxbuggy-text-gray-500 { color: #6b7280; }
+  .rcxbuggy-text-gray-400 { color: #9ca3af; }
+  .rcxbuggy-text-blue-600 { color: #2563eb; }
+  .rcxbuggy-text-blue-700 { color: #1d4ed8; }
+  .rcxbuggy-text-blue-100 { color: #dbeafe; }
+  .rcxbuggy-text-green-800 { color: #166534; }
+
+  /* Border utilities */
+  .rcxbuggy-border { border-width: 1px; border-style: solid; }
+  .rcxbuggy-border-gray-100 { border-color: #f3f4f6; }
+  .rcxbuggy-border-gray-200 { border-color: #e5e7eb; }
+
+  /* Border radius */
+  .rcxbuggy-rounded { border-radius: 0.25rem; }
+  .rcxbuggy-rounded-full { border-radius: 9999px; }
+  .rcxbuggy-rounded-xl { border-radius: 0.75rem; }
+  .rcxbuggy-rounded-2xl { border-radius: 1rem; }
+
+  /* Shadow */
+  .rcxbuggy-shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+  .rcxbuggy-shadow { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); }
+
+  /* Spacing */
+  .rcxbuggy-mx-auto { margin-left: auto; margin-right: auto; }
+  .rcxbuggy-ml-1 { margin-left: 0.25rem; }
+
+  .rcxbuggy-px-4 { padding-left: 1rem; padding-right: 1rem; }
+  .rcxbuggy-px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+  .rcxbuggy-px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .rcxbuggy-px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .rcxbuggy-py-0-5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+  .rcxbuggy-py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+  .rcxbuggy-py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+  .rcxbuggy-p-4 { padding: 1rem; }
+  .rcxbuggy-p-6 { padding: 1.5rem; }
+  .rcxbuggy-p-8 { padding: 4rem; }
+
+  .rcxbuggy-pb-6 { padding-bottom: 1.5rem; }
+  .rcxbuggy-pb-10 { padding-bottom: 2.5rem; }
+  .rcxbuggy-pb-12 { padding-bottom: 3rem; }
+  .rcxbuggy-pb-20 { padding-bottom: 5rem; }
+  .rcxbuggy-pt-12 { padding-top: 3rem; }
+
+  .rcxbuggy-mt-1 { margin-top: 0.25rem; }
+  .rcxbuggy-mt-2 { margin-top: 0.5rem; }
+  .rcxbuggy-mt-3 { margin-top: 0.75rem; }
+  .rcxbuggy-mt-4 { margin-top: 1rem; }
+  .rcxbuggy-mt-6 { margin-top: 1.5rem; }
+  .rcxbuggy-mt-8 { margin-top: 4rem; }
+  .rcxbuggy-mt-10 { margin-top: 2.5rem; }
+
+  .rcxbuggy-mb-2 { margin-bottom: 0.1rem; }
+  .rcxbuggy-mb-4 { margin-bottom: 1rem; }
+  .rcxbuggy-mb-6 { margin-bottom: 1.5rem; }
+  .rcxbuggy-mb-8 { margin-bottom: 4rem; margin-top:2rem}
+  .rcxbuggy-mb-9 { margin-bottom: 2rem; margin-top:2rem}
+
+  .rcxbuggy-gap-0-5 { gap: 0.125rem; }
+  .rcxbuggy-gap-2 { gap: 0.5rem; }
+  .rcxbuggy-gap-3 { gap: 0.75rem; }
+  .rcxbuggy-gap-4 { gap: 1rem; }
+  .rcxbuggy-gap-6 { gap: 1.5rem; }
+  .rcxbuggy-gap-8 { gap: 2rem; }
+
+  /* Spacing utilities for flex/grid */
+  .rcxbuggy-space-y-1 > * + * { margin-top: 0.25rem; }
+  .rcxbuggy-space-y-3 > * + * { margin-top: 0.75rem; }
+  .rcxbuggy-space-y-4 > * + * { margin-top: 1rem; }
+  .rcxbuggy-space-y-8 > * + * { margin-top: 2rem; }
+
+  .rcxbuggy-space-x-minus-3 > * {
+    margin-left: -0.75rem;
+  }
+
+  .rcxbuggy-space-x-minus-3 > *:first-child {
+    margin-left: 0;
+  }
+
+  /* Typography */
+  .rcxbuggy-text-xs { font-size: 12px; line-height: 16px; }
+  .rcxbuggy-text-sm { font-size: 14px; line-height: 20px; }
+  .rcxbuggy-text-base { font-size: 16px; line-height: 22px; }
+  .rcxbuggy-text-lg { font-size: 18px; line-height: 28px; }
+  .rcxbuggy-text-xl { font-size: 20px; line-height: 28px; }
+  .rcxbuggy-text-2xl { font-size: 24px; line-height: 32px; }
+  .rcxbuggy-text-3xl { font-size: 30px; line-height: 36px; }
+  .rcxbuggy-text-4xl { font-size: 36px; line-height: 44px; }
+
+  .rcxbuggy-font-medium { font-weight: 500; }
+  .rcxbuggy-font-semibold { font-weight: 600; }
+  .rcxbuggy-font-bold { font-weight: 700; }
+  .rcxbuggy-font-extrabold { font-weight: 800; }
+
+  .rcxbuggy-uppercase { text-transform: uppercase; }
+  .rcxbuggy-tracking-tight { letter-spacing: -0.025em; }
+  .rcxbuggy-tracking-widest { letter-spacing: 0.1em; }
+  .rcxbuggy-leading-tight { line-height: 1.25; }
+
+  .rcxbuggy-text-center { text-align: center; }
+  .rcxbuggy-text-left { text-align: left; }
+  .rcxbuggy-text-right { text-align: right; }
+  
+  /* Updated Typography for Pixel Perfection */
+  .rcxbuggy-h1-hero { font-size: 48px; line-height: 48px; font-weight: 800; }
+  .rcxbuggy-h2-section { font-size: 34px; line-height: 42px; font-weight: 800; }
+  .rcxbuggy-h3-heading { font-size: 34px; line-height: 44px; font-weight: 800; }
+  .my-responsive-title { font-size: 36px; font-weight: 800; }
+  .rcxbuggy-text-lg2 { font-size: 18px; line-height: 28px; margin-bottom: 3px; }
+
+  /* Layout utilities */
+  .rcxbuggy-flex { display: flex; }
+  .rcxbuggy-inline-flex { display: inline-flex; }
+  .rcxbuggy-grid { display: grid; }
+  .rcxbuggy-inline-block { display: inline-block; }
+  .rcxbuggy-block { display: block; }
+
+  .rcxbuggy-flex-col { flex-direction: column; }
+  .rcxbuggy-flex-row { flex-direction: row; }
+  .rcxbuggy-flex-shrink-0 { flex-shrink: 0; }
+  .rcxbuggy-flex-wrap { flex-wrap: wrap; }
+
+  .rcxbuggy-items-center { align-items: center; }
+  .rcxbuggy-items-start { align-items: flex-start; }
+  .rcxbuggy-items-end { align-items: flex-end; }
+  .rcxbuggy-items-stretch { align-items: stretch; }
+  .rcxbuggy-justify-between { justify-content: space-between; }
+  .rcxbuggy-justify-center { justify-content: center; }
+  .rcxbuggy-justify-start { justify-content: flex-start; }
+  .rcxbuggy-justify-end { justify-content: flex-end; }
+
+  .rcxbuggy-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+
+  .rcxbuggy-overflow-hidden { overflow: hidden; }
+
+  .rcxbuggy-relative { position: relative; }
+  .rcxbuggy-absolute { position: absolute; }
+  .rcxbuggy-left-3 { left: 0.75rem; }
+  .rcxbuggy-top-3 { top: 0.75rem; }
+
+  /* Dimensions */
+  .rcxbuggy-h-4 { height: 1rem; }
+  .rcxbuggy-h-8 { height: 2rem; }
+  .rcxbuggy-h-28 { height: 7rem; }
+  .rcxbuggy-h-44 { height: 11rem; }
+  .rcxbuggy-h-56 { height: 14rem; }
+  .rcxbuggy-h-auto { height: auto; }
+
+  .rcxbuggy-w-4 { width: 1rem; }
+  .rcxbuggy-w-8 { width: 2rem; }
+  .rcxbuggy-w-28 { width: 7rem; }
+  .rcxbuggy-w-full { width: 100%; }
+
+  .rcxbuggy-object-cover { object-fit: cover; }
+  .rcxbuggy-ring-2 { box-shadow: 0 0 0 2px; }
+  .rcxbuggy-ring-white { box-shadow: 0 0 0 2px #ffffff; }
+
+  /* Star rating styles */
+  .rcxbuggy-star-rating { 
+    display: flex;
+    gap: 0.125rem;
+    align-items: center;
+  }
+  .rcxbuggy-star-rating img {
+    width: 1rem;
+    height: 1rem;
+    display: block;
+  }
+
+  /* Interactive */
+  .rcxbuggy-cursor-pointer { cursor: pointer; }
+  .rcxbuggy-transition { transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1); }
+
+  .rcxbuggy-wrapper a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .rcxbuggy-hover-opacity-90:hover { opacity: 0.9; }
+  .rcxbuggy-hover-bg-blue-700:hover { background-color: #1d4ed8; }
+  .rcxbuggy-hover-bg-black-90:hover { background-color: rgba(0, 0, 0, 0.9); }
+
+  /* Details/Summary */
+  .rcxbuggy-wrapper details summary::-webkit-details-marker { display: none; }
+
+  .rcxbuggy-details-group summary .rcxbuggy-group-open-rotate-90 {
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rcxbuggy-details-group[open] summary .rcxbuggy-group-open-rotate-90 {
+    transform: rotate(90deg);
+  }
+  .rcxbuggy-details-group[open] .rcxbuggy-open-shadow-sm {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+
+  /* Gradient */
+  .rcxbuggy-bg-gradient-to-r {
+    background-image: linear-gradient(to right, #2563eb, #3b82f6);
+  }
+  .rcxbuggy-white-90 { background-color:#F2F0EE; }
+
+  .rcxbuggy-wrapper img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .rcxbuggy-wrapper figure { margin: 0; }
+
+  /* Button styles */
+  .rcxbuggy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: #ffffff;
+  }
+  .rcxbuggy-btn.rcxbuggy-btn-white {
+    color: #2563eb;
+    background-color: #ffffff;
+  }
+  .rcxbuggy-btn.rcxbuggy-btn-white:hover { opacity: 0.9; }
+  .rcxbuggy-btn.rcxbuggy-btn-blue {
+    color: #ffffff;
+    background-color: #2563eb;
+  }
+  .rcxbuggy-btn.rcxbuggy-btn-blue:hover { background-color: #1d4ed8; }
+  .rcxbuggy-btn.rcxbuggy-btn-dark {
+    color: #ffffff;
+    background-color: #111827;  }
+  .rcxbuggy-btn.rcxbuggy-btn-dark:hover { background-color: rgba(0, 0, 0, 0.9); }
+
+  .rcxbuggy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Media Queries */
+  @media (max-width: 639px) {
+    .rcxbuggy-sm-px-6 { padding-left: 1rem; padding-right: 1rem; }
+    .rcxbuggy-sm-p-6 { padding: 3rem; }
+    .rcxbuggy-sm-pt-8 { padding-top: 2rem; }
+    .rcxbuggy-sm-pb-8 { padding-bottom: 2rem; }
+    .rcxbuggy-white-90 { background-color: #F3F1EF;}
+    .rcxbuggy-mt-8 { margin-top: 2rem; }
+    .rcxbuggy-mb-8 { margin-bottom: 2rem; margin-top: 1rem;}
+    
+    /* Typography Overrides */
+    .rcxbuggy-h1-hero { font-size: 33px; line-height: 34px; }
+    .rcxbuggy-h2-section { font-size: 28px; line-height: 36px; }
+    .rcxbuggy-h3-heading { font-size: 24px; line-height: 32px; }
+    .my-responsive-title { font-size: 30px; }
+
+    .rcxbuggy-text-base { font-size: 13px; line-height: 20px; }
+    .rcxbuggy-text-lg { font-size: 13px; line-height: 20px;}
+    .rcxbuggy-text-sm { font-size: 14px; line-height: 20px; margin-bottom:3px; }
+    .rcxbuggy-text-base2 { font-size: 18px; line-height: 20px; }
+    .rcxbuggy-text-lg2 { font-size: 18px; line-height: 20px; }
+  }
+
+  @media (min-width: 640px) {
+    .rcxbuggy-sm-px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .rcxbuggy-sm-p-6 { padding: 1.5rem; }
+    .rcxbuggy-sm-flex-row { flex-direction: row; }
+    .rcxbuggy-sm-text-lg { font-size: 18px; line-height: 28px; }
+    .rcxbuggy-sm-text-4xl { font-size: 36px; line-height: 44px; }
+    .rcxbuggy-sm-text-5xl { font-size: 48px; line-height: 52px; }
+    .rcxbuggy-sm-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 768px) {
+    .rcxbuggy-md-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 1024px) {
+    .rcxbuggy-lg-px-8 { padding-left: 2rem; padding-right: 2rem; }
+    .rcxbuggy-lg-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rcxbuggy-lg-grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .rcxbuggy-lg-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .rcxbuggy-lg-p-8 { padding: 2rem; }
+    .rcxbuggy-lg-h-12 { height: 3rem; } /* Adjusted from original to prevent parse error if variable wasn't used */
+    .rcxbuggy-lg-w-12 { width: 3rem; }
+    .rcxbuggy-lg-space-x-minus-4 > * { margin-left: -1rem; }
+    .rcxbuggy-lg-space-x-minus-4 > *:first-child { margin-left: 0; }
+  }
+
+  .rcxbuggy-main { width: 100%; }
+  .rcxbuggy-section { width: 100%; }
+</style>
+
+<div class="rcxbuggy-wrapper">
+  <main class="rcxbuggy-main rcxbuggy-bg-white">
+    
+    {% for block in section.blocks %}
+      {% case block.type %}
+        
+        {% when 'hero' %}
+          {% style %}
+            .rcx-block-{{ block.id }} {
+              padding-left: {{ block.settings.padding_x }}px;
+              padding-right: {{ block.settings.padding_x }}px;
+              padding-top: {{ block.settings.padding_top }}px;
+              padding-bottom: {{ block.settings.padding_bottom }}px;
+              {% if block.settings.enable_max_width %}
+                max-width: 90%;
+              {% else %}
+                max-width: 100%;
+              {% endif %}
+            }
+            .rcx-block-{{ block.id }} .rcx-hero-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-hero-subtitle {
+              font-size: {{ block.settings.subheading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-hero-trustpilot-img {
+              height: {{ block.settings.trustpilot_stars_height }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-hero-stats {
+              margin-top: {{ block.settings.stats_margin_top }}px;
+              padding: {{ block.settings.stats_box_padding_desktop }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-hero-avatar {
+              width: {{ block.settings.avatar_size }}px;
+              height: {{ block.settings.avatar_size }}px;
+            }
+
+            @media (min-width: 1024px) {
+               {% if block.settings.enable_max_width %}
+               .rcx-block-{{ block.id }} { max-width: 82%; }
+               {% endif %}
+            }
+
+            @media (max-width: 639px) {
+              .rcx-block-{{ block.id }} {
+                padding-left: {{ block.settings.padding_x_mobile }}px;
+                padding-right: {{ block.settings.padding_x_mobile }}px;
+                padding-top: {{ block.settings.padding_top_mobile }}px;
+                padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+                max-width: {{ block.settings.mobile_max_width }}%;
+              }
+              .rcx-block-{{ block.id }} .rcx-hero-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-hero-subtitle {
+                font-size: {{ block.settings.subheading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-hero-trustpilot-img {
+                height: {{ block.settings.trustpilot_stars_height_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-hero-stats {
+                margin-top: {{ block.settings.stats_margin_top_mobile }}px;
+                padding: {{ block.settings.stats_box_padding_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-hero-avatar {
+                width: {{ block.settings.avatar_size_mobile }}px;
+                height: {{ block.settings.avatar_size_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <section class="rcx-block-{{ block.id }} rcxbuggy-section rcxbuggy-relative rcxbuggy-mx-auto" {{ block.shopify_attributes }}>
+            <div class="rcxbuggy-mx-auto rcxbuggy-max-w-3xl {{ text_align_class }}">
+              <h1 class="rcx-hero-title rcxbuggy-h1-hero rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">
+                {{ block.settings.title_pre }} <span class="rcxbuggy-text-blue-600">{{ block.settings.title_highlight }}</span> {{ block.settings.title_post }}
+              </h1>
+
+              <p class="rcx-hero-subtitle rcxbuggy-mx-auto rcxbuggy-mt-4 rcxbuggy-max-w-2xl rcxbuggy-text-lg rcxbuggy-text-gray-600">
+                {{ block.settings.subtitle }}
+              </p>
+            </div>
+
+            <div class="rcxbuggy-mt-6 rcxbuggy-flex rcxbuggy-items-center {{ justify_class }} rcxbuggy-gap-3">
+              {% if block.settings.trustpilot_image != blank %}
+                <img src="{{ block.settings.trustpilot_image | img_url: 'master' }}" class="rcx-hero-trustpilot-img rcxbuggy-w-auto" alt="Trustpilot Rating">
+              {% endif %}
+              <span class="rcxbuggy-text-2xl rcxbuggy-font-bold rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">{{ block.settings.trustpilot_score }}</span>
+            </div>
+
+            <div class="rcx-hero-stats rcxbuggy-rounded-2xl rcxbuggy-border rcxbuggy-border-gray-100 rcxbuggy-bg-gray-50">
+              <div class="rcxbuggy-flex rcxbuggy-flex-col rcxbuggy-items-center rcxbuggy-justify-between rcxbuggy-gap-4 rcxbuggy-sm-flex-row">
+                <p class="rcxbuggy-text-sm rcxbuggy-font-semibold rcxbuggy-text-gray-700">
+                  <span class="rcxbuggy-text-blue-600">{{ block.settings.stat_number }}</span> {{ block.settings.stat_text }}
+                  <span class="rcxbuggy-ml-1 rcxbuggy-inline-flex rcxbuggy-items-center rcxbuggy-rounded-full rcxbuggy-bg-green-100 rcxbuggy-px-2 rcxbuggy-py-0-5 rcxbuggy-text-green-800 rcxbuggy-text-xs rcxbuggy-font-semibold">{{ block.settings.stat_score }}</span>
+                </p>
+                <div class="rcxbuggy-flex rcxbuggy-space-x-minus-3 rcxbuggy-lg-space-x-minus-4">
+                  {% for i in (1..6) %}
+                    {% assign avatar_key = 'avatar_' | append: i %}
+                    {% assign avatar_img = block.settings[avatar_key] %}
+                    {% if avatar_img != blank %}
+                      <img loading="lazy" src="{{ avatar_img | img_url: '96x96' }}" class="rcx-hero-avatar rcxbuggy-rounded-full rcxbuggy-ring-2 rcxbuggy-ring-white" alt="Client {{ i }}">
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </section>
+
+        {% when 'featured_testimonials' %}
+          {% style %}
+            .rcx-block-{{ block.id }} {
+              padding-left: {{ block.settings.padding_x }}px;
+              padding-right: {{ block.settings.padding_x }}px;
+              padding-top: {{ block.settings.padding_top }}px;
+              padding-bottom: {{ block.settings.padding_bottom }}px;
+              {% if block.settings.enable_max_width %}max-width: 90%;{% else %}max-width: 100%;{% endif %}
+            }
+            .rcx-block-{{ block.id }} .rcx-section-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-section-subtitle {
+              font-size: {{ block.settings.subheading_size }}px;
+            }
+
+            @media (min-width: 1024px) {
+               {% if block.settings.enable_max_width %}.rcx-block-{{ block.id }} { max-width: 82%; }{% endif %}
+            }
+
+            @media (max-width: 639px) {
+              .rcx-block-{{ block.id }} {
+                padding-left: {{ block.settings.padding_x_mobile }}px;
+                padding-right: {{ block.settings.padding_x_mobile }}px;
+                padding-top: {{ block.settings.padding_top_mobile }}px;
+                padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+                max-width: {{ block.settings.mobile_max_width }}%;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-subtitle {
+                font-size: {{ block.settings.subheading_size_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <section class="rcx-block-{{ block.id }} rcxbuggy-section rcxbuggy-mx-auto" {{ block.shopify_attributes }}>
+            <header class="rcxbuggy-mx-auto rcxbuggy-mb-8 rcxbuggy-max-w-3xl {{ text_align_class }}">
+              <p class="rcxbuggy-mb-2 rcxbuggy-text-sm rcxbuggy-font-semibold rcxbuggy-text-blue-600" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none;">{{ block.settings.tagline }}</p>
+              <h2 class="rcx-section-title rcxbuggy-h2-section rcxbuggy-leading-tight rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">{{ block.settings.title }}</h2>
+              <p class="rcx-section-subtitle rcxbuggy-mt-3 rcxbuggy-text-base rcxbuggy-text-gray-600 rcxbuggy-sm-text-lg">{{ block.settings.subtitle }}</p>
+            </header>
+
+            <ul class="rcxbuggy-list rcxbuggy-grid rcxbuggy-grid-cols-1 rcxbuggy-gap-6 rcxbuggy-sm-grid-cols-2 rcxbuggy-lg-grid-cols-4">
+              {% for i in (1..4) %}
+                {% assign img_key = 'image_' | append: i %}
+                {% assign product_key = 'product_' | append: i %}
+                {% assign quote_key = 'quote_' | append: i %}
+                {% assign author_key = 'author_' | append: i %}
+                
+                <li class="rcxbuggy-group rcxbuggy-overflow-hidden rcxbuggy-rounded-2xl rcxbuggy-border rcxbuggy-border-gray-100 rcxbuggy-bg-white rcxbuggy-shadow-sm">
+                  <figure>
+                    {% if block.settings[img_key] %}
+                      <img src="{{ block.settings[img_key] | img_url: '600x400' }}" class="rcxbuggy-h-44 rcxbuggy-w-full rcxbuggy-object-cover" alt="Ambassadeur {{ i }}">
+                    {% endif %}
+                    <figcaption class="rcxbuggy-space-y-3 rcxbuggy-p-4">
+                      <div class="rcxbuggy-flex rcxbuggy-items-center rcxbuggy-justify-between">
+                        <span class="rcxbuggy-rounded-full rcxbuggy-bg-blue-50 rcxbuggy-px-3 rcxbuggy-py-1 rcxbuggy-text-xs rcxbuggy-font-semibold rcxbuggy-text-blue-700">{{ block.settings[product_key] }}</span>
+                        <div class="rcxbuggy-star-rating">
+                          {% if block.settings.star_image %}
+                            {% for s in (1..5) %}<img src="{{ block.settings.star_image | img_url: '20x20' }}" alt="Star">{% endfor %}
+                          {% endif %}
+                        </div>
+                      </div>
+                      <p class="rcxbuggy-text-sm rcxbuggy-text-gray-800">{{ block.settings[quote_key] }}</p>
+                      <p class="rcxbuggy-text-xs rcxbuggy-text-gray-500">{{ block.settings[author_key] }}</p>
+                    </figcaption>
+                  </figure>
+                </li>
+              {% endfor %}
+            </ul>
+          </section>
+
+        {% when 'verified_reviews' %}
+          {% style %}
+            .rcx-block-{{ block.id }} {
+              padding-left: {{ block.settings.padding_x }}px;
+              padding-right: {{ block.settings.padding_x }}px;
+              padding-top: {{ block.settings.padding_top }}px;
+              padding-bottom: {{ block.settings.padding_bottom }}px;
+              {% if block.settings.enable_max_width %}max-width: 90%;{% else %}max-width: 100%;{% endif %}
+            }
+            .rcx-block-{{ block.id }} .rcx-section-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-section-subtitle {
+              font-size: {{ block.settings.subheading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-review-img {
+              width: {{ block.settings.review_image_size }}px;
+              height: {{ block.settings.review_image_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-review-card {
+              border-width: {{ block.settings.card_border_width }}px;
+            }
+
+            @media (min-width: 1024px) {
+               {% if block.settings.enable_max_width %}.rcx-block-{{ block.id }} { max-width: 82%; }{% endif %}
+            }
+
+            @media (max-width: 639px) {
+              .rcx-block-{{ block.id }} {
+                padding-left: {{ block.settings.padding_x_mobile }}px;
+                padding-right: {{ block.settings.padding_x_mobile }}px;
+                padding-top: {{ block.settings.padding_top_mobile }}px;
+                padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+                max-width: {{ block.settings.mobile_max_width }}%;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-subtitle {
+                font-size: {{ block.settings.subheading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-review-img {
+                width: {{ block.settings.review_image_size_mobile }}px;
+                height: {{ block.settings.review_image_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-review-card {
+                padding: {{ block.settings.card_padding_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-cta-box {
+                padding: {{ block.settings.cta_box_padding_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <section class="rcx-block-{{ block.id }} rcxbuggy-section rcxbuggy-mx-auto" {{ block.shopify_attributes }}>
+            <header class="rcxbuggy-mx-auto rcxbuggy-mb-8 rcxbuggy-max-w-3xl {{ text_align_class }}">
+              <p class="rcxbuggy-mb-2 rcxbuggy-text-sm rcxbuggy-font-semibold rcxbuggy-text-blue-600" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none;">{{ block.settings.tagline }}</p>
+              <h2 class="rcx-section-title rcxbuggy-h2-section rcxbuggy-leading-tight rcxbuggy-text-gray-900 my-responsive-title" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">{{ block.settings.title }}</h2>
+              <p class="rcx-section-subtitle rcxbuggy-mt-3 rcxbuggy-text-base rcxbuggy-text-gray-600 rcxbuggy-sm-text-lg">{{ block.settings.subtitle }}</p>
+            </header>
+
+            <ul class="rcxbuggy-list rcxbuggy-grid rcxbuggy-grid-cols-1 rcxbuggy-gap-6 rcxbuggy-md-grid-cols-2">
+              {% for i in (1..4) %}
+                {% assign img_key = 'review_image_' | append: i %}
+                {% assign name_key = 'review_name_' | append: i %}
+                {% assign prod_key = 'review_product_' | append: i %}
+                {% assign text_key = 'review_text_' | append: i %}
+                
+                <li class="rcx-review-card rcxbuggy-flex rcxbuggy-gap-4 rcxbuggy-rounded-2xl rcxbuggy-border rcxbuggy-border-gray-100 rcxbuggy-bg-white rcxbuggy-p-6 rcxbuggy-shadow-sm">
+                  {% if block.settings[img_key] %}
+                    <img src="{{ block.settings[img_key] | img_url: '200x200' }}" class="rcx-review-img rcxbuggy-flex-shrink-0 rcxbuggy-rounded-xl rcxbuggy-object-cover" alt="UGC {{ i }}">
+                  {% endif %}
+                  <div class="rcxbuggy-space-y-1">
+                    <div class="rcxbuggy-flex rcxbuggy-items-center rcxbuggy-gap-3">
+                      <p class="rcxbuggy-text-sm rcxbuggy-font-semibold rcxbuggy-text-gray-900">{{ block.settings[name_key] }}</p>
+                      <span class="rcxbuggy-rounded-full rcxbuggy-bg-blue-50 rcxbuggy-px-2 rcxbuggy-py-0-5 rcxbuggy-text-xs rcxbuggy-font-semibold rcxbuggy-text-blue-700">{{ block.settings[prod_key] }}</span>
+                    </div>
+                    <div class="rcxbuggy-star-rating">
+                       {% if block.settings.star_image %}
+                          {% for s in (1..5) %}<img src="{{ block.settings.star_image | img_url: '20x20' }}" alt="Star">{% endfor %}
+                       {% endif %}
+                    </div>
+                    <p class="rcxbuggy-text-sm rcxbuggy-text-gray-700">{{ block.settings[text_key] }}</p>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+
+            <div class="rcx-cta-box rcxbuggy-mt-10 rcxbuggy-flex rcxbuggy-flex-col rcxbuggy-items-center rcxbuggy-justify-between rcxbuggy-gap-4 rcxbuggy-rounded-2xl rcxbuggy-bg-gradient-to-r rcxbuggy-from-blue-600 rcxbuggy-to-blue-500 rcxbuggy-p-4 rcxbuggy-sm-p-6 rcxbuggy-lg-p-8 rcxbuggy-text-white rcxbuggy-sm-flex-row">
+              <div>
+                <p class="rcxbuggy-text-lg2 rcxbuggy-font-semibold rcxbuggy-text-white">{{ block.settings.cta_box_title }}</p>
+                <p class="rcxbuggy-text-sm rcxbuggy-text-blue-100">{{ block.settings.cta_box_text }}</p>
+              </div>
+              <a href="{{ block.settings.cta_box_url }}" class="rcxbuggy-btn rcxbuggy-btn-white">{{ block.settings.cta_box_btn_label }}</a>
+            </div>
+          </section>
+
+        {% when 'best_sellers' %}
+          {% style %}
+            .rcx-block-{{ block.id }} {
+              padding-left: {{ block.settings.padding_x }}px;
+              padding-right: {{ block.settings.padding_x }}px;
+              padding-top: {{ block.settings.padding_top }}px;
+              padding-bottom: {{ block.settings.padding_bottom }}px;
+              {% if block.settings.enable_max_width %}max-width: 90%;{% else %}max-width: 100%;{% endif %}
+            }
+            .rcx-block-{{ block.id }} .rcx-section-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-product-heading {
+              font-size: {{ block.settings.product_heading_size_desktop }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-product-card {
+              border-width: {{ block.settings.card_border_width }}px;
+            }
+
+            @media (min-width: 1024px) {
+               {% if block.settings.enable_max_width %}.rcx-block-{{ block.id }} { max-width: 82%; }{% endif %}
+            }
+
+            @media (max-width: 639px) {
+              .rcx-block-{{ block.id }} {
+                padding-left: {{ block.settings.padding_x_mobile }}px;
+                padding-right: {{ block.settings.padding_x_mobile }}px;
+                padding-top: {{ block.settings.padding_top_mobile }}px;
+                padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+                max-width: {{ block.settings.mobile_max_width }}%;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-product-heading {
+                font-size: {{ block.settings.product_heading_size_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <section class="rcx-block-{{ block.id }} rcxbuggy-section rcxbuggy-mx-auto" {{ block.shopify_attributes }}>
+            <header class="rcxbuggy-mx-auto rcxbuggy-mb-9 rcxbuggy-max-w-3xl {{ text_align_class }}">
+              <h2 class="rcx-section-title rcxbuggy-h2-section rcxbuggy-leading-tight rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">{{ block.settings.title }}</h2>
+            </header>
+
+            <div class="rcxbuggy-grid rcxbuggy-grid-cols-1 rcxbuggy-gap-6 rcxbuggy-sm-grid-cols-2 rcxbuggy-lg-grid-cols-3">
+              {% for i in (1..3) %}
+                {% assign p_img = 'product_image_' | append: i %}
+                {% assign p_badge = 'product_badge_' | append: i %}
+                {% assign p_name = 'product_name_' | append: i %}
+                {% assign p_price = 'product_price_' | append: i %}
+                {% assign p_link = 'product_link_' | append: i %}
+                
+                <article class="rcx-product-card rcxbuggy-group rcxbuggy-overflow-hidden rcxbuggy-rounded-2xl rcxbuggy-border rcxbuggy-border-gray-100 rcxbuggy-bg-white">
+                  <div class="rcxbuggy-relative">
+                    {% if block.settings[p_img] %}
+                    <img src="{{ block.settings[p_img] | img_url: '500x400' }}" class="rcxbuggy-h-56 rcxbuggy-w-full rcxbuggy-object-cover" alt="Product {{ i }}">
+                    {% endif %}
+                    <span class="rcxbuggy-absolute rcxbuggy-left-3 rcxbuggy-top-3 rcxbuggy-rounded-full rcxbuggy-white-90 rcxbuggy-px-3 rcxbuggy-py-1 rcxbuggy-text-xs rcxbuggy-font-semibold rcxbuggy-text-gray-900">{{ block.settings[p_badge] }}</span>
+                  </div>
+                  <div class="rcxbuggy-space-y-3 rcxbuggy-p-4">
+                    <h3 class="rcx-product-heading rcxbuggy-text-base2 rcxbuggy-font-semibold rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none;">{{ block.settings[p_name] }}</h3>
+                    <div class="rcxbuggy-flex rcxbuggy-items-center rcxbuggy-justify-between">
+                      <span class="rcxbuggy-text-lg2 rcxbuggy-font-bold rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">{{ block.settings[p_price] }}</span>
+                      <a href="{{ block.settings[p_link] }}" class="rcxbuggy-btn rcxbuggy-btn-blue" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">{{ block.settings.product_btn_label }}</a>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          </section>
+
+        {% when 'why_rcx' %}
+          {% style %}
+            .rcx-block-{{ block.id }} {
+              padding-left: {{ block.settings.padding_x }}px;
+              padding-right: {{ block.settings.padding_x }}px;
+              padding-top: {{ block.settings.padding_top }}px;
+              padding-bottom: {{ block.settings.padding_bottom }}px;
+              {% if block.settings.enable_max_width %}max-width: 90%;{% else %}max-width: 100%;{% endif %}
+            }
+            .rcx-block-{{ block.id }} .rcx-section-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-feature-img {
+              width: {{ block.settings.feature_image_size }}px;
+              height: {{ block.settings.feature_image_size }}px;
+            }
+
+            @media (min-width: 1024px) {
+               {% if block.settings.enable_max_width %}.rcx-block-{{ block.id }} { max-width: 82%; }{% endif %}
+            }
+
+            @media (max-width: 639px) {
+              .rcx-block-{{ block.id }} {
+                padding-left: {{ block.settings.padding_x_mobile }}px;
+                padding-right: {{ block.settings.padding_x_mobile }}px;
+                padding-top: {{ block.settings.padding_top_mobile }}px;
+                padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+                max-width: {{ block.settings.mobile_max_width }}%;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-feature-img {
+                width: {{ block.settings.feature_image_size_mobile }}px;
+                height: {{ block.settings.feature_image_size_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <section class="rcx-block-{{ block.id }} rcxbuggy-section rcxbuggy-mx-auto" {{ block.shopify_attributes }}>
+            <div class="rcxbuggy-grid rcxbuggy-grid-cols-1 rcxbuggy-gap-8 rcxbuggy-lg-grid-cols-2 rcxbuggy-items-center">
+              <div>
+                <h2 class="rcx-section-title rcxbuggy-h3-heading rcxbuggy-text-gray-900 rcxbuggy-mb-6" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">{{ block.settings.title }}</h2>
+                <div class="rcxbuggy-space-y-8">
+                  {% for i in (1..3) %}
+                    {% assign f_title = 'feature_title_' | append: i %}
+                    {% assign f_desc = 'feature_desc_' | append: i %}
+                    <div>
+                      <p class="rcxbuggy-text-xl rcxbuggy-font-semibold rcxbuggy-text-gray-900">{{ block.settings[f_title] }}</p>
+                      <p class="rcxbuggy-text-base rcxbuggy-text-gray-700 rcxbuggy-mt-2">{{ block.settings[f_desc] }}</p>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="rcxbuggy-rounded-2xl rcxbuggy-p-4">
+                {% if block.settings.feature_image %}
+                <img src="{{ block.settings.feature_image | img_url: '600x600' }}" alt="Feature Image" class="rcx-feature-img rcxbuggy-object-cover rcxbuggy-rounded-xl">
+                {% endif %}
+              </div>
+            </div>
+          </section>
+
+        {% when 'cta_faq' %}
+          {% style %}
+            .rcx-block-{{ block.id }} {
+              padding-left: {{ block.settings.padding_x }}px;
+              padding-right: {{ block.settings.padding_x }}px;
+              padding-top: {{ block.settings.padding_top }}px;
+              padding-bottom: {{ block.settings.padding_bottom }}px;
+              {% if block.settings.enable_max_width %}max-width: 90%;{% else %}max-width: 100%;{% endif %}
+            }
+            .rcx-block-{{ block.id }} .rcx-section-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-section-subtitle {
+              font-size: {{ block.settings.subheading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-faq-title {
+              font-size: {{ block.settings.heading_size }}px;
+            }
+            .rcx-block-{{ block.id }} .rcx-inner-box {
+              padding: {{ block.settings.inner_padding_desktop }}px;
+            }
+
+            @media (min-width: 1024px) {
+               {% if block.settings.enable_max_width %}.rcx-block-{{ block.id }} { max-width: 82%; }{% endif %}
+            }
+
+            @media (max-width: 639px) {
+              .rcx-block-{{ block.id }} {
+                padding-left: {{ block.settings.padding_x_mobile }}px;
+                padding-right: {{ block.settings.padding_x_mobile }}px;
+                padding-top: {{ block.settings.padding_top_mobile }}px;
+                padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+                max-width: {{ block.settings.mobile_max_width }}%;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-section-subtitle {
+                font-size: {{ block.settings.subheading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-faq-title {
+                font-size: {{ block.settings.heading_size_mobile }}px;
+              }
+              .rcx-block-{{ block.id }} .rcx-inner-box {
+                padding: {{ block.settings.inner_padding_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <section class="rcx-block-{{ block.id }} rcxbuggy-section rcxbuggy-mx-auto" {{ block.shopify_attributes }}>
+            <div class="rcx-inner-box rcxbuggy-rounded-2xl rcxbuggy-bg-gray-50 rcxbuggy-shadow-sm {{ text_align_class }}">
+              <h2 class="rcx-section-title rcxbuggy-h2-section rcxbuggy-text-gray-900" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">{{ block.settings.cta_heading }}</h2>
+              <p class="rcx-section-subtitle rcxbuggy-text-gray-600 rcxbuggy-mt-2 rcxbuggy-text-base">{{ block.settings.cta_subheading }}</p>
+              <div class="rcxbuggy-mt-6 rcxbuggy-flex rcxbuggy-flex-col rcxbuggy-sm-flex-row {{ items_class }} {{ justify_class }} rcxbuggy-gap-3">
+                <a href="{{ block.settings.cta_link_1 }}" class="rcxbuggy-btn rcxbuggy-btn-blue">{{ block.settings.cta_label_1 }}</a>
+                <a href="{{ block.settings.cta_link_2 }}" class="rcxbuggy-btn rcxbuggy-btn-dark">{{ block.settings.cta_label_2 }}</a>
+              </div>
+            </div>
+
+            <div class="rcxbuggy-mt-10">
+              <h3 class="rcx-faq-title rcxbuggy-h2-section rcxbuggy-text-gray-900 rcxbuggy-mb-4 {{ text_align_class }}" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-transform: none; letter-spacing: normal; word-spacing: normal;">{{ block.settings.faq_heading }}</h3>
+<div class="rcxbuggy-space-y-4">
+                {% for i in (1..3) %}
+                  {% assign q = 'faq_q' | append: i %}
+                  {% assign a = 'faq_a' | append: i %}
+                  {% if block.settings[q] != blank %}
+                    <details class="rcxbuggy-details-group rcxbuggy-rounded-xl rcxbuggy-border rcxbuggy-border-gray-200 rcxbuggy-bg-white rcxbuggy-p-4">
+                      <summary class="rcxbuggy-flex rcxbuggy-cursor-pointer rcxbuggy-items-center rcxbuggy-justify-between rcxbuggy-gap-2 rcxbuggy-text-left rcxbuggy-text-base">
+                        <span class="rcxbuggy-text-gray-900 rcxbuggy-font-medium">{{ block.settings[q] }}</span>
+                        <span class="rcxbuggy-text-gray-400 rcxbuggy-group-open-rotate-90 rcxbuggy-transition">›</span>
+                      </summary>
+                      <p class="rcxbuggy-mt-2 rcxbuggy-text-sm rcxbuggy-text-gray-700">{{ block.settings[a] }}</p>
+                    </details>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </section>
+
+      {% endcase %}
+    {% endfor %}
+
+  </main>
+</div>
+
+{% schema %}
+{
+  "name": "RCXBuggy Blocks Page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_alignment",
+      "label": "Section Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hero",
+      "name": "Hero Section",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title_pre",
+          "label": "Title Prefix",
+          "default": "Les voitures "
+        },
+        {
+          "type": "text",
+          "id": "title_highlight",
+          "label": "Title Highlight",
+          "default": "RCX Buggy"
+        },
+        {
+          "type": "text",
+          "id": "title_post",
+          "label": "Title Suffix",
+          "default": " font parler"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 48
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Depuis 2019, des milliers de pilotes en Europe choisissent RCX Buggy pour la performance, la solidité et le fun."
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "label": "Subheading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "header",
+          "content": "Trustpilot"
+        },
+        {
+          "type": "image_picker",
+          "id": "trustpilot_image",
+          "label": "Trustpilot Stars Image"
+        },
+        {
+          "type": "range",
+          "id": "trustpilot_stars_height",
+          "label": "Trustpilot Stars Height",
+          "min": 20,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "default": 32
+        },
+        {
+          "type": "text",
+          "id": "trustpilot_score",
+          "label": "Trustpilot Score",
+          "default": "4.7/5"
+        },
+        {
+          "type": "header",
+          "content": "Stats Bar"
+        },
+        {
+          "type": "text",
+          "id": "stat_number",
+          "label": "Stat Number",
+          "default": "+7 000"
+        },
+        {
+          "type": "text",
+          "id": "stat_text",
+          "label": "Stat Text",
+          "default": "utilisateurs satisfaits •"
+        },
+        {
+          "type": "text",
+          "id": "stat_score",
+          "label": "Stat Score Badge",
+          "default": "4,8/5"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar_1",
+          "label": "Avatar 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar_2",
+          "label": "Avatar 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar_3",
+          "label": "Avatar 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar_4",
+          "label": "Avatar 4"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar_5",
+          "label": "Avatar 5"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar_6",
+          "label": "Avatar 6"
+        },
+        {
+          "type": "range",
+          "id": "stats_margin_top",
+          "label": "Spacing above Stats Bar",
+          "min": 0,
+          "max": 120,
+          "step": 2,
+          "unit": "px",
+          "default": 64
+        },
+        {
+          "type": "range",
+          "id": "stats_box_padding_desktop",
+          "label": "Stats Box Padding",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "avatar_size",
+          "label": "Avatar Size",
+          "min": 20,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "default": 48
+        },
+        {
+          "type": "header",
+          "content": "Layout (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "padding_x",
+          "label": "Side Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 48,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 40,
+          "unit": "px"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_max_width",
+          "label": "Restrict Content Width",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layout (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "label": "Top Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "label": "Bottom Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_x_mobile",
+          "label": "Side Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "mobile_max_width",
+          "label": "Mobile Content Width",
+          "min": 80,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mobile",
+          "label": "Heading Size (Mobile)",
+          "min": 14,
+          "max": 60,
+          "step": 1,
+          "default": 33,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size_mobile",
+          "label": "Subheading Size (Mobile)",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "default": 13,
+          "unit": "px"
+        },
+        {
+           "type": "range",
+           "id": "stats_margin_top_mobile",
+           "label": "Stats Margin Top (Mobile)",
+           "min": 0,
+           "max": 100,
+           "step": 2,
+           "default": 32,
+           "unit": "px"
+        },
+        {
+           "type": "range",
+           "id": "stats_box_padding_mobile",
+           "label": "Stats Box Padding (Mobile)",
+           "min": 0,
+           "max": 60,
+           "step": 2,
+           "default": 16,
+           "unit": "px"
+        },
+        {
+           "type": "range",
+           "id": "avatar_size_mobile",
+           "label": "Avatar Size (Mobile)",
+           "min": 20,
+           "max": 80,
+           "step": 2,
+           "default": 40,
+           "unit": "px"
+        },
+        {
+           "type": "range",
+           "id": "trustpilot_stars_height_mobile",
+           "label": "Trustpilot Height (Mobile)",
+           "min": 10,
+           "max": 60,
+           "step": 2,
+           "default": 24,
+           "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "featured_testimonials",
+      "name": "Featured Testimonials",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Témoignages mis en avant"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "La voix de nos pilotes"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 34
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Des créateurs, pros et passionnés partagent leur expérience réelle avec RCXBuggy."
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "label": "Subheading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+           "type": "image_picker",
+           "id": "star_image",
+           "label": "Star Icon"
+        },
+        {
+          "type": "header",
+          "content": "Testimonial 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_1",
+          "label": "Product",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "quote_1",
+          "label": "Quote",
+          "default": "Quote text here"
+        },
+        {
+          "type": "text",
+          "id": "author_1",
+          "label": "Author",
+          "default": "Author Name"
+        },
+        {
+          "type": "header",
+          "content": "Testimonial 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_2",
+          "label": "Product",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "quote_2",
+          "label": "Quote",
+          "default": "Quote text here"
+        },
+        {
+          "type": "text",
+          "id": "author_2",
+          "label": "Author",
+          "default": "Author Name"
+        },
+        {
+          "type": "header",
+          "content": "Testimonial 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_3",
+          "label": "Product",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "quote_3",
+          "label": "Quote",
+          "default": "Quote text here"
+        },
+        {
+          "type": "text",
+          "id": "author_3",
+          "label": "Author",
+          "default": "Author Name"
+        },
+        {
+          "type": "header",
+          "content": "Testimonial 4"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_4",
+          "label": "Product",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "quote_4",
+          "label": "Quote",
+          "default": "Quote text here"
+        },
+        {
+          "type": "text",
+          "id": "author_4",
+          "label": "Author",
+          "default": "Author Name"
+        },
+        {
+          "type": "header",
+          "content": "Layout (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "padding_x",
+          "label": "Side Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 0,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_max_width",
+          "label": "Restrict Content Width",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layout (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "label": "Top Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "label": "Bottom Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_x_mobile",
+          "label": "Side Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "mobile_max_width",
+          "label": "Mobile Content Width",
+          "min": 80,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mobile",
+          "label": "Heading Size (Mobile)",
+          "min": 14,
+          "max": 60,
+          "step": 1,
+          "default": 28,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size_mobile",
+          "label": "Subheading Size (Mobile)",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "default": 13,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "verified_reviews",
+      "name": "Verified Reviews",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Avis vérifiés"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Ils racontent leur expérience"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 36
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Des avis issus de commandes réelles en Europe."
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "label": "Subheading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "review_image_size",
+          "label": "Review Image Size (px)",
+          "min": 80,
+          "max": 200,
+          "step": 4,
+          "unit": "px",
+          "default": 124
+        },
+        {
+           "type": "image_picker",
+           "id": "star_image",
+           "label": "Star Icon"
+        },
+        {
+          "type": "header",
+          "content": "Review 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image_1",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "review_name_1",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "review_product_1",
+          "label": "Product",
+          "default": "Product"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text_1",
+          "label": "Review",
+          "default": "Review text here"
+        },
+        {
+          "type": "header",
+          "content": "Review 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image_2",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "review_name_2",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "review_product_2",
+          "label": "Product",
+          "default": "Product"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text_2",
+          "label": "Review",
+          "default": "Review text here"
+        },
+        {
+          "type": "header",
+          "content": "Review 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image_3",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "review_name_3",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "review_product_3",
+          "label": "Product",
+          "default": "Product"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text_3",
+          "label": "Review",
+          "default": "Review text here"
+        },
+        {
+          "type": "header",
+          "content": "Review 4"
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image_4",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "review_name_4",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "review_product_4",
+          "label": "Product",
+          "default": "Product"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text_4",
+          "label": "Review",
+          "default": "Review text here"
+        },
+        {
+          "type": "header",
+          "content": "CTA Box"
+        },
+        {
+          "type": "text",
+          "id": "cta_box_title",
+          "label": "Box Title",
+          "default": "Partagez votre avis"
+        },
+        {
+          "type": "text",
+          "id": "cta_box_text",
+          "label": "Box Text",
+          "default": "Envoyez votre témoignage + photo. Chaque mois, un accessoire RCX offert."
+        },
+        {
+          "type": "text",
+          "id": "cta_box_btn_label",
+          "label": "Button Label",
+          "default": "Partager mon avis"
+        },
+        {
+          "type": "url",
+          "id": "cta_box_url",
+          "label": "Button URL"
+        },
+        {
+          "type": "range",
+          "id": "card_border_width",
+          "label": "Card Border Width",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 1,
+          "unit": "px"
+        },
+        {
+          "type": "header",
+          "content": "Layout (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "padding_x",
+          "label": "Side Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 0,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 48,
+          "unit": "px"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_max_width",
+          "label": "Restrict Content Width",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layout (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "label": "Top Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "label": "Bottom Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_x_mobile",
+          "label": "Side Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "mobile_max_width",
+          "label": "Mobile Content Width",
+          "min": 80,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mobile",
+          "label": "Heading Size (Mobile)",
+          "min": 14,
+          "max": 60,
+          "step": 1,
+          "default": 30,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size_mobile",
+          "label": "Subheading Size (Mobile)",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "default": 13,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "review_image_size_mobile",
+          "label": "Review Image Size (Mobile)",
+          "min": 40,
+          "max": 160,
+          "step": 4,
+          "default": 80,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "card_padding_mobile",
+          "label": "Review Card Mobile Padding",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "cta_box_padding_mobile",
+          "label": "CTA Box Mobile Padding",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "best_sellers",
+      "name": "Best Sellers",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Section Title",
+          "default": "Nos best-sellers"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 34
+        },
+        {
+          "type": "text",
+          "id": "product_btn_label",
+          "label": "Button Label",
+          "default": "Voir le produit"
+        },
+        {
+          "type": "header",
+          "content": "Product 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image_1",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_badge_1",
+          "label": "Badge",
+          "default": "Badge"
+        },
+        {
+          "type": "text",
+          "id": "product_name_1",
+          "label": "Name",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "product_price_1",
+          "label": "Price",
+          "default": "€99.99"
+        },
+        {
+          "type": "url",
+          "id": "product_link_1",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Product 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image_2",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_badge_2",
+          "label": "Badge",
+          "default": "Badge"
+        },
+        {
+          "type": "text",
+          "id": "product_name_2",
+          "label": "Name",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "product_price_2",
+          "label": "Price",
+          "default": "€99.99"
+        },
+        {
+          "type": "url",
+          "id": "product_link_2",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Product 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image_3",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "product_badge_3",
+          "label": "Badge",
+          "default": "Badge"
+        },
+        {
+          "type": "text",
+          "id": "product_name_3",
+          "label": "Name",
+          "default": "Product Name"
+        },
+        {
+          "type": "text",
+          "id": "product_price_3",
+          "label": "Price",
+          "default": "€99.99"
+        },
+        {
+          "type": "url",
+          "id": "product_link_3",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Card Settings"
+        },
+        {
+          "type": "range",
+          "id": "product_heading_size_desktop",
+          "label": "Product Heading Size (Desktop)",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "product_heading_size_mobile",
+          "label": "Product Heading Size (Mobile)",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "card_border_width",
+          "label": "Card Border Width",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "unit": "px",
+          "default": 1
+        },
+        {
+          "type": "header",
+          "content": "Layout (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "padding_x",
+          "label": "Side Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 0,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 48,
+          "unit": "px"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_max_width",
+          "label": "Restrict Content Width",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layout (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "label": "Top Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "label": "Bottom Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_x_mobile",
+          "label": "Side Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "mobile_max_width",
+          "label": "Mobile Content Width",
+          "min": 80,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mobile",
+          "label": "Heading Size (Mobile)",
+          "min": 14,
+          "max": 60,
+          "step": 1,
+          "default": 28,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "why_rcx",
+      "name": "Why RCX Buggy",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pourquoi RCXBuggy plaît autant ?"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 34
+        },
+        {
+          "type": "header",
+          "content": "Features"
+        },
+        {
+          "type": "text",
+          "id": "feature_title_1",
+          "label": "Title 1",
+          "default": "Feature Title"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_desc_1",
+          "label": "Desc 1",
+          "default": "Feature description here"
+        },
+        {
+          "type": "text",
+          "id": "feature_title_2",
+          "label": "Title 2",
+          "default": "Feature Title"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_desc_2",
+          "label": "Desc 2",
+          "default": "Feature description here"
+        },
+        {
+          "type": "text",
+          "id": "feature_title_3",
+          "label": "Title 3",
+          "default": "Feature Title"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_desc_3",
+          "label": "Desc 3",
+          "default": "Feature description here"
+        },
+        {
+          "type": "header",
+          "content": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_image",
+          "label": "Feature Image"
+        },
+        {
+          "type": "range",
+          "id": "feature_image_size",
+          "label": "Image Size (px)",
+          "min": 100,
+          "max": 800,
+          "step": 7,
+          "unit": "px",
+          "default": 401
+        },
+        {
+          "type": "header",
+          "content": "Layout (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "padding_x",
+          "label": "Side Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 0,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 48,
+          "unit": "px"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_max_width",
+          "label": "Restrict Content Width",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layout (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "label": "Top Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "label": "Bottom Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_x_mobile",
+          "label": "Side Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "mobile_max_width",
+          "label": "Mobile Content Width",
+          "min": 80,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mobile",
+          "label": "Heading Size (Mobile)",
+          "min": 14,
+          "max": 60,
+          "step": 1,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "feature_image_size_mobile",
+          "label": "Image Size (Mobile)",
+          "min": 100,
+          "max": 400,
+          "step": 10,
+          "default": 300,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "cta_faq",
+      "name": "CTA & FAQ",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Final CTA"
+        },
+        {
+          "type": "text",
+          "id": "cta_heading",
+          "label": "CTA Heading",
+          "default": "Ready to get started?"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 34
+        },
+        {
+          "type": "text",
+          "id": "cta_subheading",
+          "label": "CTA Subheading",
+          "default": "Limited offers available"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "label": "Subheading Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 16
+        },
+        {
+          "type": "text",
+          "id": "cta_label_1",
+          "label": "Button 1 Label",
+          "default": "Get Started"
+        },
+        {
+          "type": "url",
+          "id": "cta_link_1",
+          "label": "Button 1 Link"
+        },
+        {
+          "type": "text",
+          "id": "cta_label_2",
+          "label": "Button 2 Label",
+          "default": "Learn More"
+        },
+        {
+          "type": "url",
+          "id": "cta_link_2",
+          "label": "Button 2 Link"
+        },
+        {
+          "type": "header",
+          "content": "CTA Box Inner Layout"
+        },
+        {
+          "type": "range",
+          "id": "inner_padding_desktop",
+          "label": "Inner Box Padding (Desktop)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "inner_padding_mobile",
+          "label": "Inner Box Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "header",
+          "content": "FAQ"
+        },
+        {
+          "type": "text",
+          "id": "faq_heading",
+          "label": "FAQ Heading",
+          "default": "Frequently Asked Questions"
+        },
+        {
+          "type": "text",
+          "id": "faq_q1",
+          "label": "Question 1",
+          "default": "Question here?"
+        },
+        {
+          "type": "textarea",
+          "id": "faq_a1",
+          "label": "Answer 1",
+          "default": "Answer here"
+        },
+        {
+          "type": "text",
+          "id": "faq_q2",
+          "label": "Question 2",
+          "default": "Question here?"
+        },
+        {
+          "type": "textarea",
+          "id": "faq_a2",
+          "label": "Answer 2",
+          "default": "Answer here"
+        },
+        {
+          "type": "text",
+          "id": "faq_q3",
+          "label": "Question 3",
+          "default": "Question here?"
+        },
+        {
+          "type": "textarea",
+          "id": "faq_a3",
+          "label": "Answer 3",
+          "default": "Answer here"
+        },
+        {
+          "type": "header",
+          "content": "Layout (Desktop)"
+        },
+        {
+          "type": "range",
+          "id": "padding_x",
+          "label": "Side Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 0,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom Padding (px)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 80,
+          "unit": "px"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_max_width",
+          "label": "Restrict Content Width",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layout (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "label": "Top Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "label": "Bottom Padding (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_x_mobile",
+          "label": "Side Padding (Mobile)",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "mobile_max_width",
+          "label": "Mobile Content Width",
+          "min": 80,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mobile",
+          "label": "Heading Size (Mobile)",
+          "min": 14,
+          "max": 60,
+          "step": 1,
+          "default": 28,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size_mobile",
+          "label": "Subheading Size (Mobile)",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "default": 13,
+          "unit": "px"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "RCXBuggy Block Page",
+      "blocks": [
+        { "type": "hero" },
+        { "type": "featured_testimonials" },
+        { "type": "verified_reviews" },
+        { "type": "best_sellers" },
+        { "type": "why_rcx" },
+        { "type": "cta_faq" }
+      ]
+    }
+  ]
+}
+{% endschema %}

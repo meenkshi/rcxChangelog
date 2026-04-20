@@ -1,0 +1,127 @@
+{%- assign product_title = product.title | upcase -%}
+{%- assign rating = block.settings.rating_value -%}
+{%- assign count = block.settings.review_count -%}
+
+{%- assign kw_pro = block.settings.keyword_pro | upcase -%}
+{%- assign kw_plus = block.settings.keyword_plus | upcase -%}
+{%- assign kw_buggy = block.settings.keyword_buggy | upcase -%}
+
+{%- if kw_pro != blank and product_title contains kw_pro -%}
+  {%- assign rating = block.settings.rating_value_pro | default: rating -%}
+  {%- assign count = block.settings.review_count_pro | default: count -%}
+{%- elsif kw_plus != blank and product_title contains kw_plus -%}
+  {%- assign rating = block.settings.rating_value_plus | default: rating -%}
+  {%- assign count = block.settings.review_count_plus | default: count -%}
+{%- elsif kw_buggy != blank and product_title contains kw_buggy -%}
+  {%- assign rating = block.settings.rating_value_buggy | default: rating -%}
+  {%- assign count = block.settings.review_count_buggy | default: count -%}
+{%- endif -%}
+
+{%- assign rating_num = rating | plus: 0 -%}
+
+<style>
+  .review-stars-wrapper--{{ block.id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+margin-top: 10px;
+    margin-bottom: {{ block.settings.margin_bottom }}px;
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    line-height: 1;
+  }
+  .review-stars-wrapper--{{ block.id }} .stars-container {
+    display: flex;
+    align-items: center;
+    height: {{ block.settings.star_size_desktop }}px;
+  }
+  .review-stars-wrapper--{{ block.id }} .stars-svg {
+    height: {{ block.settings.star_size_desktop }}px;
+    width: auto;
+    display: block;
+  }
+  .review-stars-wrapper--{{ block.id }} .custom-star-img {
+    height: {{ block.settings.star_size_desktop }}px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .review-stars-wrapper--{{ block.id }} .rating-text {
+    font-weight: 700;
+    font-size: 16px;
+  }
+.review-stars-wrapper--{{ block.id }} .review-count {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  .review-stars-wrapper--{{ block.id }} .separator {
+    opacity: 0.4;
+    margin: 0 2px;
+  }
+  @media (max-width: 749px) {
+    .review-stars-wrapper--{{ block.id }} .stars-container,
+    .review-stars-wrapper--{{ block.id }} .stars-svg,
+    .review-stars-wrapper--{{ block.id }} .custom-star-img {
+      height: {{ block.settings.star_size_mobile }}px;
+    }
+    .review-stars-wrapper--{{ block.id }} .rating-text {
+      font-size: 14px;
+    }
+    .review-stars-wrapper--{{ block.id }} .review-count {
+      font-size: 13px;
+    }
+  }
+</style>
+
+{%- capture content -%}
+  <div class="stars-container">
+{%- if block.settings.star_mode == 'svg' -%}
+      <svg class="stars-svg" viewBox="0 0 100 20" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<defs>
+          {%- assign whole_part = rating_num | floor -%}
+          {%- if block.settings.star_fill_logic == 'half' and rating_num > whole_part -%}
+            {%- assign partial_fill = 50 -%}
+          {%- elsif block.settings.star_fill_logic == 'full' and rating_num > whole_part -%}
+            {%- assign partial_fill = 100 -%}
+          {%- else -%}
+            {%- assign partial_fill = rating_num | minus: whole_part | times: 100 -%}
+          {%- endif -%}
+          <linearGradient id="grad-partial-{{ block.id }}">
+            <stop offset="{{ partial_fill }}%" stop-color="{{ block.settings.star_color }}" />
+            <stop offset="{{ partial_fill }}%" stop-color="{{ block.settings.star_empty_color | default: '#e2e2e2' }}" />
+          </linearGradient>
+        </defs>
+        {%- for i in (0..4) -%}
+          {%- assign star_index = i | plus: 1 -%}
+          {%- assign x_pos = i | times: 20 -%}
+          {%- assign fill_value = "" -%}
+          
+          {%- if rating_num >= star_index -%}
+            {%- assign fill_value = block.settings.star_color -%}
+          {%- elsif rating_num > i -%}
+            {%- assign fill_value = 'url(#grad-partial-' | append: block.id | append: ')' -%}
+          {%- else -%}
+            {%- assign fill_value = block.settings.star_empty_color | default: '#e2e2e2' -%}
+          {%- endif -%}
+
+          <path d="M{{ x_pos | plus: 10 }} 1L{{ x_pos | plus: 13 }} 7H{{ x_pos | plus: 19 }}L{{ x_pos | plus: 14 }} 11L{{ x_pos | plus: 16 }} 17L{{ x_pos | plus: 10 }} 13L{{ x_pos | plus: 4 }} 17L{{ x_pos | plus: 6 }} 11L{{ x_pos | plus: 1 }} 7H{{ x_pos | plus: 7 }}L{{ x_pos | plus: 10 }} 1Z" fill="{{ fill_value }}" />
+        {%- endfor -%}
+      </svg>
+    {%- elsif block.settings.star_mode == 'image' and block.settings.custom_star_image != blank -%}
+      <img src="{{ block.settings.custom_star_image | img_url: '300x' }}" class="custom-star-img" alt="Rating stars" loading="lazy">
+    {%- endif -%}
+  </div>
+<span class="rating-text">{{ rating }}</span>
+  <span class="separator">|</span>
+  <span class="review-count">{{ count }}</span>
+{%- endcapture -%}
+
+{%- if block.settings.scroll_link != blank -%}
+  <a href="{{ block.settings.scroll_link }}" class="review-stars-wrapper--{{ block.id }}">
+    {{ content }}
+  </a>
+{%- else -%}
+  <div class="review-stars-wrapper--{{ block.id }}">
+    {{ content }}
+  </div>
+{%- endif -%}

@@ -1,0 +1,199 @@
+<div class="image_with_text">
+  <div class="{% if section.settings.wide_display %}page-width{% endif %}">
+    <div class="image_with_text_inner">
+      <div class="text_with_image">
+        {% for block in section.blocks %}
+        <div class="single_image_with_text image--{{ block.settings.image_position }} section-{{forloop.index}}">
+          {% if block.settings.image != blank %}
+          <div class="_image">
+            <img src="{{ block.settings.image | img_url : "master" }}">
+          </div>
+          {% endif %}
+          <div class="description">
+            <div class="description_inner {{block.settings.text_position}}">
+              {% if block.settings.section_title != blank %}
+              <h2 class="section_title">{{ block.settings.section_title }}</h2>
+              {% endif %}
+              {% if block.settings.section_subtitle != blank %}
+              <div class="sub-title">
+                {{ block.settings.section_subtitle }}
+              </div>
+              {% endif %}
+              <div class="bottom_button">
+                <a href="{% if block.settings.button_link != blank %}{{ block.settings.button_link }}{% else %}javascript:void(0){% endif %}" class="btn shop_button">{{ block.settings.button_label }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .image--right ._image {
+    order: 2;
+  }
+  .image--left ._image {
+    order: 1;
+  }
+  .image--right .description {
+    order: 1;
+  }
+  .image--left .description {
+    order: 2;
+  }
+  
+  {% for block in section.blocks %}
+  .section-{{forloop.index}} .description_inner.left{
+    margin-left:0;
+  }
+  .section-{{forloop.index}} .description_inner.center{
+    margin:0 auto;
+  }
+  .section-{{forloop.index}} .description_inner.right{
+    margin-right:0;
+  }
+  .section-{{forloop.index}} .description{
+    background-color:{{block.settings.bgcolor}}
+  }
+  .section-{{forloop.index}} .section_title{
+    color:{{block.settings.title-color}};
+  }
+  .section-{{forloop.index}} .sub-title p{
+  	 color:{{block.settings.subtitle-color}};
+  }
+  .section-{{forloop.index}} .shop_button{
+    background-color:{{block.settings.btn-bgcolor}};
+    color:{{block.settings.btn-text-color}}
+  }
+  
+  {% endfor %}
+  
+</style>
+
+{% schema %}
+  {
+    "name": "Image With Text",
+    "settings": [
+	 {
+         "type":      "checkbox",
+         "id":        "wide_display",
+         "label":     "Wide Display Enab",
+         "default":   true
+      }
+	],
+	"blocks": [
+	  {
+		"type": "image",
+		"name": "Image",
+		"settings": [
+		  {
+           "type":      "select",
+           "id":        "image_position",
+           "label":     "Image Position",
+           "options": [
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             }
+           ],
+           "default":   "left",
+           "info":      "right"
+        },
+		  {
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image"
+		  },
+		  {
+				"type":"header",
+				"content":"Description"
+		  },
+		  {
+			"type":"color",
+			"id":"bgcolor",
+			"label":"Background Color",
+			"default":"#142b55"
+		  },
+		  {
+           "type":"select",
+           "id":"text_position",
+           "label":"Text Position",
+           "options": [
+             {
+               "value": "left",
+               "label": "Left"
+             },
+             {
+               "value": "right",
+               "label": "Right"
+             },
+			 {
+				"value":"center",
+				"label":"Center"
+			 }
+           ],
+           "default":   "left",
+           "info":      "right"
+          },
+		  {
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title"
+		  },
+		  {
+			"type":"color",
+			"id":"title-color",
+			"label":"Title Text Color",
+			"default":"#fff"
+		  },
+		  {
+			"type": "richtext",
+			"id": "section_subtitle",
+			"label": "Section Sub Title"
+		  },
+		  {
+			"type":"color",
+			"id":"subtitle-color",
+			"label":"Sub Title Text Color",
+			"default":"#fff"
+		  },
+		  {
+			"type": "text",
+			"id": "button_label",
+			"label": "Button Label"
+		  },
+		  {
+			"type": "url",
+			"id": "button_link",
+			"label": "Button Link"
+		  },
+		  {
+			"type":"color",
+			"id":"btn-bgcolor",
+			"label":"Button Bg Color",
+			"default":"#29baef"
+		  },
+		  {
+			"type":"color",
+			"id":"btn-text-color",
+			"label":"Button Text Color",
+			"default":"#fff"
+		  }
+		]
+	  }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

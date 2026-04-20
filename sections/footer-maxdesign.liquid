@@ -1,0 +1,757 @@
+{% comment %}
+  ⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+  ⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+  ⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+  ⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+{% for block in section.blocks -%}
+  {%- if block.type == 'developer' -%}
+    {%- assign developer = forloop.index0 -%}
+  {%- elsif block.type == 'social' -%}
+    {%- assign social = forloop.index0 -%}
+  {%- elsif block.type == 'logo' -%}
+    {%- assign logo = forloop.index0 -%}
+  {%- endif -%}
+{%- endfor %}
+{% if developer != null -%}
+  {%- assign breakPoint = section.blocks[developer].settings.query -%}
+{%- else -%}
+  {%- assign breakPoint = 750 -%}
+{%- endif %}
+{% assign btn_brightness = section.settings.color | color_brightness | plus: 0 | round %}
+{% if btn_brightness > 40 and btn_brightness != 255 -%}
+  {%- assign btn_color_hover = section.settings.color | color_darken: 15 -%}
+{%- else -%}
+  {%- assign btn_color_hover = section.settings.color | color_lighten: 15 -%}
+{%- endif %}
+{% if section.blocks[social].settings.enable %}
+  {% capture social_networks %}
+<ul class="footer__social">
+  {% if section.blocks[social].settings.facebook_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.facebook_link | escape }}" target="_blank" title="{{ shop.name }} sur Facebook">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.378 14.192 5 15.115 5H18V0h-3.808C10.596 0 9 1.583 9 4.615V8z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.twitter_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.twitter_link | escape }}" target="_blank" title="{{ shop.name }} sur Twitter">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 4.557a9.83 9.83 0 01-2.828.775 4.932 4.932 0 002.165-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-3.594-1.555c-3.179 0-5.515 2.966-4.797 6.045A13.978 13.978 0 011.671 3.149a4.93 4.93 0 001.523 6.574 4.903 4.903 0 01-2.229-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.935 4.935 0 01-2.224.084 4.928 4.928 0 004.6 3.419A9.9 9.9 0 010 19.54a13.94 13.94 0 007.548 2.212c9.142 0 14.307-7.721 13.995-14.646A10.025 10.025 0 0024 4.557z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.pinterest_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.pinterest_link | escape }}" target="_blank" title="{{ shop.name }} sur Pinterest">
+      <svg height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><path d="M12.326 0C5.747.001 2.25 4.216 2.25 8.812c0 2.131 1.191 4.79 3.098 5.633.544.245.472-.054.94-1.844a.425.425 0 00-.102-.417c-2.726-3.153-.532-9.635 5.751-9.635 9.093 0 7.394 12.582 1.582 12.582-1.498 0-2.614-1.176-2.261-2.631.428-1.733 1.266-3.596 1.266-4.845 0-3.148-4.69-2.681-4.69 1.49 0 1.289.456 2.159.456 2.159S6.781 17.4 6.501 18.539c-.474 1.928.064 5.049.111 5.318.029.148.195.195.288.073.149-.195 1.973-2.797 2.484-4.678.186-.685.949-3.465.949-3.465.503.908 1.953 1.668 3.498 1.668 4.596 0 7.918-4.04 7.918-9.053C21.733 3.596 17.62 0 12.326 0z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.instagram_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.instagram_link | escape }}" target="_blank" title="{{ shop.name }} sur Instagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M8 3a5 5 0 00-5 5v8a5 5 0 005 5h8a5 5 0 005-5V8a5 5 0 00-5-5H8zm10 2a1 1 0 110 2 1 1 0 010-2zm-6 2a5 5 0 11-.001 10.001A5 5 0 0112 7zm0 2a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.tumblr_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.facebook_link | escape }}" target="_blank" title="{{ shop.name }} sur Tumblr">
+      <svg height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><path d="M19 22.594l-1.175-3.425c-.458.214-1.327.399-1.968.419h-.091c-1.863 0-2.228-1.37-2.244-2.371v-7.47h4.901V6.114H13.54V0H9.965a.191.191 0 00-.176.179C9.587 2.052 8.691 5.335 5 6.648v3.099h2.456v7.842c0 2.655 1.97 6.411 7.148 6.411l-.011-.002h.181c1.786-.03 3.783-.768 4.226-1.404z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.snapchat_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.snapchat_link | escape }}" target="_blank" title="{{ shop.name }} sur Snapchat">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5.829 4.533c-.6 1.344-.363 3.752-.267 5.436-.648.359-1.48-.271-1.951-.271-.49 0-1.075.322-1.167.802-.066.346.089.85 1.201 1.289.43.17 1.453.37 1.69.928.333.784-1.71 4.403-4.918 4.931a.498.498 0 00-.416.519c.056.975 2.242 1.357 3.211 1.507.099.134.179.7.306 1.131.057.193.204.424.582.424.493 0 1.312-.38 2.738-.144 1.398.233 2.712 2.215 5.235 2.215 2.345 0 3.744-1.991 5.09-2.215.779-.129 1.448-.088 2.196.058.515.101.977.157 1.124-.349.129-.437.208-.992.305-1.123.96-.149 3.156-.53 3.211-1.505a.498.498 0 00-.416-.519c-3.154-.52-5.259-4.128-4.918-4.931.236-.557 1.252-.755 1.69-.928.814-.321 1.222-.716 1.213-1.173-.011-.585-.715-.934-1.233-.934-.527 0-1.284.624-1.897.286.096-1.698.332-4.095-.267-5.438C17.036 1.986 14.511.7 11.987.7 9.479.7 6.973 1.968 5.829 4.533z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.tiktok_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.tiktok_link | escape }}" target="_blank" title="{{ shop.name }} sur TikTok">
+      <svg height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"><path d="M480.32 128.39c-29.22 0-56.18-9.68-77.83-26.01-24.83-18.72-42.67-46.18-48.97-77.83A129.78 129.78 0 01351.04.39h-83.47v228.08l-.1 124.93c0 33.4-21.75 61.72-51.9 71.68a75.905 75.905 0 01-28.04 3.72c-12.56-.69-24.33-4.48-34.56-10.6-21.77-13.02-36.53-36.64-36.93-63.66-.63-42.23 33.51-76.66 75.71-76.66 8.33 0 16.33 1.36 23.82 3.83v-84.75c-7.9-1.17-15.94-1.78-24.07-1.78-46.19 0-89.39 19.2-120.27 53.79-23.34 26.14-37.34 59.49-39.5 94.46-2.83 45.94 13.98 89.61 46.58 121.83 4.79 4.73 9.82 9.12 15.08 13.17 27.95 21.51 62.12 33.17 98.11 33.17 8.13 0 16.17-.6 24.07-1.77 33.62-4.98 64.64-20.37 89.12-44.57 30.08-29.73 46.7-69.2 46.88-111.21l-.43-186.56a210.864 210.864 0 0046.88 27.34c26.19 11.05 53.96 16.65 82.54 16.64v-83.1c.02.02-.22.02-.24.02z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.youtube_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.youtube_link | escape }}" target="_blank" title="{{ shop.name }} sur Youtube">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+  {% if section.blocks[social].settings.vimeo_link != blank %}
+  <li>
+    <a href="{{ section.blocks[social].settings.vimeo_link | escape }}" target="_blank" title="{{ shop.name }} sur Vimeo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M22.875 10.063c-2.442 5.217-8.337 12.319-12.063 12.319-3.672 0-4.203-7.831-6.208-13.043-.987-2.565-1.624-1.976-3.474-.681L.002 7.203C2.7 4.831 5.4 2.076 7.059 1.923c1.868-.179 3.018 1.098 3.448 3.832.568 3.593 1.362 9.17 2.748 9.17 1.08 0 3.741-4.424 3.878-6.006.243-2.316-1.703-2.386-3.392-1.663 2.673-8.754 13.793-7.142 9.134 2.807z"/></svg>
+    </a>
+  </li>
+  {% endif %}
+</ul>
+{% endcapture %}
+{% endif %}
+
+<style>
+    /* section & wrapper */
+    #shopify-section-{{ section.id }} {margin-top:{{ section.settings.spacing_top_mobile }}px;margin-bottom:{{ section.settings.spacing_bottom_mobile }}px;user-select:none}
+    #shopify-section-{{ section.id }} .footer__wrapper {margin:auto;width:100%;overflow:hidden;text-align:center;padding:0;background-color:{{ section.settings.bgcolor }};color:{{ section.settings.color }};}
+    #shopify-section-{{ section.id }} .footer__wrapper p {color:{{ section.settings.color }};}
+
+    /* content */
+    #shopify-section-{{ section.id }} {margin-top:{{ section.settings.spacing_mobile_desktop }}px;margin-bottom:{{ section.settings.spacing_mobile_desktop }}px;}
+    #shopify-section-{{ section.id }} .footer__container{position:relative;display:flex;display:-webkit-flex;flex-wrap:wrap;justify-content:space-evenly;margin: auto;padding: 45px 20px 10px;{% if section.settings.max_width != 1500 %}max-width:{{ section.settings.max_width }}px{% endif %};}
+    #shopify-section-{{ section.id }} .footer__container a {color:inherit;margin:0}
+    #shopify-section-{{ section.id }} .footer__container a:hover{color:{{ btn_color_hover }};opacity:1;text-decoration:underline;}
+    #shopify-section-{{ section.id }} .footer__container a:hover svg{fill:{{ btn_color_hover }};}
+    #shopify-section-{{ section.id }} .footer__container h4{color:{{ section.settings.title_color }};margin-bottom:0}
+    #shopify-section-{{ section.id }} .footer__block .footer__block--content{padding:0;margin:0}
+    #shopify-section-{{ section.id }} .footer__logo{width:{{ section.blocks[logo].settings.logo_width_mobile }}px;margin:{{ section.blocks[logo].settings.logo_alignment_mobile }};}
+    #shopify-section-{{ section.id }} .footer__logo--text{float:left;text-align:{{ section.blocks[logo].settings.text_alignment_mobile }};margin-top:25px;}
+    #shopify-section-{{ section.id }} .footer__social{float:left;margin-top:25px;white-space:nowrap;width:100%;padding:0}
+    #shopify-section-{{ section.id }} .footer__social li {list-style-type:none;display:inline-block;margin-right:8px;}
+    #shopify-section-{{ section.id }} .footer__social li svg{width:20px;height:auto;fill:{{ section.settings.color }};}
+    #shopify-section-{{ section.id }} .footer__block{display:block;text-align:center;flex:1 0 100%;margin-bottom:25px;}
+    #shopify-section-{{ section.id }} .footer__block--logo{order:-1;}
+    #shopify-section-{{ section.id }} .footer__block--container{display:block;text-align:left}
+    #shopify-section-{{ section.id }} .footer__block--title{font-size:1.125em;}
+    #shopify-section-{{ section.id }} .footer__block--list{list-style-type:none;margin-bottom:12px}
+    #shopify-section-{{ section.id }} .footer__block--link{text-decoration:none;color:inherit}
+    #shopify-section-{{ section.id }} .footer__credits{flex: 1 0 100%;order:1;border-top: 1px solid {{ section.settings.color | color_modify: 'alpha', 0.75 }};padding-top:10px;display:flex;display:-webkit-flex;flex-wrap:wrap;align-items:center;justify-content:center;font-size:0.9em}
+    #shopify-section-{{ section.id }} .footer__credits--credits {margin:10px 0}
+    #shopify-section-{{ section.id }} .footer__credits--credits p{margin:0}
+    #shopify-section-{{ section.id }} .footer__credits--mentions{display:flex;display:-webkit-flex;flex-wrap:wrap;justify-content:center;align-items:center;margin:10px 0;padding:0}
+    #shopify-section-{{ section.id }} .footer__credits--list {list-style-type:none;margin:0 10px 5px;}
+    #shopify-section-{{ section.id }} .footer__payments {display:flex;list-style:none;justify-content:center;padding:0;margin:5px 0 10px}
+    #shopify-section-{{ section.id }} .footer__payments li{display:flex}
+    #shopify-section-{{ section.id }} .footer__payments svg{width:35px;height:22px;margin-right:5px;}
+    #shopify-section-{{ section.id }} .footer__payments li:last-child svg{margin-right:0px}
+
+    /* media queries */
+    @media (min-width:{{ breakPoint }}px) {
+      #shopify-section-{{ section.id }} {margin-top:{{ section.settings.spacing_top_desktop }}px;margin-bottom:{{ section.settings.spacing_bottom_desktop }}px;}
+      #shopify-section-{{ section.id }} .footer__container h4{margin-bottom:1em}
+      #shopify-section-{{ section.id }} .footer__block{flex:1 0 186px;margin:0 25px 50px}
+      #shopify-section-{{ section.id }} .footer__logo{float:{{ section.blocks[logo].settings.logo_alignment_desk }};width:{{ section.blocks[logo].settings.logo_width_desk }}px;}
+      #shopify-section-{{ section.id }} .footer__logo--text{text-align:{{ section.blocks[logo].settings.text_alignment_desk }};}
+      #shopify-section-{{ section.id }} .footer__block--container{display:inline-block;}
+      #shopify-section-{{ section.id }} .footer__block--logo {flex:1 0 {% if section.blocks[logo].settings.block_width_desk == 0 %}186px{% else %}{{ section.blocks[logo].settings.block_width_desk }}%{% endif %};padding-right:{{ section.blocks[logo].settings.logo_padding_right_desk }}px;}
+      #shopify-section-{{ section.id }} .footer__block:not(.footer__block--full) .footer__social{width:100%;text-align:{{ section.blocks[logo].settings.text_alignment_desk }};}
+      #shopify-section-{{ section.id }} .footer__credits {max-width:calc(100% - 40px);justify-content:space-between;}
+      #shopify-section-{{ section.id }} .footer__credits--list {margin:0 10px}
+      #shopify-section-{{ section.id }} .footer__credits.footer__credits--wrapped{justify-content:center;flex-direction:column;margin-bottom:44px}
+      #shopify-section-{{ section.id }} .footer__payments {margin:0}
+      #shopify-section-{{ section.id }} .footer__credits--wrapped .footer__payments{position:absolute;width:100%;bottom:20px}
+      #shopify-section-{{ section.id }} .footer__credits--mentions{margin:10px 40px}
+      #shopify-section-{{ section.id }} .footer__block--full {flex:1 0 100%;padding-right:0;display:grid;justify-content: center;}
+      #shopify-section-{{ section.id }} .footer__block--full .footer__logo--text{text-align:center}
+    }
+
+    @media (max-width:{{ breakPoint | minus: 1}}px) {
+      #shopify-section-{{ section.id }} .footer__block h4 {position:relative;padding-right:35px;display:block;cursor:pointer;font-weight:600;line-height:1.5;-webkit-touch-callout: none;user-select: none;-webkit-tap-highlight-color: rgba(0,0,0,0);}
+      #shopify-section-{{ section.id }} .footer__block h4:after{width:8px;height:8px;border-right:1px solid {{ section.settings.color }};border-bottom:1px solid {{ section.settings.color }};position:absolute;right:18px;top:25px;content:" ";top:50%;transform:translate(0,-50%) rotate(-45deg);-webkit-transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;transition:all .2s ease-in-out}
+      #shopify-section-{{ section.id }} .footer__block h4.active:after{transform:translate(0,-75%) rotate(45deg);-webkit-transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;transition:all .2s ease-in-out}
+      #shopify-section-{{ section.id }} .footer__block .footer__block--content {box-sizing:content-box;overflow:hidden;height:0px;transition:height .4s ease 0.1s;padding-left:20px}
+      #shopify-section-{{ section.id }} .footer__block .footer__block--content *:first-child{margin-top:25px}
+      #shopify-section-{{ section.id }} .footer__block .footer__block--content li:last-child{margin-bottom:0px}
+          #shopify-section-{{ section.id }} .footer__container a, #shopify-section-{{ section.id }} .footer__block .footer__block--content p {font-size:0.95em}
+      #shopify-section-{{ section.id }} .footer__block--logo{display: grid;justify-content: center;}
+      #shopify-section-{{ section.id }} .footer__credits--credits {width:100%}
+    }
+
+    @media (min-width:750px) {
+      #shopify-section-footer-maxdesign .footer__block {
+        width: 25%;
+        max-width: 25%;
+    }
+    #shopify-section-footer-maxdesign .footer__block--container {
+      padding-top: 5px;
+      max-width: 75%;
+  }
+      #shopify-section-footer-maxdesign .footer__block--logo.mob{
+        display:none!important;
+      }
+      #shopify-section-footer-maxdesign .footer__block--logo.desk{display:block}
+
+      #shopify-section-{{ section.id }} .footer__credits {max-width:calc(100% - 40px);justify-content:space-between;}
+      #shopify-section-{{ section.id }} .footer__credits--list {margin:0 10px}
+      #shopify-section-{{ section.id }} .footer__credits.footer__credits--wrapped{justify-content:center;flex-direction:column;margin-bottom:44px}
+      #shopify-section-{{ section.id }} .footer__payments {margin:0}
+      #shopify-section-{{ section.id }} .footer__credits--wrapped .footer__payments{position:absolute;width:100%;bottom:20px}
+      #shopify-section-{{ section.id }} .footer__credits--mentions{margin:10px 40px}
+      #shopify-section-{{ section.id }} .footer__credits--credits {width:auto}
+      #shopify-section-footer-maxdesign .footer__block .footer__block--content {padding-left:0px}
+      #shopify-section-footer-maxdesign .footer__logo--text {
+      float: left;
+      text-align: left;
+      margin-top: 0px!important;
+  }
+
+    }
+
+    @media (max-width:749px) {
+
+      #shopify-section-footer-maxdesign .footer__block--logo.mob{
+        display:block;
+      }
+      #shopify-section-footer-maxdesign .footer__block--logo.desk{display:none!important}
+
+    }
+
+    /* CUSTOM CSS */
+    @media (min-width:{{ breakPoint }}px) { {{ section.blocks[developer].settings.css_bureau }} }
+    @media (max-width:{{ breakPoint | minus: 1 }}px) { {{ section.blocks[developer].settings.css_mobile }} }
+</style>
+
+<footer class="footer__wrapper" role="contentinfo">
+  <div class="footer__container">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'logo' %}
+          <div class="footer__block footer__block--logo desk">
+            {% if block.settings.logo != blank %}
+              <h4 class="footer__block--title">
+                <img
+                  class="footer__logo"
+                  src="{{ block.settings.logo | img_url: '800x' }}"
+                  alt="{{ block.settings.logo.alt }}"
+                >
+              </h4>
+            {% endif %}
+            {% if block.settings.logo_text != blank %}
+              <ul class="footer__block--content">
+                <li class="footer__block--list">
+                  <div class="footer__logo--text">{{ block.settings.logo_text }}</div>
+                </li>
+              </ul>
+            {% endif %}
+            {{ social_networks }}
+          </div>
+{% when 'menu' %}
+          {% assign current_lang = localization.language.iso_code %}
+          {% assign menu_to_use = block.settings.link_list %}
+          {% if current_lang == 'en' and block.settings.menu_en != blank %}
+            {% assign menu_to_use = block.settings.menu_en %}
+          {% elsif current_lang == 'nl' and block.settings.menu_nl != blank %}
+            {% assign menu_to_use = block.settings.menu_nl %}
+          {% elsif current_lang == 'sv' and block.settings.menu_sv != blank %}
+            {% assign menu_to_use = block.settings.menu_sv %}
+          {% elsif current_lang == 'es' and block.settings.menu_es != blank %}
+            {% assign menu_to_use = block.settings.menu_es %}
+          {% elsif current_lang == 'de' and block.settings.menu_de != blank %}
+            {% assign menu_to_use = block.settings.menu_de %}
+          {% endif %}
+          <div class="footer__block">
+            {% if linklists[menu_to_use].links.size > 0 %}
+              <div class="footer__block--container">
+                <h4 class="footer__block--title">{{ linklists[menu_to_use].title }}</h4>
+                <ul class="footer__block--content">
+                  {% for link in linklists[menu_to_use].links %}
+                    <li class="footer__block--list">
+                      <a href="{{ link.url }}" class="footer__block--link">{{ link.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        {% when 'text' %}
+          <div class="footer__block">
+            <div class="footer__block--container">
+              <h4 class="footer__block--title">{{ block.settings.title | escape }}</h4>
+              <div class="footer__block--content">{{ block.settings.text }}</div>
+            </div>
+          </div>
+        {% when 'credits' %}
+          <div class="footer__credits">
+            <div class="footer__credits--credits">{{ block.settings.credits }}</div>
+            {% if linklists[block.settings.link_list].links.size > 0 %}
+              <ul class="footer__credits--mentions footer__block--content">
+                {% for link in linklists[block.settings.link_list].links %}
+                  <li class="footer__credits--list">
+                    <a href="{{ link.url }}" class="footer__credits--link">{{ link.title }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            {%- unless shop.enabled_payment_types == empty -%}
+              <ul class="footer__payments">
+                {%- for type in shop.enabled_payment_types -%}
+                  <li>
+                    {{ type | payment_type_svg_tag }}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endunless -%}
+          </div>
+      {% endcase %}
+    {% endfor %}
+  </div>
+</footer>
+
+<script> 
+  function init_{{ section.id | remove: '-' }}() {
+    let flag = true, blockBP = false;
+    function footerInit() {
+      if(window.matchMedia("(max-width:{{ breakPoint | minus: 1 }}px)").matches && flag) {
+        flag = false;
+        let tabs = document.querySelectorAll('.footer__block h4')
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function(e) {
+            console.log(tab.classList);
+            tab.classList.toggle('active')
+            if (tab.classList.contains('active')) {
+              //hide other tabs
+              tabs.forEach(tab => {
+                if (tab != e.target) {
+                  tab.classList.remove('active');
+                  tab.nextElementSibling.style.height = '0px';
+                }
+              })
+              var tabContent = tab.nextElementSibling;
+              tabContent.style.height = 'auto';
+              var tabHeight = tabContent.offsetHeight + 'px'
+              tabContent.style.height = '0px';
+              setTimeout(function() {tabContent.style.height = tabHeight}, 15)
+            } else {
+              tab.classList.remove('active');
+              tab.nextElementSibling.style.height = '0px';
+            }
+          })
+        })
+      }
+      if(window.matchMedia("(min-width:750px)").matches) {
+        //credits layout
+        let payments = document.querySelector('.footer__payments')
+        let mentions = document.querySelector('.footer__credits--mentions')
+        if(mentions) {
+          if (payments.offsetTop - mentions.offsetTop > 20) {
+            mentions.parentElement.classList.add('footer__credits--wrapped')
+          } else {
+            mentions.parentElement.classList.remove('footer__credits--wrapped')
+          }
+        }
+        //blocks layout
+        let firstBlock = document.querySelector('.footer__block:first-child'), lastBlock = document.querySelector('.footer__block:nth-child(4)');
+        if (lastBlock.offsetTop - firstBlock.offsetTop > 20 && blockBP == false) {
+          if(!blockBP) {blockBP = window.screen.width;console.log(blockBP)}
+          
+          firstBlock.classList.add('footer__block--full')
+        } else if (window.matchMedia(`(min-width:${blockBP}px)`).matches) {
+          firstBlock.classList.remove('footer__block--full');
+          blockBP = false;
+        }
+      }
+    }
+    footerInit()
+    document.addEventListener('shopify:section:select', footerInit)
+    window.addEventListener('resize', footerInit)
+  }
+  init_{{ section.id | remove: '-' }}()
+</script>
+
+{% schema %}
+{
+   "name":"Footer",
+   "settings":[
+      {
+         "type":"header",
+         "content":"©MaxDesign. All Rights Reserved."
+      },
+      {
+         "type":"paragraph",
+         "content":{
+            "en":"It is forbidden to resell or duplicate this ressource without permission of the author. Thank you to [contact me](https://5euros.com/profil/maxdesign) for additional information.",
+            "fr":"Il est interdit de copier ou revendre cette section sans l'accord de l'auteur. Pour toute demande d'information, veuillez [me contacter](https://5euros.com/profil/maxdesign). "
+         }
+      },
+      {
+         "type":"header",
+         "content":"Paramètres principaux"
+      },
+      {
+         "type":"range",
+         "id":"max_width",
+         "min":800,
+         "max":1500,
+         "step":10,
+         "unit":"px",
+         "label":"Largeur max. de la section",
+         "default":1200,
+         "info":"1500 = plein écran"
+      },
+	  {
+		"type": "color",
+		"id": "bgcolor",
+		"label": "Couleur de fond",
+		"default":"#f7f7f7"
+	  },
+	  {
+		"type": "color",
+		"id": "title_color",
+		"label": "Couleur des titres",
+		"default":"#111111"
+	  },
+	  {
+		"type": "color",
+		"id": "color",
+		"label": "Couleur du texte",
+		"default":"#666666"
+	  },
+      {
+         "type":"header",
+         "content":"Paramètres bureau"
+      },
+      {
+         "type":"range",
+         "id":"spacing_top_desktop",
+         "min":-200,
+         "max":200,
+         "step":5,
+         "unit":"px",
+         "label":"Espacement haut footer",
+         "default":0
+      },
+      {
+         "type":"header",
+         "content":"Paramètres mobile"
+      },
+      {
+         "type":"range",
+         "id":"spacing_top_mobile",
+         "min":-200,
+         "max":200,
+         "step":5,
+         "unit":"px",
+         "label":"Espacement haut footer",
+         "default":0
+      }
+   ],
+   "blocks":[
+      {
+         "type":"logo",
+         "name":"Block logo",
+		 "limit":1,
+         "settings":[
+            {
+               "type":"image_picker",
+               "id":"logo",
+               "label":"Logo"
+            },
+            {
+               "type":"richtext",
+               "id":"logo_text",
+               "label":"Slogan ou texte concis",
+               "default":"<p>Lorem ipsum dolor sit amet consectetur adipiscing elit placerat.</p>",
+               "info":"MaJ + Entrer pour passer une ligne."
+            },
+            {
+              "type":"header",
+              "content":"Paramètres bureau"
+            },
+            {
+              "type":"range",
+              "id":"logo_width_desk",
+              "min":0,
+              "max":300,
+              "step":3,
+              "unit":"px",
+              "label":"Taille logo",
+              "default":150
+            },
+			{
+              "type":"range",
+              "id":"block_width_desk",
+              "min":0,
+              "max":100,
+              "step":1,
+              "unit":"%",
+              "label":"Largeur du block",
+			  "info": "0 = auto",
+              "default": 0
+            },
+            {
+              "type":"range",
+              "id":"logo_padding_right_desk",
+              "min":0,
+              "max":200,
+              "step":5,
+              "unit":"px",
+              "label":"Marge droite block",
+              "default":0
+            },
+			{
+              "type": "select",
+              "id": "logo_alignment_desk",
+              "label": "Alignement logo",
+              "options": [
+                {
+                "value": "none",
+                "label": "Centré"
+                },
+                {
+                "value": "left",
+                "label": "Gauche"
+                }
+              ],
+              "default": "left"
+        	},
+			{
+              "type": "select",
+              "id": "text_alignment_desk",
+              "label": "Alignement text",
+              "options": [
+                {
+                "value": "center",
+                "label": "Centré"
+                },
+                {
+                "value": "left",
+                "label": "Gauche"
+                }
+              ],
+              "default": "left"
+        	},
+			{
+              "type":"header",
+              "content":"Paramètres mobile"
+            },
+            {
+              "type":"range",
+              "id":"logo_width_mobile",
+              "min":100,
+              "max":300,
+              "step":2,
+              "unit":"px",
+              "label":"Taille logo",
+              "default":160
+            },
+			{
+              "type": "select",
+              "id": "logo_alignment_mobile",
+              "label": "Alignement logo et texte",
+              "options": [
+                {
+                "value": "auto",
+                "label": "Centré"
+                },
+                {
+                "value": "0",
+                "label": "Gauche"
+                }
+              ],
+              "default": "auto"
+        	},
+			{
+              "type": "select",
+              "id": "text_alignment_mobile",
+              "label": "Alignement text",
+              "options": [
+                {
+                "value": "center",
+                "label": "Centré"
+                },
+                {
+                "value": "left",
+                "label": "Gauche"
+                }
+              ],
+              "default": "left"
+        	}
+         ]
+      },
+{
+         "type":"menu",
+         "name":"Menu",
+         "settings":[
+            {
+               "id":"link_list",
+               "type":"link_list",
+               "label":"Menu (Default / French)",
+               "default":"footer"
+            },
+            {
+               "id":"menu_en",
+               "type":"link_list",
+               "label":"Menu (English)"
+            },
+            {
+               "id":"menu_nl",
+               "type":"link_list",
+               "label":"Menu (Dutch)"
+            },
+            {
+               "id":"menu_sv",
+               "type":"link_list",
+               "label":"Menu (Swedish)"
+            },
+            {
+               "id":"menu_es",
+               "type":"link_list",
+               "label":"Menu (Spanish)"
+            },
+            {
+               "id":"menu_de",
+               "type":"link_list",
+               "label":"Menu (German)"
+            }
+         ]
+      },
+      {
+         "type":"text",
+         "name":"Text",
+         "settings":[
+            {
+               "type":"text",
+               "id":"title",
+               "label":"Heading",
+               "default":"Contactez-nous"
+            },
+            {
+               "type":"richtext",
+               "id":"text",
+               "label":"Text",
+               "default":"<p><em>SARL LOREM IPSUM,<br\/>75201 MILLAU CEDEX 11<br\/>Paris - FRANCE<\/em><\/p><p>Email: <a title=\"Contact\" href=\"\/pages\/contact\" target=\"_blank\">contact@votreboutique.com<\/a><\/p>"
+            }
+         ]
+      },
+	  {
+         "type":"credits",
+         "name":"Crédits / Mentions",
+		 "limit":1,
+         "settings":[
+            {
+               "id":"link_list",
+               "type":"link_list",
+               "label":"Mentions légales"
+            },
+            {
+              "type": "richtext",
+              "id": "credits",
+              "label": "Crédits",
+			  "default":"<p>© 2021, <a href=\"/\">Votre Boutique</a> | Tous droits réservés</p>"
+            }
+         ]
+      },
+      {
+         "type":"social",
+         "name":"Réseaux sociaux",
+		 "limit":1,
+         "settings":[
+			{
+              "type": "checkbox",
+              "id": "enable",
+              "label": "Afficher les réseaux"
+	  		},
+            {
+               "type":"text",
+               "id":"facebook_link",
+               "label":"Facebook",
+               "info":"https:\/\/www.facebook.com\/shopify",
+               "default":"https:\/\/www.facebook.com\/shopify"
+            },
+            {
+               "type":"text",
+               "id":"twitter_link",
+               "label":"Twitter",
+               "info":"https:\/\/www.twitter.com\/shopify",
+               "default":"https:\/\/www.twitter.com\/shopify"
+            },
+            {
+               "type":"text",
+               "id":"pinterest_link",
+               "label":"Pinterest",
+               "info":"https:\/\/www.pinterest.com\/shopify",
+               "default":"https:\/\/www.pinterest.com\/shopify"
+            },
+            {
+               "type":"text",
+               "id":"instagram_link",
+               "label":"Instagram",
+               "info":"https:\/\/www.instagram.com\/shopify",
+               "default":"https:\/\/www.instagram.com\/shopify"
+            },
+            {
+               "type":"text",
+               "id":"tumblr_link",
+               "label":"Tumblr",
+               "info":"http:\/\/shopify.tumblr.com",
+               "default":"http:\/\/shopify.tumblr.com"
+            },
+            {
+               "type":"text",
+               "id":"snapchat_link",
+               "label":"Snapchat",
+               "info":"https:\/\/www.snapchat.com\/add\/shop...",
+               "default":"https:\/\/www.snapchat.com\/add\/sho..."
+            },
+			{
+               "type":"text",
+               "id":"tiktok_link",
+               "label":"TikTok",
+               "info":"https:\/\/www.tiktok.com\/@shopify",
+               "default":"https:\/\/www.tiktok.com\/@shopify"
+            },
+            {
+               "type":"text",
+               "id":"youtube_link",
+               "label":"Youtube",
+               "info":"https:\/\/www.youtube.com\/user\/shop...",
+               "default":"https:\/\/www.youtube.com\/user\/sho..."
+            },
+            {
+               "type":"text",
+               "id":"vimeo_link",
+               "label":"Vimeo",
+               "info":"https:\/\/vimeo.com\/shopify",
+               "default":"https:\/\/vimeo.com\/shopify"
+            }
+         ]
+      },
+      {
+         "type":"developer",
+         "name":"Developer",
+         "limit":1,
+         "settings":[
+            {
+               "type":"paragraph",
+               "content":"Ignorer ce bloc si vous n'avez pas les bases en HTML/CSS"
+            },
+            {
+               "type":"header",
+               "content":"Mobile"
+            },
+            {
+               "type":"html",
+               "id":"css_mobile",
+               "label":"Custom CSS",
+               "info":"ex: font-size: 20px;"
+            },
+            {
+               "type":"header",
+               "content":"Bureau"
+            },
+            {
+               "type":"range",
+               "id":"query",
+               "label":"media-query line break",
+               "min":400,
+               "max":3000,
+               "step":50,
+               "default":750
+            },
+            {
+               "type":"html",
+               "id":"css_bureau",
+               "label":"Custom CSS",
+               "info":"ex: font-size: 35px;"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

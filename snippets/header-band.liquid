@@ -1,0 +1,41 @@
+{% assign page_key_th_b = 'fl_' | append: page.id| append: '_th_b' %}
+{% assign page_key_th_bm = 'fl_' | append: page.id| append: '_th_bm' %}
+
+
+  {%if settings.strapline_content != "" and settings.header_band_type == 'text' %}
+  {%if settings.strapline_link != ""%}
+  	<a href="{{settings.strapline_link}}" class="strapLine">{%if settings.m_strapline_content != blank %}<span class="mob_only">{{settings.m_strapline_content}}</span>{% endif %}<span class="{%if settings.m_strapline_content != blank %}desk_only{% endif %}">{{settings.strapline_content}}</span></a>
+  {%else%}
+<p class="strapLine">
+  {%if settings.m_strapline_content != blank %}
+  	<span class="mob_only">
+      {% if instructions[page_key_th_bm] != blank %}
+      	{{ instructions[page_key_th_bm] }}
+      {% else %}
+      	{{settings.m_strapline_content}}
+      {% endif %}
+     </span>
+  {% endif %}
+  <span class="{%if settings.m_strapline_content != blank %}desk_only{% endif %}">
+    
+     {% if instructions[page_key_th_b] != blank %}
+      	{{ instructions[page_key_th_b] }}
+      {% else %}
+      	{{settings.strapline_content}}
+      {% endif %}
+  </span>
+</p>
+
+  {%endif%}
+{%endif%}
+
+{%if settings.header_band_type == 'shipping' %}
+<p class="strapLine shipping_bar_top" data-header-currency='{{ shop.money_format }}' data-cart_amount="{{ cart.total_price }}"><span style="opacity: 0;">Top</span></p>
+	
+{%endif%}
+
+
+
+
+
+	

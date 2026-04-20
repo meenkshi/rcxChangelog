@@ -1,0 +1,1326 @@
+{% comment %}
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+
+{% unless section.settings.activate_timer == 'disable' %}
+{% unless section.settings.pages contains template.name or template.name == null or template.name == '404' %}
+
+{% for block in section.blocks %}
+{% if block.type == 'timer' %}
+{% assign announce = forloop.index0 | plus: 0 %}
+{% assign timer = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'announce' %}
+{% assign announce = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'gradients' %}
+{% assign gradients = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'responsive' %}
+{% assign responsive = forloop.index0 | plus: 0 %}
+{% elsif block.type == 'customcss' %}
+{% assign customcss = forloop.index0 | plus: 0 %}
+{% endif %}
+{% endfor %}
+{% if section.blocks[responsive].settings.text_mode_mobile == 'compact' %}{% assign compact_mode_mobile = true %}{% elsif section.blocks[responsive].settings.text_mode_mobile == 'ultracompact' %}{% assign ultracompact_mode_mobile = true %}{% endif %}
+{% if section.blocks[responsive].settings.text_mode_desktop == 'compact' %}{% assign compact_mode_desktop = true %}{% endif %}
+
+<style>
+  {% if customcss != nil %}{% assign breakPoint = section.blocks[customcss].settings.query %}{% else %}{% assign breakPoint = 750 %}{% endif %}
+  {% assign timer_size = section.blocks[responsive].settings.timer_size | divided_by: 100.0 | times: 25 | plus: 25 %}
+  {% assign timer_size_mobile = section.blocks[responsive].settings.timer_size_mobile | divided_by: 100.0 | times: 16 | plus: 16 %}
+  {% assign text_size = section.blocks[responsive].settings.text_size | divided_by: 100.0 | times: 25 | plus: 25 %}
+  {% assign text_size_mobile = section.blocks[responsive].settings.text_size_mobile | divided_by: 100.0 | times: 16 | plus: 16 %}
+  {% if timer_size > text_size %}{% assign font_size_diff = true %}{% endif %}
+
+  /* main */
+  #shopify-section-{{ section.id }} {position:relative;font-size:{{ timer_size }}px;font-weight:{{ section.blocks[responsive].settings.font_weight_desktop }};margin-top:{{ section.blocks[responsive].settings.spacing_top_desktop }}px;margin-bottom:{{ section.blocks[responsive].settings.spacing_bottom_desktop }}px;z-index:9;{% if section.blocks[customcss].settings.sticky %}position:sticky;top:{{ section.blocks[customcss].settings.sticky_offset_desktop}}px;{% endif %}}
+  #shopify-section-{{ section.id }} .banner__wrapper{padding:7px 12px 7px 12px;text-align:center;background:{{section.settings.bg_color}};display: none;justify-content: center;align-items: center;overflow:hidden}
+  #shopify-section-{{ section.id }} .banner__wrapper > div:first-of-type{display:none;text-transform:none;}
+  #shopify-section-{{ section.id }} .banner__wrapper_timer{padding:7px 10px 7px 10px;text-align:center;background:{{section.settings.bg_color}};display: none;justify-content: center;align-items: center;overflow:hidden}
+  #shopify-section-{{ section.id }} .banner__wrapper_timer > div:first-of-type{display:none;text-transform:none;}
+  
+  
+    #shopify-section-{{ section.id }} #cdtimer{color:#fff;display:inline-block;text-align:center;line-height:100%;{% if font_size_diff %}margin-bottom:4px;{% endif %}}
+    #shopify-section-{{ section.id }} #cdtimer > div{padding:5px 0;border-radius:3px;display:inline-block;}
+    #shopify-section-{{ section.id }} #cdtimer div:nth-child(odd){min-width:45px}
+    #shopify-section-{{ section.id }} #cdtimer > div > span{padding:0;border-radius:3px;color:{{section.settings.color}};font-size:1em;line-height:1;}
+    #shopify-section-{{ section.id }} #cdtimer .smalltext{color:{{ section.settings.smalltext_color}};line-height:1;{% if compact_mode_desktop %}font-size:{{ timer_size | times: 0.7 }}px;display:inline-block;margin:0 {{ text_size | divided_by: 2.2 }}px 0 {{ text_size | divided_by: 7 }}px;{% else %}font-size:0.9em;{% endif %}}
+    #shopify-section-{{ section.id }} #cdtimer .colon-align{vertical-align:top;padding-top:10px; line-height:1;{% if compact_mode_desktop %}display:none;{% endif %}}
+    #shopify-section-{{ section.id }} .colon-align .days{padding-top:15px;}
+    #shopify-section-{{ section.id }} .textleft{opacity:0; color:{{ section.settings.color}};font-size:{{ text_size }}px;color:{{ section.settings.color }};padding-right:30px;display:inline-block!important;position:relative;transform: translateY(80%);line-height:100%;}
+    #shopify-section-{{ section.id }} .textright{opacity:0; color:{{ section.settings.color}};font-size:{{ text_size }}px;color:{{ section.settings.color }};padding-left:30px;display:inline-block!important;position:relative;transform: translateY(80%);line-height:100%;}
+    #shopify-section-{{ section.id }} .md_desktop-hide {display:none;}
+    #shopify-section-{{ section.id }} .md_mobile-hide {display:inline-block;}
+  
+    #shopify-section-{{ section.id }} .banner__wrapper > div.banner__scrolltext {display:block;color:{{section.settings.color}};font-size:{{ text_size }}px;}
+    #shopify-section-{{ section.id }} .banner__wrapper_timer > div.banner__scrolltext {display:block;color:{{section.settings.color}};font-size:{{ text_size }}px;}
+    
+  	{% if section.blocks[announce].settings.announce_effect %}
+    #shopify-section-{{ section.id }} .banner__wrapper{justify-content:left;}
+  	#shopify-section-{{ section.id }} .banner__wrapper_timer{justify-content:left;}
+    #shopify-section-{{ section.id }} .banner__scrolltext {white-space:nowrap;}
+    {% endif %}
+    #shopify-section-{{ section.id }} .banner__scrolltext span {display:inline-block;{% if section.blocks[announce].settings.announce_effect %}animation:scrollText {{ section.blocks[announce].settings.announce_speed }}s linear infinite;transform: translate3d(0,0,0);{% endif %}}
+    @keyframes scrollText {0% { transform: translateX(0%);} 100% { transform: translateX(-100%);}}
+  
+  
+  
+  /* media queries */
+  @media (max-width:{{ breakPoint }}px){
+    #shopify-section-{{ section.id }} {font-size:{{ timer_size_mobile }}px;font-weight:{{ section.blocks[responsive].settings.font_weight_mobile }};margin-top:{{ section.blocks[responsive].settings.spacing_top_mobile }}px;margin-bottom:{{ section.blocks[responsive].settings.spacing_bottom_mobile}}px;{% if section.blocks[customcss].settings.sticky %}top:{{ section.blocks[customcss].settings.sticky_offset_mobile}}px{% endif %};}
+    #shopify-section-{{ section.id }} #cdtimer { {% if compact_mode_mobile or ultracompact_mode_mobile %}display:flex;{% endif %};margin:0}
+    #shopify-section-{{ section.id }} #cdtimer .colon-align {display:inline-block;}
+    #shopify-section-{{ section.id }} #cdtimer .smalltext {display:block;margin-right:0}
+    #shopify-section-{{ section.id }} #cdtimer > div, #shopify-section-{{ section.id }} #cdtimer .colon-align {padding:0;margin:0 -1px}
+    #shopify-section-{{ section.id }} .banner__wrapper {padding-top:10px; {% if compact_mode_mobile or ultracompact_mode_mobile %}padding-bottom:5px;justify-content:space-around;{% else %}padding-bottom:0px;display:block;{% endif %}}
+    #shopify-section-{{ section.id }} .banner__wrapper > div:first-of-type{display:block;color:{{section.settings.color}};font-size:{{ text_size_mobile }}px;padding-bottom:0px;{% if compact_mode_mobile or ultracompact_mode_mobile %}margin:0;{% else %}margin:0 auto 5px;{% endif %}}
+    #shopify-section-{{ section.id }} .banner__wrapper_timer {padding-top:10px; {% if compact_mode_mobile or ultracompact_mode_mobile %}padding-bottom:5px;justify-content:space-around;{% else %}padding-bottom:0px;display:block;{% endif %}}
+    #shopify-section-{{ section.id }} .banner__wrapper_timer > div:first-of-type{display:block;color:{{section.settings.color}};font-size:{{ text_size_mobile }}px;padding-bottom:0px;{% if compact_mode_mobile or ultracompact_mode_mobile %}margin:0;{% else %}margin:0 auto 5px;{% endif %}}
+    
+    #shopify-section-{{ section.id }} .textleft, #shopify-section-{{ section.id }} .textright{display:none!important;}
+    #shopify-section-{{ section.id }} .md_desktop-hide {display:inline-block;}
+    #shopify-section-{{ section.id }} .md_mobile-hide {display:none;}
+    {% if ultracompact_mode_mobile %}
+      #shopify-section-{{ section.id }} #cdtimer .smalltext {font-size:{{ text_size_mobile | times: 0.8 }}px;display: inline-block;margin:0 {{ text_size_mobile | divided_by: 2.2 }}px 0 {{ text_size_mobile | divided_by: 7 }}px;}
+      #shopify-section-{{ section.id }} #cdtimer {white-space:nowrap;} 
+      #shopify-section-{{ section.id }} #cdtimer .colon-align{display:none}
+      #shopify-section-{{ section.id }} .banner__wrapper > div:first-of-type {margin-right:10px}
+   	  #shopify-section-{{ section.id }} .banner__wrapper_timer > div:first-of-type {margin-right:10px}
+    
+    {% else %}
+      #shopify-section-{{ section.id }} #cdtimer .smalltext {font-size:{{ text_size_mobile | times: 0.75 }}px}
+      #shopify-section-{{ section.id }} .colon-align .days {padding-top:0px;}
+      #shopify-section-{{ section.id }} .colon-align {padding:0;}
+    {% endif %}
+  }
+  
+  @media (max-width:{{ breakPoint }}px){
+    #shopify-section-{{ section.id }} .banner__wrapper > div.banner__scrolltext {font-size:{{ text_size_mobile }}px;}
+    #shopify-section-{{ section.id }} .banner__wrapper_timer > div.banner__scrolltext {font-size:{{ text_size_mobile }}px;}
+  
+  }
+  
+  
+  /* gradients animaton */
+  {% if section.blocks[gradients].settings.gradient %}  
+  #shopify-section-{{ section.id }} .banner__wrapper {background-image: linear-gradient(to right,{% unless section.blocks[gradients].settings.gr1 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr1 }},{% endunless %}{% unless section.blocks[gradients].settings.gr2 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr2 }},{% endunless %}{% unless section.blocks[gradients].settings.gr3 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr3 }},{% endunless %}{% unless section.blocks[gradients].settings.gr4 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr4 }},{% endunless %}{% unless section.blocks[gradients].settings.gr1 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr1 }}{% endunless %});background-size: 800%;background-position: 0 0;box-shadow: inset 0 0 5em rgba(0, 0, 0, 0.1);animation-duration: {{ section.blocks[gradients].settings.speed}}s;animation-iteration-count: infinite;animation-name: gradients;}
+  #shopify-section-{{ section.id }} .banner__wrapper_timer {background-image: linear-gradient(to right,{% unless section.blocks[gradients].settings.gr1 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr1 }},{% endunless %}{% unless section.blocks[gradients].settings.gr2 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr2 }},{% endunless %}{% unless section.blocks[gradients].settings.gr3 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr3 }},{% endunless %}{% unless section.blocks[gradients].settings.gr4 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr4 }},{% endunless %}{% unless section.blocks[gradients].settings.gr1 contains 'rgba(0,0,0,0)' %}{{ section.blocks[gradients].settings.gr1 }}{% endunless %});background-size: 800%;background-position: 0 0;box-shadow: inset 0 0 5em rgba(0, 0, 0, 0.1);animation-duration: {{ section.blocks[gradients].settings.speed}}s;animation-iteration-count: infinite;animation-name: gradients;}
+  
+  @keyframes gradients {0% {background-position: 0 0;}25% {background-position: 50% 0;}50% {background-position: 90% 0;}60% {background-position: 60%;}75% {background-position: 40%;}100% {background-position: 0 0;}}
+  {% endif%}
+  
+  /* custom css */
+  @media (min-width:{{ breakPoint }}px) { {{ section.blocks[customcss].settings.css_bureau }} }
+  @media (max-width:{{ breakPoint }}px) { {{ section.blocks[customcss].settings.css_mobile }} }
+</style>
+
+
+{% assign announce_size = section.blocks[announce].settings.announce_title | remove: '&nbsp;' | size %}
+{% assign announce_loop = 300.00 | divided_by: announce_size | ceil %}
+{% if section.blocks[announce].settings.announce_date contains 'today' %}{% assign date_array = 'now' | time_tag: format: 'default' | strip_html | split: ' ' %}{% else %}{% assign date_array = section.blocks[announce].settings.announce_unixtime | time_tag: format: 'default' | strip_html | split: ' ' %}{% endif %}
+{% assign date = date_array[0] | append: ' ' | append: date_array[1] | append: ' ' | append: date_array[2]  %}
+{% if section.blocks[announce].settings.announce_date contains 'capital' %}{% assign date = date | upcase %}{% endif %}
+<div class="banner__wrapper">
+  <div class="banner__scrolltext">
+    {% if section.blocks[announce].settings.announce_effect %}
+    	{% for i in (1..announce_loop) %}<span style="text-transform:uppercase">{{ section.blocks[announce].settings.announce_title | replace: 'XX', date }}</span>{% endfor %}
+    {% else %}
+    	<span style="text-transform:uppercase">{{ section.blocks[announce].settings.announce_title | replace: 'XX', date }}</span>
+    {% endif %}
+ </div>
+</div>
+{% if section.blocks[customcss].settings.sticky_position == 'above' and section.blocks[customcss].settings.sticky %}
+<script>
+  (function() {
+  let bannerHeight =  document.querySelector('.banner__wrapper').offsetHeight;
+  var sheet = document.createElement('style');	
+  sheet.innerHTML = `{{ section.blocks[customcss].settings.header_mobile_selector }}, {{ section.blocks[customcss].settings.header_desktop_selector }} {top: ${bannerHeight}px}`;
+  document.head.appendChild(sheet);
+  })()
+</script>
+{% endif %}
+
+  {% if section.blocks[timer].settings.timertype == 'deadlinetimer' %}
+      {% assign now_date = 'now' | date: '%s' %}
+        {% assign promo_end_date = section.blocks[timer].settings.unixtime_deadline %}
+          {% unless promo_end_date < now_date %}
+            <style>
+              #shopify-section-{{ section.id }} .textleft {opacity:1; transform:translateY(0%);}
+              #shopify-section-{{ section.id }} .textright{opacity:1; transform:translateY(0%);} 
+            </style>
+            <div class="banner__wrapper">
+              {% unless section.blocks[timer].settings.title_mobile == blank %}<div>{{ section.blocks[timer].settings.title_mobile }}</div>{% endunless %}
+              {% unless section.blocks[timer].settings.title_left == blank %}<div class="textleft">{{ section.blocks[timer].settings.title_left }}</div>{% endunless %}
+              <div id="cdtimer">
+                <div>
+                  <span id="days">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.days }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.days_mobile }}</span></div>
+                </div>
+                <div class="colon-align">
+                  <span class="days">:</span>
+                </div>
+                <div>
+                  <span id="hours">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.hours }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.hours_mobile }}</span></div>
+                </div>
+                <div class="colon-align">
+                  <span class="days">:</span>
+                </div>
+                <div>
+                  <span id="minutes">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.minutes }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.minutes_mobile }}</span></div>
+                </div>
+                <div class="colon-align">
+                  <span class="days">:</span>
+                </div>
+                <div>
+                  <span id="seconds">&nbsp;&nbsp;</span><div class="smalltext" style="margin-right:0"><span class="md_mobile-hide">{{ section.blocks[timer].settings.seconds }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.seconds_mobile }}</span></div>
+                </div>
+              </div>
+              {% unless section.blocks[timer].settings.title_right == blank %}<div class="textright">{{ section.blocks[timer].settings.title_right }}</div>{% endunless %}
+            </div>
+            <script>   
+              function timer() {
+                const second = 1000,
+                      minute = second * 60,
+                      hour = minute * 60,
+                      day = hour * 24;
+                let promo_end_date = {{ promo_end_date | times: 1000 }},
+                    x = setInterval(function() {   
+                      let now = new Date().getTime(),                  
+                          distance = promo_end_date - now;           
+                        document.querySelector('#shopify-section-{{ section.id }} #days').innerText = ("0" + Math.floor(distance / (day))).toString().slice(-2),
+                        document.querySelector('#shopify-section-{{ section.id }} #hours').innerText = ("0" + Math.floor((distance % (day)) / (hour))).toString().slice(-2),                
+                        document.querySelector('#shopify-section-{{ section.id }} #minutes').innerText = ("0" + Math.floor((distance % (hour)) / (minute))).toString().slice(-2),
+                        document.querySelector('#shopify-section-{{ section.id }} #seconds').innerText = ("0" + Math.floor((distance % (minute)) / (second))).toString().slice(-2);
+                      if (distance <= 0) {
+                        document.querySelector('#shopify-section-{{ section.id }} #cdtimer').style.display = "none";                         
+                      };
+                    }, timer) 
+              };timer();
+              {% if section.blocks[customcss].settings.sticky_position == 'above' and section.blocks[customcss].settings.sticky %}
+              let bannerHeight =  document.querySelector('.banner__wrapper').offsetHeight;
+              var sheet = document.createElement('style');	
+              sheet.innerHTML = `{{ section.blocks[customcss].settings.header_mobile_selector }}, {{ section.blocks[customcss].settings.header_desktop_selector }} {top: ${bannerHeight}px}`;
+			  document.head.appendChild(sheet);
+              {% endif %}
+              document.addEventListener('shopify:section:select', function(evt) {       
+                  $("#shopify-section-{{ section.id }} .banner__wrapper" ).slideDown(600, function() {
+                  $('#shopify-section-{{ section.id }} #cdtimer').prev().css({"transform":"translateY(0%)", "opacity":"1", "transition":"all 0.5s ease-out"});
+                  $('#shopify-section-{{ section.id }} #cdtimer').next().css({"transform":"translateY(0%)", "opacity":"1", "transition":"all 0.5s ease-out"});
+                });	
+                 timer();
+              })
+            </script>
+          {% endunless %}
+  {% elsif section.blocks[timer].settings.timertype == 'cookietimer' %}
+    <div class="banner__wrapper" style="display:none">
+      {% unless section.blocks[timer].settings.title_mobile == blank %}<div>{{ section.blocks[timer].settings.title_mobile }}</div>{% endunless %}
+      {% unless section.blocks[timer].settings.title_left == blank %}<div class="textleft">{{ section.blocks[timer].settings.title_left }}</div>{% endunless %}
+      <div id="cdtimer">      
+        <div>
+          <span id="days">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.days }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.days_mobile }}</span></div>
+        </div>
+        <div class="colon-align">
+          <span class="days">:</span>
+        </div>
+        <div><span id="hours">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.hours }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.hours_mobile }}</span></div></div>
+        <div class="colon-align">
+          <span class="days">:</span>
+        </div>
+        <div>
+          <span id="minutes">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.minutes }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.minutes_mobile }}</span></div>
+        </div>
+        <div class="colon-align">
+          <span class="days">:</span>
+        </div>
+        <div>
+          <span id="seconds">&nbsp;&nbsp;</span><div class="smalltext" style="margin-right:0"><span class="md_mobile-hide">{{ section.blocks[timer].settings.seconds }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.seconds_mobile }}</span></div>
+        </div>
+      </div>
+      {% unless section.blocks[timer].settings.title_right == blank %}<div class="textright">{{ section.blocks[timer].settings.title_right }}</div>{% endunless %}
+    </div> 
+    <script>       
+      addEventListener("load", function (){
+        function expandTimer() {
+          {% if section.blocks[customcss].settings.sticky_position == 'bellow' or section.blocks[customcss].settings.sticky == false %}
+          $("#shopify-section-{{ section.id }} .banner__wrapper").slideDown(600, function() {
+            $('#shopify-section-{{ section.id }} #cdtimer').prev().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+            $('#shopify-section-{{ section.id }} #cdtimer').next().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+          })
+          {% else %}
+          $("#shopify-section-{{ section.id }} .banner__wrapper").show();
+          let bannerHeight =  document.querySelector('.banner__wrapper').offsetHeight;
+          $("head").append(`<style>{{ section.blocks[customcss].settings.header_mobile_selector }}, {{ section.blocks[customcss].settings.header_desktop_selector }} {top: ${bannerHeight}px}</style>`);
+            $('#shopify-section-{{ section.id }} #cdtimer').prev().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+            $('#shopify-section-{{ section.id }} #cdtimer').next().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+          {% endif %}
+        }
+        function mycdtimer() {
+          //set days by ADMIN for countdown 
+          var totalTime = ({{ section.blocks[timer].settings.cookie_days | times: 86400 }} + {{ section.blocks[timer].settings.cookie_hours | times: 3600 }} + {{ section.blocks[timer].settings.cookie_minutes | times: 60 }} + {{ section.blocks[timer].settings.cookie_seconds }})*1000; // Amout of time (sec)  
+          // this section is unseful in case timer must restart immeditaely after end
+          var cookieExpire = totalTime/86400000;    
+          {% assign timer_loop = section.blocks[timer].settings.timer_loop | plus: 0 %}                  
+          //write cookie if first connection
+           if (!document.cookie.match(/^(.*;)?\s*promoTimer\s*=\s*[^;]+(.*)?$/)) {
+            // First time on page                
+            var promoTimerBegin = new Date();
+            // Set first time cookie
+            function cookieTimer(cname, cvalue, exdays) {
+              var d = new Date();
+              d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+              var expires = "expires=" + d.toUTCString();
+              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+            cookieTimer('promoTimerBegin', promoTimerBegin,{% if timer_loop == 0 %}cookieExpire{% else %}{{ timer_loop }}{% endif %});
+            cookieTimer('promoTimer', totalTime,{% if timer_loop == 0 %}cookieExpire{% else %}{{ timer_loop }}{% endif %});
+            //initial total deadline
+             var deadline = new Date(Date.parse(new Date()) + totalTime);
+            //initialiez the timer and show it        
+            initializeClock('#shopify-section-{{ section.id }} #cdtimer', deadline);
+            expandTimer()
+
+          } else {
+            //get firsttime cookie value
+            var firstTimeValue = Date.parse(document.cookie.replace(/(?:(?:^|.*;\s*)promoTimerBegin\s*\=\s*([^;]*).*$)|^.*$/, "$1"));
+            var currentTime = Date.parse(new Date());
+            var usedTime = (currentTime - firstTimeValue); // Calculate and convert into seconds
+
+            //new deadline after time has passed
+            var runTimer = new Date(Date.parse(new Date()) + (totalTime - usedTime));
+
+            //initialie the timer and show it
+            initializeClock('#shopify-section-{{ section.id }} #cdtimer', runTimer);
+            expandTimer()
+          }
+
+          //setup time formats
+          function getTimeRemaining(endtime) {
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor((t / 1000) % 60);
+            var minutes = Math.floor((t / 1000 / 60) % 60);
+            var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+            var days = Math.floor(t / (1000 * 60 * 60 * 24));
+            return {
+              'total': t,
+              'days': days,
+              'hours': hours,
+              'minutes': minutes,
+              'seconds': seconds
+            };
+          }
+
+          //insert timer value in html
+          function initializeClock(id, endtime) {
+            var clock = document.querySelector(id);
+            var daysSpan = clock.querySelector('#shopify-section-{{ section.id }} #days');
+            var hoursSpan = clock.querySelector('#shopify-section-{{ section.id }} #hours');
+            var minutesSpan = clock.querySelector('#shopify-section-{{ section.id }} #minutes');
+            var secondsSpan = clock.querySelector('#shopify-section-{{ section.id }} #seconds');
+
+            let flag = false;
+            function updateClock() {
+              var t = getTimeRemaining(endtime);
+              {% if section.blocks[timer].settings.hide_days %}
+              if (t.days == 0 && !flag) {
+                let daysAnchor = document.querySelector('#shopify-section-{{ section.id }} #days')
+                daysAnchor.parentElement.nextElementSibling.remove();
+                daysAnchor.parentElement.remove();
+                flag = true;
+              } else {
+              daysSpan.innerHTML = ('0' + t.days).slice(-2)
+              }
+              {% else %}
+              daysSpan.innerHTML = ('0' + t.days).slice(-2);
+              {% endif %}
+              hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+              minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+              secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+              //reset timer when days > 0
+              if (t.total <= 0 || isNaN(t.total)) {
+                clearInterval(timeinterval);           
+                var removetimer = document.querySelector('#shopify-section-{{ section.id }}');
+                removetimer.parentNode.removeChild(removetimer);
+              }
+            }
+            updateClock();
+            var timeinterval = setInterval(updateClock, 1000);
+          }     
+        }mycdtimer();
+        document.addEventListener('shopify:section:select', function(evt) {   
+          mycdtimer();        
+        })
+      })
+    </script>
+  {% elsif section.blocks[timer].settings.timertype == 'dailytimer' %}
+    <div class="banner__wrapper_timer" >
+      {% unless section.blocks[timer].settings.title_mobile == blank %}<div>{{ section.blocks[timer].settings.title_mobile }}</div>{% endunless %}
+      {% unless section.blocks[timer].settings.title_left == blank %}<div class="textleft">{{ section.blocks[timer].settings.title_left }}</div>{% endunless %}
+      <div id="cdtimer">
+        <div>
+          <span id="days">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.days }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.days_mobile }}</span></div>
+        </div>
+        <div class="colon-align">
+          <span class="days">:</span>
+        </div>
+        <div>
+          <span id="hours">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.hours }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.hours_mobile }}</span></div>
+        </div>
+        <div class="colon-align">
+          <span class="days">:</span>
+        </div>
+        <div>
+          <span id="minutes">&nbsp;&nbsp;</span><div class="smalltext"><span class="md_mobile-hide">{{ section.blocks[timer].settings.minutes }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.minutes_mobile }}</span></div>
+        </div>
+        <div class="colon-align">
+          <span class="days">:</span>
+        </div>
+        <div>
+          <span id="seconds">&nbsp;&nbsp;</span><div class="smalltext" style="margin-right:0"><span class="md_mobile-hide">{{ section.blocks[timer].settings.seconds }}</span><span class="md_desktop-hide">{{ section.blocks[timer].settings.seconds_mobile }}</span></div>
+        </div>
+      </div>
+      {% unless section.blocks[timer].settings.title_right == blank %}<div class="textright">{{ section.blocks[timer].settings.title_right }}</div>{% endunless %}
+    </div> 
+    <script>       
+      addEventListener("load", function (){
+        
+        function TimeorAnnounce() {
+          const todayHours = new Date().getHours(); 
+          if(todayHours < 20) {
+            
+            $("#shopify-section-{{ section.id }} .banner__wrapper").css({"display":"flex"})
+            $("#shopify-section-{{ section.id }}  .banner__wrapper_timer").css({"display":"none"})
+          } else {
+            
+            /*document.getElementById("announce").style.display = "none";*/
+            $("#shopify-section-{{ section.id }} .banner__wrapper").css({"display":"none"})
+            $("#shopify-section-{{ section.id }}  .banner__wrapper_timer").css({"display":"flex"})
+          };
+        }
+        
+        function expandTimer() {
+          
+          
+          {% if section.blocks[customcss].settings.sticky_position == 'bellow' or section.blocks[customcss].settings.sticky == false %}
+          $("#shopify-section-{{ section.id }} .banner__wrapper_timer").slideDown(600, function() {
+            $('#shopify-section-{{ section.id }} #cdtimer').prev().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+            $('#shopify-section-{{ section.id }} #cdtimer').next().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+          })
+          {% else %}
+          $(".banner__wrapper_timer").show();
+          let bannerHeight =  document.querySelector('.banner__wrapper_timer').offsetHeight;
+          $("head").append(`<style>{{ section.blocks[customcss].settings.header_mobile_selector }}, {{ section.blocks[customcss].settings.header_desktop_selector }} {top: ${bannerHeight}px}</style>`);
+            $('#shopify-section-{{ section.id }} #cdtimer').prev().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+            $('#shopify-section-{{ section.id }} #cdtimer').next().css({
+              "transform": "translateY(0%)",
+              "opacity": "1",
+              "transition": "all 0.5s ease-out"
+            })
+          {% endif %}
+          TimeorAnnounce()
+        }
+        function mycdtimer() {
+          //set days by ADMIN for countdown 
+          {% assign timerEnd = section.blocks[timer].settings.dailytimer_end | plus: 0 %}
+          var dd = new Date(), 
+              msToMidnight = 86400000 - (dd.getTime() - dd.setHours(0,0,0,0)) - {{ 24 | minus: timerEnd | times: 3600000 }},
+         	  totalTime = msToMidnight, // Amout of time (sec)  
+          	  cookieExpire = totalTime/86400000; // this section is unseful in case timer must restart immeditaely after end   
+          {% assign timer_loop = section.blocks[timer].settings.dailytimer_loop | plus: 0 %}                  
+          //write cookie if first connection 
+          if (!document.cookie.match(/^(.*;)?\s*dailyTimer\s*=\s*[^;]+(.*)?$/)) {
+            // First time on page                
+            function cookieTimer(cname, cvalue, exdays) {
+              var d = new Date();
+              d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+              var expires = "expires=" + d.toUTCString();
+              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+            cookieTimer('dailyTimer', 1,{% if timer_loop == 0 %}cookieExpire{% else %}{{ timer_loop }}{% endif %});         
+            //initial total deadline
+            var deadline = new Date(Date.parse(new Date()) + totalTime);       
+            //initialiez the timer and show it
+            initializeClock('#shopify-section-{{ section.id }} #cdtimer', deadline);
+            expandTimer()
+          } else {
+            var deadline = new Date(Date.parse(new Date()) + totalTime);       
+            //initialiez the timer and show it 
+            initializeClock('#shopify-section-{{ section.id }} #cdtimer', deadline);
+            expandTimer()
+          }
+
+          //setup time formats
+          function getTimeRemaining(endtime) {
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor((t / 1000) % 60);
+            var minutes = Math.floor((t / 1000 / 60) % 60);
+            var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+            var days = Math.floor(t / (1000 * 60 * 60 * 24));
+            return {
+              'total': t,
+              'days': days,
+              'hours': hours,
+              'minutes': minutes,
+              'seconds': seconds
+            };
+          }
+
+          //insert timer value in html
+          function initializeClock(id, endtime) {
+            var clock = document.querySelector(id);
+            var daysSpan = clock.querySelector('#shopify-section-{{ section.id }} #days');
+            var hoursSpan = clock.querySelector('#shopify-section-{{ section.id }} #hours');
+            var minutesSpan = clock.querySelector('#shopify-section-{{ section.id }} #minutes');
+            var secondsSpan = clock.querySelector('#shopify-section-{{ section.id }} #seconds');
+
+            let flag = false;
+                                               
+            function updateClock() {
+              var t = getTimeRemaining(endtime); 
+              {% if section.blocks[timer].settings.hide_days %}
+              if (t.days == 0 && !flag) {
+                let daysAnchor = document.querySelector('#shopify-section-{{ section.id }} #days')
+                daysAnchor.parentElement.nextElementSibling.remove();
+                daysAnchor.parentElement.remove();
+                flag = true;
+              } else {
+              	daysSpan.innerHTML = ('0' + t.days).slice(-2)
+              }
+              {% else %}
+              daysSpan.innerHTML = ('0' + t.days).slice(-2);
+              {% endif %}
+              hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+              minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+              secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+              //reset timer when days > 0           
+              if (t.total <= 0 || isNaN(t.total)) {
+                clearInterval(timeinterval);           
+                var removetimer = document.querySelector('#shopify-section-{{ section.id }}');
+                removetimer.parentNode.removeChild(removetimer);
+              }
+            }
+            updateClock();
+            var timeinterval = setInterval(updateClock, 1000);
+          }     
+        } mycdtimer();
+        document.addEventListener('shopify:section:select', function(evt) {   
+          mycdtimer();        
+        })
+      })
+    </script>
+  {% endif %}
+
+
+{% endunless %}
+{% endunless %}
+
+
+{% schema %}
+{
+   "name":"Bannière multifonctions",
+   "class":"countdown-timer",
+   "settings":[
+      {
+         "type":"header",
+         "content":"©MaxDesign. All Rights Reserved."
+      },
+      {
+         "type":"paragraph",
+         "content":{
+            "en":"It is forbidden to resell or duplicate this ressource without permission of the author. Thank you to [contact me](https://5euros.com/profil/maxdesign) for additional information.",
+            "fr":"Il est interdit de copier ou revendre cette section sans l'accord de l'auteur. Pour toute demande d'information, veuillez [me contacter](https://5euros.com/profil/maxdesign). "
+         }
+      },
+      {
+         "type":"header",
+         "content":"Paramètres principaux"
+      },
+	  {
+         "type":"select",
+         "id":"activate_timer",
+         "label":"Action de la barre",
+         "options":[
+            {
+               "value":"disable",
+               "label":"Désactiver"
+            },
+            {
+               "value":"announce",
+               "label":"Barre d'annonce"
+            },
+			{
+               "value":"timer",
+               "label":"Compte à rebours"
+            }
+         ],
+         "default":"timer"
+      },
+      {
+         "type":"text",
+         "id":"pages",
+         "label":"Pages à exclure",
+         "default":"cart;login;page;blog",
+         "info":"Ajouter les types de pages à exclure et les séparer par un point-virgule. Ex: index; product; collection; cart; login; page; blog."
+      },   
+      {
+         "type":"color",
+         "id":"color",
+         "label":"Couleur du texte",
+         "default":"#FFFFFF"
+      },
+      {
+         "type":"color",
+         "id":"smalltext_color",
+         "label":"Couleur de la légende",
+         "default":"#FFFFFF"
+      },
+      {
+         "type":"color",
+         "id":"bg_color",
+         "label":"Couleur de fond",
+         "default":"#000000"
+      }
+   ],
+   "blocks":[
+      {
+         "type":"timer",
+         "name":"Param. compteurs",
+         "limit":1,
+         "settings":[
+            {
+               "type":"select",
+               "id":"timertype",
+               "label":"Compteur actif",
+               "options":[
+                  {
+                     "value":"deadlinetimer",
+                     "label":"Compteur date butoire"
+                  },
+                  {
+                     "value":"cookietimer",
+                     "label":"Compteur avec cookies"
+                  },
+                  {
+                     "value":"dailytimer",
+                     "label":"Compteur journalier"
+                  }
+               ],
+               "default":"dailytimer"
+      		},
+			{ 
+              "type": "checkbox",
+              "id": "hide_days",
+              "label": "Cacher \"0 jours\""
+	 		},
+            {
+               "type":"header",
+               "content":"Compteur journalier"
+            },
+            {
+               "type":"paragraph",
+               "content": "Le compteur journalier s'arrête à une heure spécifique de la journée."
+            }, 
+			{
+               "type":"select",
+               "id":"dailytimer_end",
+               "label":"Heure de fin du compteur :",
+               "options":[
+                  {
+                     "value":"1",
+                     "label":"01:00"
+                  },
+                  {
+                     "value":"2",
+                     "label":"02:00"
+                  },
+                  {
+                     "value":"3",
+                     "label":"03:00"
+                  },
+                  {
+                     "value":"4",
+                     "label":"04:00"
+                  },
+                  {
+                     "value":"5",
+                     "label":"05:00"
+                  },
+				  {
+                     "value":"6",
+                     "label":"06:00"
+                  },
+                  {
+                     "value":"7",
+                     "label":"07:00"
+                  },
+                  {
+                     "value":"8",
+                     "label":"08:00"
+                  },
+                  {
+                     "value":"9",
+                     "label":"09:00"
+                  },
+                  {
+                     "value":"10",
+                     "label":"10:00"
+                  },
+                  {
+                     "value":"11",
+                     "label":"11:00"
+                  },
+				  {
+                     "value":"12",
+                     "label":"12:00"
+                  },
+                  {
+                     "value":"13",
+                     "label":"13:00"
+                  },
+                  {
+                     "value":"14",
+                     "label":"14:00"
+                  },
+                  {
+                     "value":"15",
+                     "label":"15:00"
+                  },
+                  {
+                     "value":"16",
+                     "label":"16:00"
+                  },
+                  {
+                     "value":"17",
+                     "label":"17:00"
+                  },
+				  {
+                     "value":"18",
+                     "label":"18:00"
+                  },
+                  {
+                     "value":"19",
+                     "label":"19:00"
+                  },
+                  {
+                     "value":"20",
+                     "label":"20:00"
+                  },
+                  {
+                     "value":"21",
+                     "label":"21:00"
+                  },
+                  {
+                     "value":"22",
+                     "label":"22:00"
+                  },
+                  {
+                     "value":"23",
+                     "label":"23:00"
+                  },
+				  {
+                     "value":"24",
+                     "label":"00:00"
+                  }
+               ],
+               "default":"24"
+            },
+            {
+               "type":"select",
+               "id":"dailytimer_loop",
+               "label":"Lorsque le compteur a expiré :",
+               "options":[
+                  {
+                     "value":"0",
+                     "label":"Redémarrer à la prochaine session"
+                  },
+                  {
+                     "value":"1",
+                     "label":"Redémarrer après 1 jour"
+                  },
+                  {
+                     "value":"7",
+                     "label":"Redémarrer après 1 semaine"
+                  },
+                  {
+                     "value":"30",
+                     "label":"Redémarrer après 1 mois"
+                  },
+                  {
+                     "value":"90",
+                     "label":"Redémarrer après 3 mois"
+                  },
+                  {
+                     "value":"180",
+                     "label":"Redémarrer après 6 mois"
+                  }
+               ],
+               "default":"0"
+            },
+			{
+               "type":"header",
+               "content":"Compteur avec cookies"
+            },
+            {
+               "type":"paragraph",
+               "content":"Le compteur avec cookies se déclenche lorsque l'utilisateur arrive pour la première fois."
+            },
+            {
+               "type":"range",
+               "id":"cookie_days",
+               "min":0,
+               "max":31,
+               "step":1,
+               "label":"Jours",
+               "default":0
+            },
+            {
+               "type":"range",
+               "id":"cookie_hours",
+               "min":0,
+               "max":24,
+               "step":1,
+               "label":"Heures",
+               "default":10
+            },
+            {
+               "type":"range",
+               "id":"cookie_minutes",
+               "min":0,
+               "max":60,
+               "step":1,
+               "label":"Minutes",
+               "default":7
+            },
+            {
+               "type":"range",
+               "id":"cookie_seconds",
+               "min":0,
+               "max":60,
+               "step":1,
+               "label":"Secondes",
+               "default":13
+            },
+            {
+               "type":"select",
+               "id":"timer_loop",
+               "label":"Lorsque le compteur a expiré :",
+               "options":[
+                  {
+                     "value":"0",
+                     "label":"Redémarrer à la prochaine session"
+                  },
+                  {
+                     "value":"1",
+                     "label":"Redémarrer après 1 jour"
+                  },
+                  {
+                     "value":"7",
+                     "label":"Redémarrer après 1 semaine"
+                  },
+                  {
+                     "value":"30",
+                     "label":"Redémarrer après 1 mois"
+                  },
+                  {
+                     "value":"90",
+                     "label":"Redémarrer après 3 mois"
+                  },
+                  {
+                     "value":"180",
+                     "label":"Redémarrer après 6 mois"
+                  }
+               ],
+               "default":"30"
+            },
+			{
+               "type":"header",
+               "content":"Compteur date butoire"
+            },
+            {
+               "type":"paragraph",
+               "content":"Choisir la date à laquelle le compteur doit se terminer. Le compteur sera le même pour tout le monde. Il disparaîtra lorsque la date sera dépassée."
+            },
+            {
+               "type":"text",
+               "id":"unixtime_deadline",
+               "label":"Date butoire (temps Unix)",
+               "default":"1609459200",
+               "info":"Utiliser un [convertisseur UNIX](http://www.unixtime.fr/) pour choisir la date butoire exacte."
+            },
+			{
+              "type": "header",
+              "content": "Texte compteur bureau"
+     		},
+			{
+               "type":"textarea",
+               "id":"title_left",
+               "label":"Texte n°1",
+               "default":"OFFRES FLASH EXCLUSIVES"
+            },
+            {
+               "type":"textarea",
+               "id":"title_right",
+               "label":"Texte n°2",
+               "default":"À SAISIR MAINTENANT !"
+            },
+            {
+               "type":"text",
+               "id":"days",
+               "label":"Légende (jours)",
+               "default":"JRS"
+            },
+            {
+               "type":"text",
+               "id":"hours",
+               "label":"Légende (heures)",
+               "default":"HRS"
+            },
+            {
+               "type":"text",
+               "id":"minutes",
+               "label":"Légende (minutes)",
+               "default":"MINS"
+            },
+            {
+               "type":"text",
+               "id":"seconds",
+               "label":"Légende (secondes)",
+               "default":"SECS"
+            },
+			{
+              "type": "header",
+              "content": "Texte compteur mobile"
+     		}, 
+			{
+               "type":"textarea",
+               "id":"title_mobile",
+               "label":"Texte",
+               "default":"Fin de la promotion dans :"
+            },
+			{
+               "type":"text",
+               "id":"days_mobile",
+               "label":"Légende (jours)",
+               "default":"JRS"
+            },
+            {
+               "type":"text",
+               "id":"hours_mobile",
+               "label":"Légende (heures)",
+               "default":"HRS"
+            },
+            {
+               "type":"text",
+               "id":"minutes_mobile",
+               "label":"Légende (minutes)",
+               "default":"MINS"
+            },
+            {
+               "type":"text",
+               "id":"seconds_mobile",
+               "label":"Légende (secondes)",
+               "default":"SECS"
+            }
+         ]
+      },
+	  {
+         "type":"announce",
+         "name":"Barre d'annonce",
+         "limit":1,
+         "settings":[
+            {
+              "type":"textarea",
+              "id":"announce_title",
+              "label":"Texte annonce",
+			  "default":"OFFRES FLASH EXCEPTIONNELLE : 50% DE RÉDUCTION JUSQU'AU XX",
+              "info": "Utiliser XX pour afficher une date"
+            },
+            {
+             "type": "select",
+             "id": "announce_date",
+             "label": "Date à afficher",
+             "options": [
+               {
+                 "value": "today",
+                 "label": "Date du jour"
+               },
+               {
+                 "value": "specific",
+                 "label": "Date spécifique"
+               },
+			   {
+                 "value": "today_capital",
+                 "label": "Date du jour (capitale)"
+               },
+			   {
+                 "value": "specific_capital",
+                 "label": "Date spécifique (capitale)"
+               }
+             ],
+             "default": "today",
+             "info": "Configurer le paramètre ci-dessous pour une date spécifique"
+           },
+           {
+              "type":"text",
+              "id":"announce_unixtime",
+              "label":"Date spécifique (temps Unix)",
+              "default":"1640991599",
+              "info":"Utiliser un [convertisseur UNIX](http://www.unixtime.fr/) pour choisir le jour."
+           },
+		   { 
+              "type": "checkbox",
+              "id": "announce_effect",
+              "label": "Effet de défilement"
+           },
+		   {
+               "type":"range",
+               "id":"announce_speed",
+               "label":"Vitesse du défilement",
+               "min":0,
+               "max":30,
+               "unit":"s",
+               "step":1,
+               "default":5
+      	   }
+		]
+	  },
+	  {
+         "type":"gradients",
+         "name":"Gradient de couleurs",
+         "limit":1,
+         "settings":[
+			 {
+               "type":"checkbox",
+               "id":"gradient",
+               "label":"Activer le gradient animé",     
+               "default":true
+        	},
+			{
+               "type":"range",
+               "id":"speed",
+               "label":"Vitesse de l'animation",
+               "min":0,
+               "max":100,
+               "unit":"s",
+               "step":5,
+               "default":30
+      		},
+            {
+               "type":"color",
+               "id":"gr1",
+               "label":"Gradient 1",
+               "default":"#054f7d"
+            },
+            {
+               "type":"color",
+               "id":"gr2",
+               "label":"Gradient 2",
+               "default":"#00a7cf"
+            },
+            {
+               "type":"color",
+               "id":"gr3",
+               "label":"Gradient 3",
+               "default":"#efe348"
+            },
+            {
+               "type":"color",
+               "id":"gr4",
+               "label":"Gradient 4",
+               "default":"#861a54"
+            }
+         ]
+      },
+	  {
+         "type":"responsive",
+         "name":"Param. Bureau / Mobile",
+         "limit":1,
+         "settings":[
+			{
+             "type":"header",
+             "content":"Bureau"
+            },
+			{
+               "type": "select",
+               "id": "text_mode_desktop",
+               "label": "Mode d'affichage",
+               "options": [
+                 {
+                   "value": "original",
+                   "label": "Original"
+                 },
+                 {
+                   "value": "compact",
+                   "label": "Compact"
+                 }
+               ],
+               "default":   "compact"
+        	},
+            {
+               "type":"range",
+               "id":"timer_size",
+               "min":-50,
+               "max":50,
+               "step":1,
+               "unit":"%",
+               "label":"Agrandir/Diminuer le compteur",
+               "default":-25
+            },
+            {
+               "type":"range",
+               "id":"text_size",
+               "min":-50,
+               "max":50,
+               "step":1,
+               "unit":"%",
+               "label":"Agrandir/Diminuer le texte",
+               "default":-10
+            },     
+			{
+               "type":"range",
+               "id":"font_weight_desktop",
+               "min":100,
+               "max":900,
+               "step":100,
+               "label":"Épaisseur de la police",
+               "default":400
+            },
+			{
+               "type":"range",
+               "id":"spacing_top_desktop",
+               "min":-200,
+               "max":200,
+               "step":5,
+               "unit":"px",
+               "label":"Espacement haut",
+               "default":0
+            },
+            {
+               "type":"range",
+               "id":"spacing_bottom_desktop",
+               "min":-200,
+               "max":200,
+               "step":5,
+               "unit":"px",
+               "label":"Espacement bas",
+               "default":0
+            },
+            {
+               "type":"header",
+               "content":"Mobile"
+            },
+			{
+               "type": "select",
+               "id": "text_mode_mobile",
+               "label": "Mode d'affichage",
+               "options": [
+                 {
+                   "value": "original",
+                   "label": "Original"
+                 },
+                 {
+                   "value": "compact",
+                   "label": "Compact"
+                 },
+				 {
+                   "value": "ultracompact",
+                   "label": "Ultra compact"
+                 }
+               ],
+               "default":   "compact"
+        	},
+			{
+               "type":"range",
+               "id":"timer_size_mobile",
+               "min":-50,
+               "max":50,
+               "step":1,
+               "unit":"%",
+               "label":"Agrandir/Diminuer le compteur",
+               "default":-15
+            },
+            {
+               "type":"range",
+               "id":"text_size_mobile",
+               "min":-50,
+               "max":50,
+               "step":1,
+               "unit":"%",
+               "label":"Agrandir/Diminuer le texte",
+               "default":-10
+            },
+			{
+               "type":"range",
+               "id":"font_weight_mobile",
+               "min":100,
+               "max":900,
+               "step":100,
+               "label":"Épaisseur de la police",
+               "default":400
+            },
+            {
+               "type":"range",
+               "id":"spacing_top_mobile",
+               "min":-200,
+               "max":200,
+               "step":5,
+               "unit":"px",
+               "label":"Espacement haut",
+               "default":0
+            },
+            {
+               "type":"range",
+               "id":"spacing_bottom_mobile",
+               "min":-200,
+               "max":200,
+               "step":5,
+               "unit":"px",
+               "label":"Espacement bas",
+               "default":0
+            }
+		]
+	  },
+	  {
+         "type":"customcss",
+         "name":"Réglages avancés",
+         "limit":1,
+         "settings":[
+            {
+               "type":"header",
+               "content":"Positionnement sticky"
+            },
+            {
+               "type":"checkbox",
+               "id":"sticky",
+               "label":"Activer l'effet sticky"
+            },
+			{
+               "type": "paragraph",
+               "content": "Si vous utilisez aussi un header fixe, configurez les paramètres ci-dessous."
+     		},
+			{
+               "type": "select",
+               "id": "sticky_position",
+               "label": "Position sticky",
+               "options": [
+                 {
+                   "value": "bellow",
+                   "label": "Sous le header"
+                 },
+                 {
+                   "value": "above",
+                   "label": "Sur le header"
+                 }
+               ],
+               "default":   "bellow"
+        	},	
+            {
+               "type":"range",
+               "id":"sticky_offset_desktop",
+               "min":0,
+               "max":100,
+               "step":1,
+               "unit":"px",
+               "label":"Décalage vertical (bureau)",
+               "default":0
+            },
+            {
+               "type":"range",
+               "id":"sticky_offset_mobile",
+               "min":0,
+               "max":100,
+               "step":1,
+               "unit":"px",
+               "label":"Décalage vertical (mobile)",
+               "default":0
+            },
+            {
+               "type":"header",
+               "content":"CSS Mobile"
+            },
+            {
+               "type":"html",
+               "id":"css_mobile",
+               "label":"Custom CSS",
+               "info":"ex: font-size: 20px;"
+            },
+            {
+               "type":"header",
+               "content":"CSS Bureau"
+            },
+            {
+               "type":"range",
+               "id":"query",
+               "label":"media-query line break",
+               "min":400,
+               "max":1400,
+               "step":10,
+               "default":750
+            },
+            {
+               "type":"html",
+               "id":"css_bureau",
+               "label":"Custom CSS",
+               "info":"ex: font-size: 35px;"
+            },
+			{
+              "type": "header",
+              "content": "Sélecteurs"
+     		},
+			{ 
+              "type": "text",
+              "id": "header_mobile_selector",
+              "label": "Header mobile"
+	  		},
+			{ 
+              "type": "text",
+              "id": "header_desktop_selector",
+              "label": "Header bureau"
+	  		}
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Barre multifonctions",
+         "category":"Custom Sections By MaxDesign",
+         "blocks":[
+            {
+               "type":"gradients"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

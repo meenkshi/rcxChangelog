@@ -1,0 +1,144 @@
+<a class="" href="{{ section.settings.button_link }}">
+  <div class="btnCTA prof">{{ section.settings.btn_text }}</div>
+</a>
+
+{% schema %}
+  {
+    "name": "Bouton CTA",
+    "settings": [
+      {
+        "type": "color",
+        "id": "btn_text_color",
+        "label": "Button Text Color",
+        "default":"#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "btn_color",
+        "label": "Button Color",
+        "default":"#000000"
+      },
+      {
+        "type": "text",
+        "id": "btn_text",
+        "label": "Text",
+        "default": "Product Name"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      }
+
+    ],
+    "presets": [
+{
+"name": "Btn CTA",
+"category": "Custom"
+}
+]
+  }
+{% endschema %}
+
+{% style %}
+    @media (min-width:750px){
+   #shopify-section-{{ section.id }} .btnCTA {
+    display: block;
+    width: 30%;
+    height: auto;
+    font-family: 'Droid Sans Mono', sans-serif;
+    font-size: 16px;
+    color: {{ section.settings.btn_text_color }};
+    background-color: {{ section.settings.btn_color }};
+    border-radius: 5px;
+    text-align: center;
+    line-height: 50px;
+    text-decoration: none;
+    margin: 10px auto 0;
+    font-weight: bold;
+    border: solid;
+    border-width:2px;
+    border-color:{{ section.settings.btn_text_color }};
+    -webkit-animation: btnWiggle 5s infinite;
+    -moz-animation: btnWiggle 5s infinite;
+    -o-animation: btnWiggle 5s infinite;
+    animation: btnWiggle 5s infinite;
+  }
+    #shopify-section-{{ section.id }} .btnCTA:hover{
+    background-color:{{ section.settings.btn_text_color }};
+    color:{{ section.settings.btn_color }};
+    border-width:2px;
+    border-color:{{ section.settings.btn_color }};
+  }
+  }
+  @media (max-width:749px){
+    #shopify-section-{{ section.id }} .btnCTA {
+    display: block;
+    width: 50%;
+    height: auto;
+    font-family: 'Droid Sans Mono', sans-serif;
+    font-size: 16px;
+    color: {{ section.settings.btn_text_color }};
+    background-color: {{ section.settings.btn_color }};
+    border-radius: 5px;
+    /*box-shadow: 0px 3px 0px #606060;*/
+    text-align: center;
+    line-height: 50px;
+    text-decoration: none;
+    margin: 10px auto 0;
+    font-weight: bold;
+    -webkit-animation: btnWiggle 5s infinite;
+    -moz-animation: btnWiggle 5s infinite;
+    -o-animation: btnWiggle 5s infinite;
+    animation: btnWiggle 5s infinite;
+
+  }
+    #shopify-section-{{ section.id }} .btnCTA:hover{
+    background-color:{{ section.settings.btn_text_color }};
+    color:{{ section.settings.btn_color }};
+    border-width:2px;
+    border-color:{{ section.settings.btn_color }};
+  }
+    .prof{
+      width: 60%;
+      margin-top:-10px;
+    }
+  }
+
+
+
+
+
+  .subtext {
+    font-family: 'Droid Sans Mono', sans-serif;
+    font-size: 14px;
+    letter-spacing: .05em;
+    text-align: center;
+  }
+
+  /* animation */
+  @-webkit-keyframes btnWiggle {
+    0% {-webkit-transform: rotate(0deg);}
+    2% {-webkit-transform: rotate(-1deg);}
+    3.5% {-webkit-transform: rotate(1deg);}
+    5% {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(0deg);}
+  }
+  @-o-keyframes btnWiggle {
+    0% {-webkit-transform: rotate(0deg);}
+    2% {-webkit-transform: rotate(-1deg);}
+    3.5% {-webkit-transform: rotate(1deg);}
+    5% {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(0deg);}
+  }
+  @keyframes btnWiggle {
+    0% {-webkit-transform: rotate(0deg);}
+    2% {-webkit-transform: rotate(-1deg);}
+    3.5% {-webkit-transform: rotate(1deg);}
+    5% {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(0deg);}
+  }
+{% endstyle %}
+
+{% javascript %}
+{% endjavascript %}

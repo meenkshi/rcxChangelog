@@ -1,0 +1,233 @@
+{% style %}
+
+#shopify-section-{{ section.id }} {
+	background-color: {{ section.settings.bg }};
+    padding: 50px 0;
+}
+
+
+
+
+
+  @media (min-width:750px){ 
+    .h2perso{
+        color: #000000;
+    	text-transform: uppercase;
+    	text-align: center;
+    	margin-top: 60px;
+        margin-bottom:30px;
+    	
+    	font-size: 40px;
+      	text-align:center;
+    }
+  }
+  @media (max-width:749px){
+    .h2perso{
+        color: #000000;
+    	text-transform: uppercase;
+    	text-align: center;
+    	margin-top: 30px;
+      	margin-right:10px;
+      	margin-left:10px;
+        margin-bottom:25px;
+      	text-align:center;
+      font-size: 25px;
+    }
+  }
+
+.slick-track {
+	padding: 0px 0px;
+}
+
+.slider-card {
+	box-shadow: 0px 0px 12px #d0d0d0;
+	margin: 0 10px;
+	padding: 10px;
+	background-color: white;
+}
+
+.slider-card.img-contain {
+	padding: 0;
+}
+
+.slider-card:focus, .slick-arrow:focus {
+	outline: none;
+}
+
+.card-header {
+	display: flex;
+	align-items: center;
+}
+
+.card-name h3, .card-title h3 {
+	margin:0;
+}
+
+.card-name h3 {
+	font-size: 16px;
+}
+
+.card-verified {
+	margin: 0px 6px;
+    background: #718cc8;
+    padding: 2px 6px;
+    border-radius: 2px;
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.card-title {
+    padding-top: 15px;
+    font-size: 10px;
+}
+
+.slick-prev, .slick-next {
+    z-index: 4;
+    background: #000000ab;
+    width: 70px;
+    height: 70px;
+    border-radius: 54px;
+}
+
+.slick-prev {
+	left: 20px;
+}
+
+.slick-next {
+    right: 20px;
+}
+
+.slick-prev:before {
+	content: "";
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border-left: 3px solid #fff;
+    display: inline-block;
+    border-top: 3px solid #fff;
+    transform: rotate(-45deg);
+    top: 18px;
+    left: 23px;
+	color: white;
+}
+
+.slick-next:before {
+	content: "";
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border-right: 3px solid #fff;
+    display: inline-block;
+    border-top: 3px solid #fff;
+    transform: rotate(45deg);
+    top: 18px;
+    right: 25px;
+}
+
+.slick-prev:hover, .slick-prev:focus, .slick-next:hover, .slick-next:focus {
+    transition: .2s ease-in-out;
+    background: #00000059;
+    color: #ffffff00;
+}
+
+@media screen and (max-width: 749px) {
+  .videosize {
+    margin-left:10px; 
+    height:150px !important;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .videosize {
+    margin-left:15px; height:315px !important;
+  }
+}
+
+{% endstyle %}
+
+
+<div class="page-contain">
+  <div class="page-width">
+    <h2 class="h2perso">{{ section.settings.sectionname }}</h2>
+  </div>
+  <div class="video-slider">
+
+    {% for block in section.blocks %}
+    
+      {% if block.settings.iframe %}
+        	{{ block.settings.iframe}}
+        {% else %}
+        	{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+
+    
+	
+    
+    {% endfor %}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Review Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "sectionname",
+      "label": "Titre de la section",
+      "default": "+500,000 utilisateurs actifs dans le monde"
+    },
+	{
+       "type": "color",
+       "id": "titlecolor",
+       "label": "Couleur du titre",
+       "default": "#000000"
+    },
+	{
+       "type": "color",
+       "id": "bg",
+       "label": "Couleur de fond",
+       "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "review",
+      "settings": [
+		{
+          "type": "html",
+          "id": "iframe",
+          "label": "Iframe youtube"
+        },
+		{
+			"type": "text",
+			"id": "name",
+			"label": "Nom présent sur l'avis",
+			"default": "John Doe"
+		},
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Titre présent sur l'avis",
+			"default": "Très bon produit"
+		},
+		{
+			"type": "richtext",
+			"id": "content",
+			"label": "Contenu de l'avis",
+			"default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id velit maximus, porttitor enim eget, aliquet libero. In eu porttitor est, in sodales dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;</p>"
+		}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video SLIDER",
+      "category": "avis"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+{% comment %}
+  The contents of the collection.liquid template can be found in /sections/collection-template.liquid
+{% endcomment %}
+
+
+{% if collection.sort_by == 'best-selling' %}
+
+<div class="container">
+ <div style="text-align:center;">
+ <h1>Page introuvable</h1> 
+ <p><strong>La page que vous essayez d'accéder est introuvable.</strong></p>
+ </div>
+</div>
+{% else %}
+{% section 'collection-template' %}
+{% endif %}

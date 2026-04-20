@@ -1,0 +1,626 @@
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Create three columns of equal width */
+  .columns {
+    float: left;
+    width: 33.3%;
+    padding: 8px;
+  }
+
+  /* Style the list */
+  .pricec {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    display: inline-block;
+    width:80%;
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2)
+
+  }
+
+  /* Add shadows on hover */
+  .pricec:hover {
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.4)
+  }
+
+  /* Pricing header */
+  .pricec .header {
+    font-size: 25px;
+  }
+
+  .pricec .text-price-bare {
+    font-size: 20px;
+    text-decoration : line-through;
+  }
+
+  .pricec .text-price {
+    font-size: 35px;
+    font-weight:800;
+    color:#5D9DDF
+  }
+
+  /* List items */
+  .pricec li {
+    border-bottom: 1px solid #eee;
+    padding: 20px;
+    text-align: center;
+  }
+
+
+  /* Grey list item */
+  .pricec .grey {
+    background-color: #eee;
+    font-size: 20px;
+  }
+
+  /* The "Sign Up" button */
+  .button {
+    background-color: #000000;
+    border: none;
+    border-radius:20px;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
+  }
+
+  .bestul{
+    border-size:1px;
+    border:solid;
+  }
+
+  .best{
+    border-style: solid;
+    background-color: #1b1b1b;
+    display: block!important;
+    text-align: center;
+    width: 100%;
+    padding-top:0px!important;
+    padding-bottom:0px!important;
+  }
+
+    .nobest{
+    border:0px!important;
+    background-color: #ffffff;
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding-top:0px!important;
+    padding-bottom:0px!important;
+  }
+
+  /* Change the width of the three columns to 100%
+  (to stack horizontally on small screens) */
+  @media only screen and (max-width: 600px) {
+    .columns {
+      width: 100%;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .colright {
+      text-align:center;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .colcenter {
+      text-align:center;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .colleft {
+      text-align:center;
+    }
+  }
+
+  @media only screen and (min-width: 601px) {
+    .colright {
+      text-align:left;
+    }
+  }
+
+  @media only screen and (min-width: 601px) {
+    .colcenter {
+      text-align:center;
+    }
+  }
+
+  @media only screen and (min-width: 601px) {
+    .colleft {
+      text-align:right;
+    }
+  }
+
+    .best-text{
+      font-size: 23px!important;
+      letter-spacing: 0px!important;
+      color: #fff!important;
+      text-transform: none!important;
+      font-weight: 800!important;
+      font-family: Poppins!important;
+      margin-bottom:0px
+    }
+
+    .best-no-text {
+      color:rgba(0,0,0,0)!important;
+    }
+
+    .comp{
+      display:flex;
+      justify-content:space-between;
+      align-items: center;
+    }
+    .textfeatures{
+      margin-bottom:0px;
+      text-align: initial;
+    }
+</style>
+
+<div style="overflow-y:overlay; margin-top:100px; margin-bottom:100px;">
+  {% for block in section.blocks %}
+    {% if block.type == 'logo' %}
+      <div class="columns colleft">
+        <ul class="pricec">
+          <li class="nobest"><h1 class="best-text best-no-text">.</h1></li>
+          <li>
+            {%- assign img_url = block.settings.product1 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img
+              class="feature-row__image lazyload"
+              data-src="{{ img_url }}"
+              data-widths="[180, 360, 540, 720, 900, 1080]"
+              data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+              data-sizes="auto"
+              alt="{{ block.settings.image.alt }}"
+              height="300px;"
+            >
+            <div class="header">
+              <strong> {{ block.settings.name1 }} </strong>
+            </div>
+            <div class="text-price-bare">{{ block.settings.priceold1 }}</div>
+            <div class="text-price">
+              <strong> {{ block.settings.price1 }} </strong>
+            </div>
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat11 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Camera.png?v=1668433922"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat12 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Range.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat13 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Weight.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat14 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Battery.png?v=1668442002"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat15 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/GPS.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat16 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/tremblement.png?v=1668713465"
+            >
+          </li>
+          <li class="">
+            <a href="{{ block.settings.btnlink1 }}" class="button">{{ block.settings.btntext1 }} ></a>
+          </li>
+        </ul>
+      </div>
+
+    {% elsif block.type == 'menu' %}
+      <div class="columns colcenter">
+        <ul class="pricec bestul">
+          <li class="best">
+            <h1 class="best-text">{{ section.settings.meilleure }}</h1>
+          </li>
+          <li>
+            {%- assign img_url = block.settings.product1 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img
+              class="feature-row__image lazyload"
+              data-src="{{ img_url }}"
+              data-widths="[180, 360, 540, 720, 900, 1080]"
+              data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+              data-sizes="auto"
+              alt="{{ block.settings.image.alt }}"
+              height="300px;"
+            >
+            <div class="header">
+              <strong> {{ block.settings.name1 }} </strong>
+            </div>
+            <div class="text-price-bare">{{ block.settings.priceold1 }}</div>
+            <div class="text-price">
+              <strong> {{ block.settings.price1 }} </strong>
+            </div>
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat11 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Camera.png?v=1668433922"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat12 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Range.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat13 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Weight.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat14 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Battery.png?v=1668442002"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat15 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/GPS.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat16 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/tremblement.png?v=1668713465"
+            >
+          </li>
+          <li class="">
+            <a href="{{ block.settings.btnlink1 }}" class="button">{{ block.settings.btntext1 }} ></a>
+          </li>
+        </ul>
+      </div>
+
+    {% else %}
+      <div class="columns colright">
+        <ul class="pricec">
+          <li class="nobest"><h1 class="best-text best-no-text">.</h1></li>
+          <li>
+            {%- assign img_url = block.settings.product1 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img
+              class="feature-row__image lazyload"
+              data-src="{{ img_url }}"
+              data-widths="[180, 360, 540, 720, 900, 1080]"
+              data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+              data-sizes="auto"
+              alt="{{ block.settings.image.alt }}"
+              height="300px;"
+            >
+            <div class="header">
+              <strong> {{ block.settings.name1 }} </strong>
+            </div>
+            <div class="text-price-bare">{{ block.settings.priceold1 }}</div>
+            <div class="text-price">
+              <strong> {{ block.settings.price1 }} </strong>
+            </div>
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat11 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Camera.png?v=1668433922"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat12 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Range.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat13 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Weight.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat14 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/Battery.png?v=1668442002"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat15 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/GPS.png?v=1668435730"
+            >
+          </li>
+          <li class="comp">
+            <p class="textfeatures">{{ block.settings.feat16 }}</p>
+            <img
+              width="25px"
+              height="25px"
+              src="https://cdn.shopify.com/s/files/1/0290/1649/0083/files/tremblement.png?v=1668713465"
+            >
+          </li>
+          <li class="">
+            <a href="{{ block.settings.btnlink1 }}" class="button">{{ block.settings.btntext1 }} ></a>
+          </li>
+        </ul>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": {
+
+    "en": "Product comparison",
+    "fr": "Comparaison de produits"
+
+  },
+  "settings": [
+
+{
+               "type":"text",
+               "id":"meilleure",
+               "label":"Best Seller"
+            }
+
+  ],
+  "blocks":[
+      {
+         "name":"Product 1",
+         "type":"logo",
+         "settings":[
+           {
+                "type": "image_picker",
+                "id": "product1",
+                "label": "Image product 1"
+              },
+    {
+               "type":"text",
+               "id":"name1",
+               "label":"Product Name "
+            },
+    {
+               "type":"text",
+               "id":"priceold1",
+               "label":"Price before"
+            },
+    {
+               "type":"text",
+               "id":"price1",
+               "label":"Price after"
+            },
+    {
+               "type":"text",
+               "id":"feat11",
+               "label":"Feature 1"
+            },
+    {
+               "type":"text",
+               "id":"feat12",
+               "label":"Feature 2"
+            },
+    {
+               "type":"text",
+               "id":"feat13",
+               "label":"Feature 3"
+            },
+    {
+               "type":"text",
+               "id":"feat14",
+               "label":"Feature 4"
+            },
+    {
+               "type":"text",
+               "id":"feat15",
+               "label":"Feature 5"
+            },
+    {
+               "type":"text",
+               "id":"feat16",
+               "label":"Feature 6"
+            },
+    {
+               "type":"text",
+               "id":"btntext1",
+               "label":"Button text "
+            },
+         {
+               "type":"url",
+               "id":"btnlink1",
+               "label":"Button link "
+            }]
+           },
+  {
+         "name":"Product 2",
+         "type":"menu",
+         "settings":[
+           {
+                "type": "image_picker",
+                "id": "product1",
+                "label": "Image product 1"
+              },
+    {
+               "type":"text",
+               "id":"name1",
+               "label":"Product Name "
+            },
+    {
+               "type":"text",
+               "id":"priceold1",
+               "label":"Price before"
+            },
+    {
+               "type":"text",
+               "id":"price1",
+               "label":"Price after"
+            },
+    {
+               "type":"text",
+               "id":"feat11",
+               "label":"Feature 1"
+            },
+    {
+               "type":"text",
+               "id":"feat12",
+               "label":"Feature 2"
+            },
+    {
+               "type":"text",
+               "id":"feat13",
+               "label":"Feature 3"
+            },
+    {
+               "type":"text",
+               "id":"feat14",
+               "label":"Feature 4"
+            },
+    {
+               "type":"text",
+               "id":"feat15",
+               "label":"Feature 5"
+            },
+    {
+               "type":"text",
+               "id":"feat16",
+               "label":"Feature 6"
+            },
+    {
+               "type":"text",
+               "id":"btntext1",
+               "label":"Button text "
+            },
+         {
+               "type":"url",
+               "id":"btnlink1",
+               "label":"Button link "
+            }]
+           },
+  {
+         "name":"Product 3",
+         "type":"dev",
+         "settings":[
+           {
+                "type": "image_picker",
+                "id": "product1",
+                "label": "Image product 1"
+              },
+    {
+               "type":"text",
+               "id":"name1",
+               "label":"Product Name "
+            },
+    {
+               "type":"text",
+               "id":"priceold1",
+               "label":"Price before"
+            },
+    {
+               "type":"text",
+               "id":"price1",
+               "label":"Price after"
+            },
+    {
+               "type":"text",
+               "id":"feat11",
+               "label":"Feature 1"
+            },
+    {
+               "type":"text",
+               "id":"feat12",
+               "label":"Feature 2"
+            },
+    {
+               "type":"text",
+               "id":"feat13",
+               "label":"Feature 3"
+            },
+    {
+               "type":"text",
+               "id":"feat14",
+               "label":"Feature 4"
+            },
+    {
+               "type":"text",
+               "id":"feat15",
+               "label":"Feature 5"
+            },
+    {
+               "type":"text",
+               "id":"feat16",
+               "label":"Feature 6"
+            },
+    {
+               "type":"text",
+               "id":"btntext1",
+               "label":"Button text "
+            },
+         {
+               "type":"url",
+               "id":"btnlink1",
+               "label":"Button link "
+            }]
+           }],
+  "presets": [
+{
+"name": "Product Compare",
+"category": "Custom"
+}
+]
+
+}
+{% endschema %}

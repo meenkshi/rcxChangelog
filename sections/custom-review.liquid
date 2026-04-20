@@ -1,0 +1,525 @@
+{%- capture flickity_options -%}
+{
+  "prevNextButtons": true,
+  "wrapAround": true,
+  "dragThreshold": 16,
+  "pageDots": false,
+  "autoPlay": {% if section.settings.autoplay %}{{ section.settings.cycle_speed | times: 1000 }}{% else %}false{% endif %}
+}
+{%- endcapture -%}
+{% style %}
+  .custom-review .TestimonialList{
+    overflow: hidden !important;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+#section-{{ section.id }}  .custom-review {
+    background: {{section.settings.background}};
+        padding: 25px 0;
+}
+
+#section-{{ section.id }} .custom-review .cusreview-topsubtext {
+    text-transform: uppercase;
+    text-align: center;
+    color: {{section.settings.text_color}};
+    font-family: var(--heading-font-family);
+    letter-spacing: .2em;
+    font-size: {{section.settings.sub_heading_size}}px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+#section-{{ section.id }} .custom-review  .cusreview-toptitle {
+    text-align: center;
+    color: {{section.settings.text_color}};
+    font-family: var(--heading-font-family);
+    font-size: {{section.settings.heading_size}}px;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: 1px;
+    margin-top: 20px;
+}
+
+.cusreview-cover .cusreview-userimg {
+    max-width: 145px;
+    max-height: 145px;
+    overflow: hidden;
+    min-width: 145px;
+    min-height: 145px;
+    position: relative;
+    border-radius: 100%;
+    margin: 10px auto 50px;
+}
+
+.cusreview-cover .cusreview-userimg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.cusreview-cover {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+    padding: 0 40px;
+}
+
+.cusreview-item {
+    width: 100%;
+}
+
+.cusreview-cover .cusreview-dtl .cusreview-star svg {
+    width: 30px;
+    margin: 0 9px;
+    display: block;
+    height: 30px;
+}
+
+.cusreview-cover .cusreview-dtl .cusreview-star {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#section-{{ section.id }} .cusreview-cover .cusreview-dtl  .cusreview-text {
+    text-align: center;
+    color: {{section.settings.review_desc_color}};
+    font-family: var(--heading-font-family);
+    letter-spacing: .2em;
+    font-size: {{section.settings.review__desc_size}}px;
+    font-weight: 600;
+    line-height: 2;
+    margin: 25px auto 20px;
+}
+
+#section-{{ section.id }} .cusreview-cover .cusreview-dtl  .cusreview-username {
+    letter-spacing: 4px;
+    color: {{section.settings.review_color}};
+    font-family: var(--heading-font-family);
+    font-size: {{section.settings.review_size}}px;
+    font-weight: 900;
+}
+  .cusreview-linkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+#section-{{ section.id }} .cusreview-linkbox .cusreview-link {
+    text-align: center;
+    color: {{section.settings.button_color}};
+    font-family: var(--heading-font-family);
+    letter-spacing: .2em;
+    font-size: {{section.settings.button_size}}px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 35px;
+    text-decoration: underline;
+}
+  .flickity-prev-next-button {
+    position: absolute;
+    top: 40px;
+    background: transparent;
+    border-radius: 0;
+    overflow: inherit;
+    width: 50px;
+    height: 64px;
+}
+
+.flickity-prev-next-button.previous {
+    left: 20px;
+}
+
+.flickity-prev-next-button.next {
+    right: 20px;
+}
+
+.flickity-prev-next-button svg {
+    display: none;
+}
+
+#section-{{ section.id }} .flickity-prev-next-button:before {
+  border-color: {{ section.settings.arrow_color }};
+  content: "";
+  width: {{section.settings.arrow_size}}px;
+  height: {{section.settings.arrow_size}}px;
+  border-style: solid;
+  border-width: 2px 2px 0 0;
+  
+  position: absolute;
+    transform: translateY(-50%) rotate(
+45deg
+);
+    left: -11px;
+    top: 50%;
+}
+
+.flickity-prev-next-button.previous {
+    transform: rotate(180deg);
+}
+  #section-{{ section.id }} .cusreview-cover .cusreview-dtl .cusreview-star svg polygon{
+  	fill: {{section.settings.text_color}};
+  }
+  @media screen and (max-width: 641px) {
+    #section-{{ section.id }} .custom-review .cusreview-topsubtext {
+       font-size: {{section.settings.sub_heading_size_mo}}px;
+    }
+    #section-{{ section.id }} .custom-review .cusreview-toptitle {
+      font-size: {{section.settings.heading_size_mo}}px;
+      margin-top: 15px;
+      margin-bottom: 40px
+    }
+    .cusreview-cover .cusreview-userimg {
+      max-width: 115px;
+      max-height: 115px;
+      min-width: 115px;
+      min-height: 115px;
+      margin: 0 auto 30px;
+    }
+    .cusreview-cover .cusreview-dtl .cusreview-star svg {
+      width: 20px;
+      margin: 0 6px;
+    }
+    .cusreview-cover {
+      padding: 0 20px;
+    }
+    #section-{{ section.id }} .cusreview-cover .cusreview-dtl .cusreview-text {
+      letter-spacing: 2px;
+      font-size: {{section.settings.review__desc_size_mo}}px;
+      line-height: 1.7;
+      margin: 10px auto 15px;
+    }
+    #section-{{ section.id }} .cusreview-cover .cusreview-dtl .cusreview-username {
+      font-size: {{section.settings.review_size_mo}}px;
+      letter-spacing: 3px;
+    }
+   #section-{{ section.id }}  .cusreview-linkbox .cusreview-link {
+      letter-spacing: 2px;
+      font-size: {{section.settings.button_size_mo}}px;
+      margin: 0 15px;
+      padding-bottom: 15px
+    }
+    .cusreview-linkbox {
+      margin-top: 30px;
+    }
+    .flickity-prev-next-button {
+      transform: scale(0.7);
+    }
+    .flickity-prev-next-button.previous {
+        transform: rotate(180deg) scale(0.7);
+    }
+  }
+{% endstyle %}
+
+{%- assign should_show_nav = false -%}
+
+{%- for block in section.blocks -%}
+  {%- if block.settings.logo -%}
+    {%- assign should_show_nav = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div id="section-{{ section.id }}" >
+<section class="custom-review Section--spacingNormal" data-section-id="{{ section.id }}" data-section-type="testimonials">
+  <p class="cusreview-topsubtext">{{section.settings.review_title}}</p>
+  <h4 class="cusreview-toptitle">{{section.settings.review_sub_title}}</h4>
+  <div class="TestimonialList {% if should_show_nav %}TestimonialList--withNav{% endif %} Carousel" data-flickity-config='{{ flickity_options }}'>
+    
+    {%- for block in section.blocks -%}
+       <div class="cusreview-item">
+        <div class="cusreview-cover">
+          <div class="cusreview-userimg" >
+            <img src="{{ block.settings.review_image | img_url: 'original' }}" alt>
+          </div>
+          <div class="cusreview-dtl">
+            <div class="cusreview-star">
+              {% assign num = block.settings.rate %}
+              {%- if num >= 1 -%}
+                {% assign range = (1..num) %}
+                {% for i in range %}
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="48" height="48" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                  <polygon points="512,197.816 325.961,185.585 255.898,9.569 185.835,185.585 0,197.816 142.534,318.842 95.762,502.431     255.898,401.21 416.035,502.431 369.263,318.842   " fill="#ffffff" data-original="#000000"></polygon>
+                  </svg>
+                {% endfor %}
+               {%- endif -%}
+            </div>
+          {% comment %}
+            <div class="cusreview-text" style="color: blue;">{{ block.settings.description }}</div>
+            	<strong class="cusreview-username">{{ block.settings.name }}</strong>
+          	</div>
+          {% endcomment %}
+        </div>
+      </div>
+    {%- endfor -%}
+    
+  </div>
+  <div class="cusreview-linkbox">
+    <a href="{{section.settings.button_1_link}}" class="cusreview-link">{{section.settings.button_1_text}}</a>
+    
+  </div>
+</section>
+</div>
+
+
+{% schema %}
+{
+  "name": "Custom Review",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto rotate between testimonials",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "cycle_speed",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "unit": "sec",
+      "label": "Change testimonials every",
+      "default": 5
+    },
+    {
+      "type": "textarea",
+      "id": "review_title",
+      "label": "Review Title",
+      "default": "L'AVIS DE NOS CLIENTS"
+    },
+    {
+      "type": "textarea",
+      "id": "review_sub_title",
+      "label": "Review Sub Title",
+      "default": "+de 20000 clients satisfaits"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "button_1_text",
+      "label": "Button 1 text",
+      "default": "Voir tous les avis"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_text",
+      "label": "Button 2 text",
+      "default": "Ecrire un avis"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#fff"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "sub_heading_size",
+      "label": "Sub Heading Font Size",
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 60,
+      "id": "heading_size",
+      "label": "Heading Font Size",
+      "default": 30,
+    "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "review_size",
+      "label": "Review name Font Size",
+      "default": 22,
+      "unit": "px"
+    },
+    {
+        "type": "color",
+        "id": "review_color",
+        "label":"Review name Color",
+        "default": "#fff"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "review__desc_size",
+      "label": "Review Description Font Size",
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "review_desc_color",
+      "label": "Review Description Color",
+      "default": "#fff"
+    },
+	{
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow Color",
+      "default": "#000000"
+    },
+	{
+      "type": "range",
+      "min": 10,
+      "max": 100,
+      "id": "arrow_size",
+      "label": "Arrow Size",
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "button_size",
+      "label": "Button Font Size",
+      "default": 14,
+      "unit": "px"
+    },
+    
+	 {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Style"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "sub_heading_size_mo",
+      "label": "Sub Heading Font Size",
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 60,
+      "id": "heading_size_mo",
+      "label": "Heading Font Size",
+      "default": 21,
+    "unit": "px"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "review_size_mo",
+      "label": "Review name Font Size",
+      "default": 17,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "review__desc_size_mo",
+      "label": "Review Description Font Size",
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "min": 10,
+      "max": 40,
+      "id": "button_size_mo",
+      "label": "Button Font Size",
+      "default": 13,
+      "unit": "px"
+    }
+  
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+            "type": "image_picker",
+            "id": "review_image",
+            "label": "Review Image"
+          },
+      {
+            "type": "text",
+            "id": "name",
+            "label": "Client Name"
+          },
+          {
+            "type": "richtext",
+            "id": "description",
+            "label": "Quote",
+            "default": "<p>Share what your customers are saying about your products, your company...</p>",
+            "info": "For best results, keep the word count consistent in each quote."
+          },
+      {
+            "type": "range",
+            "id": "rate",
+            "label": "Start Rate",
+            "default": 5,
+            "min": 0,
+            "max": 5,
+            "step": 1
+          }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "category": "Text",
+      "name": "Reviews",
+      "settings": {},
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {}
+        },
+        {
+          "type": "review",
+          "settings": {}
+        },
+        {
+          "type": "review",
+          "settings": {}
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

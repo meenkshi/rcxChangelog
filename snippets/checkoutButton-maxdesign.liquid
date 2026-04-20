@@ -1,0 +1,52 @@
+{% if settings.checkoutbtn_enable %} 
+{% comment %}
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com
+{% endcomment %}
+<!--
+⚠ FR : CONTENU PROTÉGÉ PAR LES DROITS D'AUTEURS. Il est interdit de copier ou revendre cette section pour de l'usage commercial sans l'accord de l'auteur. Pour toute demande d'information, veuillez me contacter : maxime.crouin@gmail.com / MaxDesign
+⚠ EN : CONTENT PROTECTED WITH AUTHOR COPYRIGHTS. It is forbidden to resell or duplicate this ressource for commercial use without permission of the author. Thank you to contact me: maxime.crouin@gmail.com / MaxDesign
+-->
+{% assign btn_brightness = settings.checkoutbtn_bgcolor | color_brightness | plus:0 | round %}
+{% if btn_brightness > 40 %}{% assign btn_color_hover = settings.checkoutbtn_bgcolor | color_darken: 3 %}{% else %}{% assign btn_color_hover = settings.checkoutbtn_bgcolor | color_lighten: 15 %}{% endif %}
+
+<style>
+  .md-checkout__button{font-size:13px;border:1px solid {{ settings.checkoutbtn_border_color }};border-radius:{{ settings.checkoutbtn_border_radius }}px;color:{{ settings.checkoutbtn_color }};background-color:{{ settings.checkoutbtn_bgcolor }};outline:none;padding:0 15px;height:44px;line-height:44px;margin:15px 0 5px;letter-spacing:.05em;text-overflow:ellipsis;white-space:nowrap;min-width:130px;max-width:100%;outline:none;overflow:hidden;cursor:pointer;display:block;text-align:center;width:100%;animation:mdFade 300ms cubic-bezier(0.1,0.79,1,1)}
+  .md-checkout__button:hover,.md-checkout__button:focus{background-color:{{ btn_color_hover }};outline:none;}
+  .md-checkout__button--loading{text-align:center}
+  .md-checkout__button--loading span:not(:last-child){margin-right:5px}
+  .md-checkout__button--loading span{-webkit-animation-name:opacity;-webkit-animation-duration:1s;-webkit-animation-iteration-count:infinite;-moz-animation-name:opacity;-moz-animation-duration:1s;-moz-animation-iteration-count:infinite}
+  .md-checkout__button--loading span:nth-child(2){-webkit-animation-delay:100ms;-moz-animation-delay:100ms}
+  .md-checkout__button--loading span:nth-child(3){-webkit-animation-delay:300ms;-moz-animation-delay:300ms}
+  @keyframes mdFade {0%{opacity:0.3}100%{opacity:1}}
+  @-webkit-keyframes mdFade {0%{opacity:0.3}100%{opacity:1}}
+  @-moz-keyframes mdFade {0%{opacity:0.3}100%{opacity:1}}
+  @keyframes opacity {0%{opacity:1}100%{opacity:0}}
+  @-webkit-keyframes opacity {0%{opacity:1}100%{opacity:0}}
+  @-moz-keyframes opacity {0%{opacity:1}100%{opacity:0}}
+</style>
+<button type="button" class="md-checkout__button">
+  {{ settings.checkoutbtn_text }}
+</button>
+<script>
+  addEventListener("load", function(){
+    document.querySelector('.md-checkout__button').addEventListener('click', function() {
+      this.innerHTML = '<span class="md-checkout__button--loading"><span>&bull;</span><span>&bull;</span><span>&bull;</span></span>'
+      let form = document.querySelector('form[action*="/cart/add"]')
+      let variantID = form.querySelector('select[name="id"]').value
+      console.log(variantID)
+      let cart = new XMLHttpRequest();
+      let url = '/cart/add.js';
+      let params = 'quantity=1&id=' + variantID;
+      cart.open('POST', url, true);
+      cart.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      cart.onreadystatechange = function() {if(cart.readyState == 4 && cart.status == 200) {location.href = '/checkout'}}
+      cart.send(params);
+    })
+  })
+</script>
+{% endif %}
+
+
+
+

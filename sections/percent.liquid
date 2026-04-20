@@ -1,0 +1,329 @@
+{% style %}
+
+
+#shopify-section-{{ section.id }} .cv_Custom_index_trust_section_main_content_start h2 {
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.titlecolor }};
+	padding: 20px 0px;
+}
+.circle_inbox{
+	background: {{ section.settings.bg_color }};
+}
+.chart{
+	margin-top:{{ section.settings.margin_top }}px;
+}
+#shopify-section-{{ section.id }} .wave path{
+	fill: {{ section.settings.bar_bg_color1 }}; 
+}
+#shopify-section-{{ section.id }} .percent_block{
+	padding-top: {{section.settings.padding_top}}px;
+    padding-bottom: {{section.settings.padding_bottom}}px;
+	background-color: {{ section.settings.bar_bg_color1 }}; 
+  	background-image: linear-gradient({{ section.settings.bar_bg_angle }}deg, {{ section.settings.bar_bg_color1 }}, {{ section.settings.bar_bg_color2 }});
+ 
+}
+@media (max-width: 749px){
+  #shopify-section-{{ section.id }} .cv_Custom_index_trust_section_main_content_start h2{
+  font-size: {{ section.settings.title__mobile_size }}px !important;
+  }
+}
+@media (min-width: 780px){
+  .chart{
+	width:200px;
+	height:200px;
+	}
+}
+.percent_block .percentage span,.percent_block .percentage sup{
+font-size:{{ section.settings.percentage_size }}px;
+    top: 0;
+}              
+
+{% endstyle %}
+{% assign scaleColor = 'transparent' %}
+{% if section.settings.enable-scaleColor %}
+	{% assign scaleColor = section.settings.scaleColor %}
+{% endif %}
+
+{% if section.settings.curve_back %}
+	<div class="wave">
+      <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+        <path d="M0.00,92.27 C216.83,192.92 304.30,8.39 500.00,109.03 L500.00,0.00 L0.00,0.00 Z" style="stroke: none;"></path>
+      </svg>
+    </div>
+{% endif %}
+<div class="percent_block " >
+  <div class="page-width">
+  {% if section.settings.title != blank %}
+    <div class="cv_custom_index_trust_Section_wrapper">
+      <div class="cv_Custom_index_trust_section_main_outer_content">
+        <div class="cv_Custom_index_trust_section_main_content_start" style="text-align:center;">
+          <h2>{{section.settings.title}}</h2>
+       </div>
+      </div>
+  	</div>
+  {% endif %}
+  
+  <div class="percent_block_wrrap">	
+    {% if section.blocks.size > 0 %}
+		
+          {% for block in section.blocks %}
+            <div class="circle_outer block-{{block.id}}">
+              <div class="chart">
+                <div class="percentage" data-percent="{{block.settings.percent_count}}">
+                  <span>{{block.settings.percent_count}}</span><sup>%</sup>
+                </div>
+                <div class="label circle_title"><h5>{{block.settings.title}}</h5></div>
+              </div>
+              
+              {% style %}
+          		.percent_block .block-{{block.id}} .circle_title h5,.percent_block .block-{{block.id}} .percent_text{
+          			color: {{ block.settings.caption_color }};
+              		font-size: 16px;
+          		}
+         		
+                .block-{{block.id}} .percentage canvas{
+              		opacity: {{ block.settings.circle_back_opacity }};
+                }
+              	
+              	
+              
+             {% endstyle %}
+              <script>
+                jQuery(document).ready(function($){
+                    $(window).on('scroll', function(){
+                        checkcirclePosition($('.percent_block_wrrap'));
+                    });
+
+                    
+                   function checkcirclePosition(container) {
+                      if( $(window).scrollTop() + $(window).height()*0.5 > container.offset().top) {
+                          $('.block-{{block.id}} .percentage').easyPieChart({
+                            animate: 2000,
+                            barColor: '{{ block.settings.circle_color }}',
+                            trackColor: '{{block.settings.circle_defaultcolor  | color_modify: 'alpha', block.settings.circle_default_opacity}}',
+                            lineCap: 'round',
+                            rotate: 0,
+                            size: 200,
+                            scaleColor: "{{scaleColor}}",
+                            lineWidth: '{{section.settings.border_size}}',
+                            onStep: function(value) {
+                              this.$el.find('span').text(Math.round(value));
+                            },
+                            onStop: function(value, to) {
+                              this.$el.find('span').text(Math.round(to));
+                            }
+                          });
+                      }
+                  }
+                });
+
+              </script>
+            </div>
+          {% endfor %}
+    	</div>
+    {% endif %}
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Percent Section",
+    "max_blocks": 4,
+    "settings": [
+	  {
+        "type": "checkbox",
+        "id": "curve_back",
+        "label": "Enable Curve Background"
+      },
+	  {
+        "type": "color",
+        "id": "curve_color",
+        "label": "Curve Color",
+        "default":"#9289fe"
+      },
+	  {
+        "type": "color",
+        "id": "bar_bg_color1",
+        "label": "Background Color 1",
+        "default":"#9289fe"
+      },
+      {
+        "type": "color",
+        "id": "bar_bg_color2",
+        "label": "Background Color 2",
+        "default":"#b0e1f7"
+      },
+      {
+        "type": "range",
+        "id": "bar_bg_angle",
+        "label": "Bar Angle",
+        "min": -90,
+        "max": 180,
+        "step": 10,
+        "default": -90
+      },
+	  {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Block Top Padding",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px"
+      },
+	  {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Block Bottom Padding",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading"
+      },
+	  {
+        "type": "range",
+        "id": "title_size",
+        "label": "Heading Size",
+        "default": 24,
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px"
+      },
+	  {
+        "type": "range",
+        "id": "title__mobile_size",
+        "label": "Heading Mobile Size",
+        "default": 24,
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px"
+      },
+	  {
+         "type": "color",
+         "id": "titlecolor",
+         "label": "Heading Color",
+         "default": "#000000"
+      },
+	  {
+            
+			"type": "range",
+            "id": "border_size",
+            "label": "Border Thickness",
+            "default": 10,
+            "min": 0,
+            "max": 20,
+            "step": 1
+      },
+	  {
+        "type": "range",
+        "id": "margin_top",
+        "label": "Block Top Margin",
+        "default": 30,
+        "min": 0,
+        "max": 80,
+        "step": 1,
+        "unit": "px"
+      },
+	 {
+        "type": "range",
+        "id": "percentage_size",
+        "label": "Percentage Size",
+        "default": 40,
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px"
+      },
+	 {
+      "type": "checkbox",
+      "id": "enable-scaleColor",
+      "label": "Activer Scale Points",
+      "default": false
+    },{
+      "type": "color",
+         "id": "scaleColor",
+         "label": "Scale Color",
+         "default": "#000000"
+    }
+	  
+
+    ],
+    "blocks": [
+      {
+        "type": "percent_block",
+        "name": "Percent Block",
+        "settings": [
+          
+          {
+            "type": "range",
+            "id": "percent_count",
+            "label": "Percent size",
+            "default": 68,
+            "min": 0,
+            "max": 100,
+            "step": 1
+          },
+		  {
+            "type": "text",
+            "id": "title",
+            "label": "Caption"
+          },
+		  {
+             "type": "color",
+             "id": "caption_color",
+             "label": "Caption Color",
+             "default": "#000"
+          },
+		  {
+             "type": "color",
+             "id": "circle_defaultcolor",
+             "label": "Circle Default Color",
+             "default": "#333"
+          },
+		  {
+             "type": "color",
+             "id": "circle_color",
+             "label": "Circle highling Color",
+             "default": "#000"
+          },
+		  {
+            
+			"type": "range",
+            "id": "circle_back_opacity",
+            "label": "Circle Background Opacity",
+            "default": 0.5,
+            "min": 0,
+            "max": 1,
+            "step": 0.1
+          },
+	  	  {
+            
+			"type": "range",
+            "id": "circle_default_opacity",
+            "label": "Circle intensity",
+            "default": 0.5,
+            "min": 0,
+            "max": 1,
+            "step": 0.1
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Percent Section",
+        "category": "Image"
+	  }
+    ]
+  }
+{% endschema %}

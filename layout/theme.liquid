@@ -1,0 +1,330 @@
+<!doctype html>
+<html class="no-js" lang="{{ shop.locale }}">
+<head>
+
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PPB72B4');</script>
+<!-- End Google Tag Manager -->
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-687353609', {'allow_enhanced_conversions': true});
+</script>
+
+<script type="text/javascript">
+var head = document.head;
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.src = "https://204832.t.hyros.com/v1/lst/universal-script?ph=23f5ea8380e261efe9e1764128e51fc82e0f4049a20c27376863c1d3f3cd0373&tag=!clicked&origin=SHOPIFY&ref_url=" + encodeURI(document.URL) ;
+head.appendChild(script);
+</script>
+  <meta name="google-site-verification" content="90hUcFlASOWuzHG8eEmKKz9yqsXb7HrEnUge49YF4P4" />
+  <meta name="google-site-verification" content="PMq9XZFQL0UumRniJmf8Mr4T-jJHIjrWnxxCKcZ6Tmc" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <meta name='dmca-site-verification' content='a3JmMHowdWdCU1NMUnE4TTF0ZERSaGJjTzltQk1kTURsSTNOeHVHRUdDTT01' />
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {%- endif -%}
+  <link rel="preload" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"></noscript>
+
+  
+  {%- capture seo_title -%}
+    {%- if request.page_type == 'search' and search.performed == true -%}
+      {{ 'general.search.heading' | t: count: search.results_count }}: {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+    {%- else -%}
+      {{ page_title }}
+    {%- endif -%}
+    {%- if current_tags -%}
+      {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- assign escaped_page_title = page_title | escape -%}
+    {%- unless escaped_page_title contains shop.name -%}
+      &ndash; {{ shop.name }}
+    {%- endunless -%}
+  {%- endcapture -%}
+  <title>{{ seo_title | strip }}</title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {% include 'social-meta-tags' %}
+  <link rel="preload" href="https://pro.fontawesome.com/releases/v5.2.0/css/all.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.2.0/css/all.css"></noscript>
+  {{ 'theme.scss.css' | asset_url | stylesheet_tag:preload:true }}
+ {% unless template contains 'product' %} {{ 'custom.scss.css' | asset_url | stylesheet_tag:preload:true }}{% endunless %}
+
+  <script>
+    var theme = {
+      breakpoints: {
+        medium: 750,
+        large: 990,
+        widescreen: 1400
+      },
+      strings: {
+        addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        regularPrice: {{ 'products.product.regular_price' | t | json }},
+        salePrice: {{
+          'products.product.sale_price' | t | json }},
+        sale: {{ 'products.product.on_sale' | t | json }},
+        showMore: {{ 'general.filters.show_more' | t | json }},
+        showLess: {{ 'general.filters.show_less' | t | json }},
+        addressError: {{ 'sections.map.address_error' | t | json }},
+        addressNoResults: {{ 'sections.map.address_no_results' | t | json }},
+        addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+        authError: {{ 'sections.map.auth_error_html' | t | json }},
+        newWindow: {{ 'general.accessibility.link_messages.new_window' | t | json }},
+        external: {{ 'general.accessibility.link_messages.external' | t | json }},
+        newWindowExternal: {{ 'general.accessibility.link_messages.new_window_and_external' | t | json }},
+        removeLabel: {{ 'cart.label.remove' | t: product: '[product]' | json }},
+        update: {{ 'cart.label.update' | t | json }},
+        quantity: {{ 'cart.label.quantity' | t | json }},
+        discountedTotal: {{ 'cart.label.discounted_total' | t | json }},
+        regularTotal: {{ 'cart.label.regular_total' | t | json }},
+        priceColumn: {{ 'cart.label.price_column' | t | json }},
+        quantityMinimumMessage: {{ 'products.product.quantity_minimum_message' | t | json }},
+        cartError: {{ 'cart.general.cart_error' | t | json }},
+        removedItemMessage: {{ 'cart.general.removed_item_html' | t: quantity: '[quantity]', link: '[link]' | json }},
+        unitPrice: {{ 'products.product.unit_price_label' | t | json }},
+        unitPriceSeparator: {{ 'general.accessibility.unit_price_separator' | t | json }},
+        oneCartCount: {{ 'cart.popup.cart_count' | t: count: 1 | json }},
+        otherCartCount: {{ 'cart.popup.cart_count' | t: count: '[count]' | json }},
+        quantityLabel: {{ 'cart.popup.quantity_label' | t: quantity_count: '[count]' | json }}
+      },
+      moneyFormat: {{ shop.money_format | json }},
+      moneyFormatWithCurrency: {{ shop.money_with_currency_format | json }}
+    }
+
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+
+
+  {%- if request.page_type contains 'customers/' -%}
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+  {%- endif -%}
+
+  <script src="{{ 'lazysizes.js' | asset_url }}" async></script>
+  <script src="{{ 'vendor.js' | asset_url }}" defer></script>
+
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  
+{{ content_for_header }}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+  
+
+	{% include 'vitals-loader' %}
+
+	<!-- SOLD STOCK PRODUCT APP START -->
+	{% if template contains 'product' %}
+		{% include 'sold_products' %}
+	{% endif %}
+	<!-- SOLD STOCK PRODUCT APP END -->
+    {% include 'judgeme_core' %}
+  
+    <script defer data-src="https://cdn.younet.network/main.js"></script>
+  
+  <meta name="google-site-verification" content="uqocXmmwDSRmQFtaahQqoOIh0o47ZDaTxFWICND28UQ" />
+  <meta name="facebook-domain-verification" content="5jh4y0i4ow4jinypx1mkr0k1rgfod4" />
+  
+  
+  <!-- Global site tag (gtag.js) - Google Ads: 687353609 -->
+<script async data-src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-687353609');
+</script>
+
+  <script async type="text/lazyload">
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '4504499596252127');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=4504499596252127&ev=PageView&noscript=1"
+/></noscript>
+
+ </head>
+ 
+
+<body ondragstart="return false;" onselectstart="return false;" oncontextmenu="return false;" class="template-{{ request.page_type | handle }} page--{{ page.handle }}">
+  
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PPB72B4"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+  
+  <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+  <div id="SearchDrawer" class="search-bar drawer drawer--top" role="dialog" aria-modal="true" aria-label="{{ 'general.search.placeholder' | t }}">
+    <div class="search-bar__table">
+      <div class="search-bar__table-cell search-bar__form-wrapper">
+        <form class="search search-bar__form" action="{{ routes.search_url }}" method="get" role="search">
+          <input class="search__input search-bar__input" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.placeholder' | t }}">
+          <button class="search-bar__submit search__submit btn--link" type="submit">
+            {% include 'icon-search' %}
+            <span class="icon__fallback-text">{{ 'general.search.submit' | t }}</span>
+          </button>
+        </form>
+      </div>
+      <div class="search-bar__table-cell text-right">
+        <button type="button" class="btn--link search-bar__close js-drawer-close">
+          {% include 'icon-close' %}
+          <span class="icon__fallback-text">{{ 'general.search.close' | t }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {%- if settings.enable_ajax -%}
+    {% include 'cart-popup' %}
+  {%- endif -%}
+
+
+  {% sections 'header-group' %}
+ 
+
+
+  <div class="page-container {{ template.name }}" id="PageContainer">
+
+    <main class="main-content js-focus-hidden" id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+    
+    
+    {% comment %}
+    <!-- Début du code - Pre footer badges de confiance -->
+    <style>
+      #gd-pre-footer { overflow:hidden; clear:both; margin-top:35px; margin-bottom:10px; padding-bottom:0; }
+      #gd-pre-footer .col-item { padding:15px 25px; text-align:center; list-style:none; }
+      #gd-pre-footer center { background:none; }
+      @media screen and (min-width: 768px) {
+        #gd-pre-footer {margin: 35px 20px 10px;}
+        #gd-pre-footer .col-item {
+          width:25%;
+          text-align:center;
+          float:left;
+          padding:5px 15px;
+        }
+      }
+    </style>
+    <div id="gd-pre-footer" class="pre_footer index-section home-section">
+      <div class="wrapper">
+        <div>
+          <ul class="footer-badges-list">
+            <li class="col-item">
+              <div class="text-center">
+                <img src="https://speed-ecom.eu/cdn/badge-confiance-shopify-1.png" style="height: 95px;">
+                <h3 class="h4">Livraison gratuite</h3>
+              </div>
+              <p></p><center><strong>Livraison gratuite et premium</strong> par nos partenaires : DHL, Colissimo etc..  </center><p></p>
+            </li>
+            <li class="col-item">
+              <div class="text-center">
+                <img class="" src="https://speed-ecom.eu/cdn/badge-confiance-shopify-2.png" style="height: 95px;">
+                <h3 class="h4">Satisfait ou Remboursé</h3>
+              </div>
+              <p></p><center>Quelque chose ne va pas ? Ça tombe bien vous avez <strong>14 jours pour changer d'avis </strong></center><p></p>
+            </li>
+            <li class="col-item">
+              <div class="text-center">
+                <img class="img90" src="https://speed-ecom.eu/cdn/badge-confiance-shopify-3.png" style="height: 95px;">
+                <h3 class="h4">Service Après Vente</h3>
+              </div>
+              <p></p><center><strong>Besoin d'aide ?</strong> Nous sommes à votre service<strong> du lundi au samedi</strong></center><p></p>
+            </li>
+            <li class="col-item">
+              <div class="text-center">
+                <img class="img90" src="https://speed-ecom.eu/cdn/badge-confiance-shopify-4.png" style="height: 95px;">
+                <h3 class="h4">Paiement sécurisé</h3>
+              </div>
+              <p></p><center>Nous utilisons le cryptage SSL pour des <strong>paiements en toute sécurité</strong></center><p></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Fin du code - Pre footer badges de confiance -->
+    {% endcomment %}
+	{% sections 'footer-group' %}
+    {% comment %}{% section 'footer' %}{% endcomment %}
+    
+    <div id="slideshow-info" class="visually-hidden" aria-hidden="true">
+      {{- 'sections.slideshow.navigation_instructions' | t -}}
+    </div>
+
+  </div>
+
+  <ul hidden>
+    <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
+    <li id="a11y-selection-message">{{ 'general.accessibility.selection_help' | t }}</li>
+  </ul>
+
+
+{% if template contains 'product' or template contains 'collection' or template contains 'index' or template contains 'search' %}
+
+
+{% endif %}
+{% include 'cjpod' %}
+{% if template.name == 'index' or template.name == 'product' %}
+{% render 'stickyATC-maxdesign' %}
+{% endif %}
+{% render 'backToTop-maxdesign' %}
+
+  <script src="{{ 'ajax.js' | asset_url  }}" async ></script>
+
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+
+
+<script src="{{ 'slik.js' | asset_url }}" defer></script>
+
+<script src="//code.tidio.co/2srj5r9jallvu0anfv9kft3jbkjkqbpn.js" defer></script>
+  {{ "//cdn.shopify.com/s/files/1/0603/7530/2276/t/1/assets/optimizem.js" | script_tag}}
+  <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+  // Configure Twemoji
+  result = twemoji.parse(
+    document.body, {
+    base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/' ,
+    folder: 'svg',
+    ext: '.svg'
+  });
+
+});
+
+  </script>
+
+ 
+</body>
+</html>

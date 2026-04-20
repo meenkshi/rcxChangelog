@@ -1,0 +1,123 @@
+{% assign appMetafieldSplitAnd = shop.metafields.sa_productdata.sa_shopdata | split: "&&" %}
+  
+{% assign soldStockDisplay = 0 %}
+{% assign soldStockIcon = '' %}
+{% assign soldStockText = '' %}
+{% assign soldStockType = 'product' %}
+  
+{% assign inStockDisplay = 0 %}
+{% assign inStockText = '' %}
+{% assign inStockLimitDisplay = 0 %}
+{% assign inStockLimit = 0 %}
+{% assign inStockInline = 0 %}
+{% assign soldapp_w_position = 1 %}
+
+{% assign productInStock = 0 %}
+{% assign productSoldCount = product.metafields.sa_productdata.sa_sold %}
+{% assign firstVariantID = product.variants.first.id %}
+
+{% for metaAndSplit in appMetafieldSplitAnd %}
+	
+	{% assign metaHashSplitEquval = metaAndSplit | split: "=" %}
+	{% assign metaAndSplitHash = metaHashSplitEquval[1] | split: "##" %}
+
+	{% if forloop.index == 1 and metaHashSplitEquval[0] == 'pro_sold' %}
+			
+		{% for metaFinalSplit in metaAndSplitHash %}
+			
+			{% if forloop.index == 1 %}
+				{% assign soldStockDisplay = metaFinalSplit %}
+			{% elsif forloop.index == 2 %}
+				{% assign soldStockIcon = metaFinalSplit %}
+			{% elsif forloop.index == 3 %}
+				{% assign soldStockText = metaFinalSplit %}
+			{% endif %}
+		{% endfor %}
+	{% elsif forloop.index == 2 and metaHashSplitEquval[0] == 'pro_instock' %}
+		
+		
+		{% for metaFinalSplit in metaAndSplitHash %}
+				
+			{% if forloop.index == 1 %}
+				{% assign inStockDisplay = metaFinalSplit %}
+			{% elsif forloop.index == 2 %}
+				{% assign inStockText = metaFinalSplit %}
+			{% elsif forloop.index == 3 %}
+				{% assign inStockInline = metaFinalSplit %}
+			{% endif %}
+		{% endfor %}
+	{% elsif forloop.index == 3 and metaHashSplitEquval[0] == 'type' %}
+		
+		{% assign soldStockType = metaHashSplitEquval[1] %}
+	{% elsif forloop.index == 4 and metaHashSplitEquval[0] == 'is_limit' %}
+		
+		{% assign inStockLimitDisplay = metaAndSplitHash[0] %}
+		{% assign inStockLimit = metaAndSplitHash[1] %}
+	{% elsif forloop.index == 5 and metaHashSplitEquval[0] == 'widget_position' %}
+		
+		{% assign soldapp_w_position = metaHashSplitEquval[1] %}
+	{% endif %}
+{% endfor %}
+
+<style>
+  .sold_mainbox{margin-bottom: 1rem;}
+  .sold_pro{ color: #f18d00; }
+  label.sold.sold_pro,.pro-inventory{ display: block;margin-bottom:5px; }
+  .emoticon{vertical-align: top;}
+  .hide{display:none;}
+  .inline{display:inline;}
+  b{font-weight:bold;}
+  span.separator {margin: 0 0.5rem;}
+</style>
+
+{% assign inline = '' %}
+{% if inStockInline == '1' %}
+	
+	{% assign inline = 'inline' %}
+	<style>
+		label.sold.sold_pro,.pro-inventory{display:inline;}
+	</style>
+{% endif %}
+
+<script type="text/javascript">
+  
+	var variantStock = {};
+
+	{% for variant in product.variants %}
+	
+		variantStock['{{ variant.id }}'] = {};
+		{% if variant.inventory_management == "shopify" and variant.inventory_quantity > 0 %}
+
+			{% assign productInStock = productInStock | plus: variant.inventory_quantity %}
+			variantStock['{{ variant.id }}']['inventory'] = parseInt('{{ variant.inventory_quantity }}');
+		{% endif %}
+				 
+		variantStock['{{ variant.id }}']['sold'] = parseInt('{{ variant.metafields.sa_productdata.sa_sold }}');
+	{% endfor %}
+				 
+	window.spSoldStockSetting = {
+		setting: {
+			soldStock: {
+				display: ('{{ soldStockDisplay }}' == 1) ? true : false,
+				type: '{{ soldStockType }}',
+				icon: '{{ soldStockIcon }}',
+				text: '{{ soldStockText }}'    
+			},
+			inStock: {
+				display: ('{{ inStockDisplay }}' == 1) ? true : false,
+				text: '{{ inStockText }}',
+				inline: ('{{ inStockInline }}' == 1) ? true : false,
+				limit: {
+					check: ('{{inStockLimitDisplay}}' == 1) ? true : false,
+					number: parseInt('{{inStockLimit}}')
+				}
+			}
+		},
+		productSoldCount: parseInt('{{ productSoldCount }}'),
+		productInStock: parseInt('{{ productInStock }}'),
+		firstVariantID: parseInt('{{ firstVariantID }}'),
+		variantStock: variantStock,
+		currentTemplate: '{{ template }}',
+        soldapp_w_position: '{{ soldapp_w_position }}' 
+	};
+</script>

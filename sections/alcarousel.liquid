@@ -1,0 +1,184 @@
+<div class="dg-slider-reviews" id="dg-slider-reviews{{ section.id }}">
+  {% for block in section.blocks %}
+  <div class="dg-slide-review">
+    <img src="{{ block.settings.image | img_url: "600x" }}" alt="" />
+  </div>
+   <div class="dg-slide-review">
+     <div class="dg-slide-review-box">
+       <div class="dg-slide-review-title"><strong>{{ block.settings.name }}</strong><span>Vérifié</span></div>
+       <div class="dg-slide-review-text">{{ block.settings.text }}</div>
+     </div>
+  </div>
+ 
+  {% endfor %}
+  
+</div>
+
+
+
+{% schema %}
+{
+  "name": "Carrousel d'avis",
+  "class": "section-dg-slider-reviews",	
+  "blocks" : [
+     {
+      "type": "review",
+      "name": {
+        "fr": "Avis"        
+      },
+      "settings": [
+		{
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nom"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Texte"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carrousel d'avis",
+      "category": "Dgeo dev - Tutoriels"      
+    }
+  ]
+}
+{% endschema %}
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" integrity="sha256-UK1EiopXIL+KVhfbFa8xrmAWPeBjMVdvYMYkTAEv/HI=" crossorigin="anonymous" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css" integrity="sha256-4hqlsNP9KM6+2eA8VUT0kk4RsMRTeS7QGHIM+MZ5sLY=" crossorigin="anonymous" />
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+<script>
+  
+  let nombresImagesPc{{ section.id }} = 3;
+  let nombresImagesTablet{{ section.id }} = 2;
+  let nombresImagesMobile{{ section.id }} = 1;
+
+  $('#dg-slider-reviews{{ section.id }}').slick({      
+    autoplay: false,
+    autoplaySpeed: 4000,   
+    arrows : true,
+    centerMode: true,
+    dots: false,        
+    slidesToShow: nombresImagesPc{{ section.id }},
+    slidesToScroll: nombresImagesPc{{ section.id }}, 
+    responsive: [
+      {
+        breakpoint: 900,
+        settings: {
+          slidesToShow: nombresImagesTablet{{ section.id }},
+          slidesToScroll: nombresImagesTablet{{ section.id }}
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: nombresImagesMobile{{ section.id }},
+          slidesToScroll: nombresImagesMobile{{ section.id }}
+        }
+      }
+    ]    
+  });
+
+</script>
+<style>
+  
+  .dg-slider-reviews .slick-list {
+    padding:0 13% !important;
+  }
+  .dg-slide-review {
+    padding:14px;
+    
+  }
+  .dg-slide-review img {
+    border-radius:5px;  
+    box-shadow:0 0 14px rgba(0,0,0,0.2);
+  }
+  .dg-slide-review-box {
+    padding:14px;
+    background:#FFF;
+    border-radius:5px;  
+    box-shadow:0 0 14px rgba(0,0,0,0.2);
+  }
+  .dg-slide-review-title {
+   display:flex; 
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .dg-slide-review-title span {   
+    margin-left:7px;
+    padding:2px;
+    font-size:11px;
+    background:#05B77A;
+    color:#FFF;
+  }
+ 
+  .dg-slider-reviews button {
+    width:70px;
+    height:70px;
+    background:rgba(0,0,0,0.2);
+    border-radius:50%;
+    z-index:999;
+  }
+  .dg-slider-reviews button.slick-prev {
+    left:35px;
+  }
+  .dg-slider-reviews button.slick-prev:before {
+    display:none;
+  }
+  .dg-slider-reviews button.slick-prev:after {
+    content: "";
+    position: absolute;
+    top: 18px;
+    left: 26px;
+    width: 34px;
+    height: 34px;
+    border-left: 3px solid #fff;
+    display: inline-block;
+    border-top: 3px solid #fff;
+    transform: rotate(-45deg);
+  }
+  .dg-slider-reviews button.slick-next {
+    right:35px;
+  }
+  .dg-slider-reviews button.slick-next:before {
+    display:none;
+  }
+  .dg-slider-reviews button.slick-next:after {
+    content: "";
+    position: absolute;
+    top: 18px;
+    right: 26px;
+    width: 34px;
+    height: 34px;
+    border-left: 3px solid #fff;
+    display: inline-block;
+    border-top: 3px solid #fff;
+    transform: rotate(135deg);
+  }
+  .dg-slider-reviews button.slick-prev:hover, 
+  .dg-slider-reviews button.slick-prev:focus,
+  .dg-slider-reviews button.slick-next:hover, 
+  .dg-slider-reviews button.slick-next:focus {
+    background:rgba(0,0,0,0.2);
+  }
+  @media screen and (max-width:600px) {
+    .dg-slider-reviews button {
+     display:none !important; 
+    }
+  }
+  
+</style/>

@@ -1,0 +1,51 @@
+<h2 class="h2perso"> {{ section.settings.text }} </h2>
+
+{% schema %}
+  {
+    "name": "Titre",
+    "settings": [
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default":"#ffffff"
+      },
+      
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Text",
+        "default": "Les derniers articles sur Dronetech"
+      }
+    ]
+  }
+{% endschema %}
+
+{% style%}
+  @media (min-width:750px){ 
+    #shopify-section-{{ section.id }} .h2perso{
+        color: {{ section.settings.text_color }};
+    	text-transform: uppercase;
+    	text-align: center;
+    	margin-top: 50px;
+    	
+    	font-size: 40px;
+      	text-align:center;
+    }
+  }
+  @media (max-width:749px){
+    #shopify-section-{{ section.id }} .h2perso{
+        color: {{ section.settings.text_color }};
+    	text-transform: uppercase;
+    	text-align: center;
+    	margin-top: 30px;
+      	margin-right:10px;
+      	margin-left:10px;
+      	text-align:center;
+      font-size: 25px;
+    }
+  }
+{% endstyle %}
+
+{% javascript %}
+{% endjavascript %}

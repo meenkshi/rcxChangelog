@@ -1,0 +1,112 @@
+{% for block in section.blocks %}
+  {% assign block_product_id = block.settings.name | plus: 0 %}
+  {% if block_product_id == product.id %}
+    {% assign index = forloop.index0 %}
+    {% assign video = block.settings.videocode %}
+  {% endif %}
+{% endfor %}
+
+<div style="background-color:#000000; padding:50px 0;">
+  <h2 style="margin: 0 7%; color:#ffffff; text-align:center;">{{ section.settings.title }}</h2>
+
+  <p style="margin: 0 7%; color:#ffffff; text-align:center;">{{ section.blocks[index].settings.textprod }}</p>
+
+  <div style="margin-top:80px; display:flex; justify-content:center;">
+    {{ video }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name":{
+    "en":"Product comparison UGC",
+    "fr":"Comparaison de produits UGC"
+  },
+  "settings": [
+
+    {
+               "type":"text",
+               "id":"title",
+               "label":"Titre de la section"
+            }
+  ],
+  "blocks":[
+      {
+         "name":"Product 1",
+         "type":"logo",
+         "settings":[
+
+    {
+               "type":"text",
+               "id":"name",
+               "label":"Id du produit"
+            },
+           {
+               "type":"text",
+               "id":"textprod",
+               "label":"Texte"
+            },
+         {
+           "type":"html",
+               "id":"videocode",
+               "label":"Iframe video"
+
+         }]
+           },
+  {
+         "name":"Product 2",
+         "type":"menu",
+         "settings":[
+           {
+               "type":"text",
+               "id":"name",
+               "label":"Id du produit"
+            },
+           {
+               "type":"text",
+               "id":"textprod",
+               "label":"Texte"
+            },
+         {
+           "type":"html",
+               "id":"videocode",
+               "label":"Iframe video"
+
+         }]
+           },
+  {
+         "name":"Product 3",
+         "type":"dev",
+         "settings":[
+           {
+               "type":"text",
+               "id":"name",
+               "label":"Id du produit"
+            },
+           {
+               "type":"text",
+               "id":"textprod",
+               "label":"Texte"
+            },
+         {
+           "type":"html",
+               "id":"videocode",
+               "label":"Iframe video"
+
+         }]
+           }],
+  "presets": [
+{
+"name": "Product UGC",
+"category": "Custom"
+}
+]
+
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

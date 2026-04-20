@@ -1,0 +1,216 @@
+{% style %}
+#shopify-section-{{ section.id }} .page_text_image{
+	background-color: {{ section.settings.bar_bg_color1 }}; 
+  	background-image: linear-gradient({{ section.settings.bar_bg_angle }}deg, {{ section.settings.bar_bg_color1 }}, {{ section.settings.bar_bg_color2 }});
+ 
+}
+
+#shopify-section-{{ section.id }} .wave path{
+	fill: {{ section.settings.bar_bg_color1 }}; 
+}
+#shopify-section-{{ section.id }} .page_text_image{
+	padding-top: {{section.settings.padding_top}}px;
+    padding-bottom: {{section.settings.padding_bottom}}px;
+}
+
+{% endstyle %}{% if section.settings.divider %}<div class="section--divider">{% endif %}
+{% if section.settings.curve_back %}
+	<div class="wave">
+      <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+        <path d="M0.00,92.27 C216.83,192.92 304.30,8.39 500.00,109.03 L500.00,0.00 L0.00,0.00 Z" style="stroke: none;"></path>
+      </svg>
+    </div>
+{% endif %}
+<div class="page_text_image">
+<div class="page-width">
+  {% capture image_layout %}
+    <div class="feature-row__item">
+      <div style="margin: 0 auto; max-width: {{ section.settings.image_width }}px;">
+        {% if section.settings.image != blank %}
+          {% if section.settings.button_label != blank and section.settings.button_link != blank %}<a href="{{ section.settings.button_link }}" target="_blank">{% endif %}
+          <div class="image-wrap" style="height: 0; padding-bottom: {{ 100 | divided_by: section.settings.image.aspect_ratio }}%;">
+            {%- assign img_url = section.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img class="feature-row__image lazyload"
+                data-src="{{ img_url }}"
+                data-widths="[180, 360, 540, 720, 900, 1080]"
+                data-aspectratio="{{ section.settings.image.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ section.settings.image.alt }}">
+          </div>
+          {% if section.settings.button_label != blank and section.settings.button_link != blank %}</a>{% endif %}
+        {% else %}
+          <div class="image-wrap">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endcapture %}
+
+  <div class="feature-row" data-aos>
+    {% if section.settings.layout == 'left' %}
+      {{ image_layout }}
+    {% endif %}
+    
+      
+
+    <div class="feature-row__item feature-row__text feature-row__text--{{ section.settings.layout }} larger-text">
+    {% if section.settings.subtitle != blank %}
+        <p class="subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+    {% if section.settings.title != blank %}
+        <h2 class="h3">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+    {% if section.settings.text != blank %}
+        <div class="rte featured-row__subtext">{{ section.settings.text }}</div>
+    {% endif %}
+    {% if section.settings.button_label != blank %}
+          <a href="{{ section.settings.button_link }}" class="btn" target="_blank">
+          {{ section.settings.button_label }}
+        </a>
+    {% endif %}
+     
+    
+    </div>
+
+    {% if section.settings.layout == 'right' %}
+      {{ image_layout }}
+    {% endif %}
+  </div>
+</div>
+</div>
+
+{% if section.settings.divider %}</div>{% endif %}
+
+{% schema %}
+  {
+    "name": "Image with text",
+    "class": "index-section",
+    "settings": [
+    {
+        "type": "checkbox",
+        "id": "curve_back",
+        "label": "Enable Curve Background"
+      },
+	  {
+        "type": "color",
+        "id": "curve_color",
+        "label": "Curve Color",
+        "default":"#9289fe"
+      },
+	  {
+        "type": "color",
+        "id": "bar_bg_color1",
+        "label": "Background Color 1",
+        "default":"#9289fe"
+      },
+      {
+        "type": "color",
+        "id": "bar_bg_color2",
+        "label": "Background Color 2",
+        "default":"#b0e1f7"
+      },
+      {
+        "type": "range",
+        "id": "bar_bg_angle",
+        "label": "Bar Angle",
+        "min": -90,
+        "max": 180,
+        "step": 10,
+        "default": -90
+      },
+	  {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Block Top Padding",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px"
+      },
+	  {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Block Bottom Padding",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px"
+      },  
+	{
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "image_width",
+        "label": "Image width",
+        "default": 500,
+        "min": 100,
+        "max": 500,
+        "step": 10,
+        "unit": "px"
+      },
+      {
+        "type": "text",
+        "id": "subtitle",
+        "label": "Subheading",
+        "default": "Improved"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Image with text"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Pair large text with an image to tell a story, explain a detail about your product, or describe a new promotion.</p>"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label",
+        "default": "Optional button"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Layout",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Image on left"
+          },
+          {
+            "value": "right",
+            "label": "Image on right"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "divider",
+        "label": "Show section divider",
+        "default": false
+      }
+    ],
+    "presets": [
+      {
+        "name": "Image with text",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,1212 @@
+{% if section.settings.heading_font_source == 'shopify' %}
+  <style>
+    {{ section.settings.heading_font_shopify | font_face: font_display: 'swap' }}
+  </style>
+{% elsif section.settings.heading_font_source == 'custom' %}
+  {{ section.settings.heading_font_custom_link }}
+{% endif %}
+
+<style>
+  /* ===== GLOBAL CSS ===== */
+  .rcx-emoji-ico{display:inline-block;margin-right:4px;vertical-align:-2px;font-size:16px;line-height:1}
+  body {line-height: 1.5;}
+  .rcx-wrap { --c-text:#0a0a0a; --c-muted:#5f6368; --c-bg:#fff; --c-line:#e5e7eb; --c-dark:#111; --c-soft:#f6f7f9; --radius:16px; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; color:var(--c-text); background: var(--c-bg); }
+  .rcx-max{max-width:1200px;margin:0 auto;padding:0 20px}
+  .rcx-stack-24>*+*{margin-top:24px}.rcx-stack-32>*+*{margin-top:32px}
+  .rcx-row{display:flex;align-items:center;flex-wrap:wrap}.gap{gap:12px}
+  .rcx-h1{font-size: 32px !important;line-height:1.15;margin:12px 0 0;font-weight:800;font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";}
+  .rcx-h2{font-size:32px;font-weight:800;margin:0;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji" !important;}
+  .rcx-h2-light{color:#fff}
+  .rcx-h3{font-size:24px;margin-left:1px;margin-bottom:10px;margin-top:-4px;font-weight:700;}
+  .rcx-h4{font-size:18px;font-weight:700;margin:2px 0}
+  .rcx-lead{font-size:16px;line-height:1.2;margin-top:14px;color:#64748B}
+  .rcx-strong{font-weight:700}
+  .rcx-muted{color:var(--c-muted)}
+  .rcx-micro{font-size:16px;color:var(--c-muted)}
+  .rcx-full{width:100%}
+  .rcx-overflow{overflow:hidden}
+
+  /* Responsive Heading Sizing */
+  [data-rcx-heading] { font-size: var(--fs-desktop) !important; }
+  @media (max-width: 767px) { [data-rcx-heading] { font-size: var(--fs-mobile) !important; } }
+
+  /* Utility: Alignment (Enhanced for Buttons) */
+  .rcx-align-left { text-align: left; }
+  .rcx-align-left .rcx-row, .rcx-align-left .rcx-hero-trust { justify-content: flex-start; }
+  .rcx-align-left .rcx-btn { justify-content: flex-start; text-align: left; }
+
+  .rcx-align-center { text-align: center; }
+  .rcx-align-center .rcx-row, .rcx-align-center .rcx-hero-trust { justify-content: center; }
+  .rcx-align-center .rcx-btn { justify-content: center; text-align: center; }
+
+  .rcx-align-right { text-align: right; }
+  .rcx-align-right .rcx-row, .rcx-align-right .rcx-hero-trust { justify-content: flex-end; }
+  .rcx-align-right .rcx-btn { justify-content: flex-end; text-align: right; }
+
+  /* Mobile Padding Utility for Blocks */
+  @media (max-width: 767px) {
+    [data-rcx-block] {
+      padding-top: var(--pt-mob) !important;
+      padding-bottom: var(--pb-mob) !important;
+    }
+  }
+
+  /* Hero */
+  .rcx-hero{background:linear-gradient(135deg,#fff7ed, #ffffff 40%, #f8fafc)}
+  .rcx-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;max-width:1200px;margin:0 auto;padding:0 20px}
+  @media (max-width: 768px){
+    .rcx-hero-grid{ padding: 0 20px; }
+    .rcx-max { padding: 0 20px; }
+  }
+  @media(max-width:900px){
+    .rcx-hero-grid{grid-template-columns:1fr}
+    .rcx-hero .rcx-btn { width: 100%; }
+  }
+  .rcx-badge { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #ffedd5; color: #9a3412; padding: 6px 14px; border-radius: 999px; font-weight: 600; font-size: 14px; line-height: 1; vertical-align: middle; }
+  .rcx-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:14px;font-weight:700;text-decoration:none;border:1px solid transparent}
+  .rcx-btn-dark{background:var(--c-dark);color:#fff} .rcx-btn-dark:hover{background:#222}
+  .rcx-btn-light{background:#fff;color:#111;border-color:#e5e7eb} .rcx-btn-light:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .rcx-hero-trust{display:flex;gap:18px;margin-top:18px;color:var(--c-muted);font-size:14px;flex-wrap:wrap}
+  .rcx-hero-media{position:relative}
+  .rcx-hero-img{width:100%;height:auto;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.15)}
+  
+
+  /* Grid & Cards */
+  .rcx-grid{display:grid;gap:18px}
+  .rcx-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rcx-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .rcx-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .rcx-col-span-2{grid-column:span 2}
+  @media(max-width:900px){.rcx-grid-3,.rcx-grid-4,.rcx-grid-2{grid-template-columns:1fr}.rcx-col-span-2{grid-column:auto}}
+  .rcx-card{background:#fff;border:1px solid var(--c-line);border-radius:16px}
+  .rcx-card-hd{padding:18px 18px 0}
+  .rcx-card-bd{padding:15px 18px 18px}
+
+  /* Form Fields */
+  .rcx-field{margin-bottom:10px}
+  .rcx-field label{font-size:14px;color:#222}
+  .rcx-field .rcx-choices{margin-top:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .rcx-chipopt{border:1px solid var(--c-line);padding:8px 10px;border-radius:12px;background:#fff;cursor:pointer;font-size:14px}
+  .rcx-chipopt.active{border-color:#111;box-shadow:inset 0 0 0 1px #111}
+
+  /* Recommendation Card */
+  .rcx-card-reco { border-radius: 16px; border: 1px solid #e5e7eb; background: #fff; padding: 0; }
+  .rcx-reco-outer { border: 1px solid #e5e7eb; border-radius: 20px; padding: 16px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+  .rcx-reco-box { display: flex; flex-direction: column; }
+  .rcx-reco-row { display: flex; align-items: center; gap: 12px; }
+  .rcx-reco-img { width: 100px; height: auto; object-fit: cover; border-radius: 12px; background: #f4f4f4; }
+  .rcx-reco-main { flex: 1; }
+  .rcx-reco-title { font-size: 18.75px; font-weight: 700; color: #161718; margin: 0; }
+  .rcx-reco-sub { color: #4b5563; font-size: 14px; margin-top: 2px; }
+  .rcx-list-bullets { list-style: none; padding: 0; margin: 14px 0 0; }
+  .rcx-list-bullets li { display: flex; align-items: center; gap: 0px; font-size: 16px; color: #232326; font-weight: 500; margin-bottom: 0px; }
+  .rcx-reco-actions { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+  .rcx-btn-black { background: #000; color: #fff; font-weight: 600; padding: 12px 18px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; border: none; line-height: 1.2; }
+  .rcx-btn-black:hover { background: #111; }
+  .rcx-btn-white { background: #fff; color: #111; font-weight: 600; padding: 10px 22px; border: 1.5px solid #e5e7eb; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+  .rcx-btn-white:hover { background: #f9f9f9; }
+
+  /* Badges */
+  .rcx-badges{background:#f9fafb;padding:0}
+  .rcx-badge-card { display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease-in-out; }
+  .rcx-badge-card:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.05); transform: translateY(-1px); }
+  .rcx-badge-card .rcx-ico { width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px; background-size: contain; background-repeat: no-repeat; background-position: center; display: inline-block; vertical-align: top; }
+  .rcx-badge-card > div { display: flex; flex-direction: column; line-height: 1.3; }
+  .rcx-badge-card .rcx-strong { font-weight: 600; font-size: 15px; color: #111; line-height: 1.2; }
+  .rcx-badge-card .rcx-muted { font-size: 13px; color: #4b5563; margin-top: 3px; }
+
+  /* Comparatifs - OPTIMIZED FOR MOBILE GRID & OVERFLOW */
+  #comparatifs .rcx-card { background: transparent; border: none; box-shadow: none; }
+  #comparatifs .rcx-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
+  #comparatifs .rcx-grid-2 > .rcx-card { display: flex; flex-direction: column; height: 100%; }
+  #comparatifs .rcx-card-bd { flex: 1; display: flex; padding: 0; margin-top: 0; }
+  #comparatifs .rcx-card-hd { padding: 0 0 10px 0; }
+  
+  /* UPDATED TABLE STYLES */
+  #comparatifs table { 
+    width: 100%; height: 100%; 
+    border-collapse: separate; border-spacing: 0; /* Allows borders + radius to play nice */
+    background: #fff; border-radius: 16px; overflow: hidden; 
+    font-size: 14px; border: 1px solid #e5e7eb; margin-top: 0; 
+    table-layout: fixed; /* Ensures even distribution, prevents blowout */
+  }
+  
+  /* Borders: Vertical lines added (Grid) */
+  #comparatifs thead th { 
+    padding: 12px 16px; font-weight: 700; color: #111; text-align: left; 
+    border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; 
+    vertical-align: middle;
+  }
+  #comparatifs thead th:last-child { border-right: none; }
+
+  #comparatifs tbody td { 
+    padding: 12px 16px; color: #232326; 
+    border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; 
+    vertical-align: middle; 
+  }
+  #comparatifs tbody td:last-child { border-right: none; }
+  #comparatifs tbody tr:last-child td { border-bottom: none; }
+
+  @media (max-width: 900px) { #comparatifs .rcx-grid-2 { grid-template-columns: 1fr; } }
+
+  /* MOBILE FIXES: Overflow & Padding */
+  @media (max-width: 767px) {
+    #comparatifs thead th, #comparatifs tbody td {
+      padding: 10px 8px; /* Reduce padding to fit content */
+      font-size: 13px;   /* Slightly smaller text */
+      word-wrap: break-word; /* Essential for avoiding overflow */
+      word-break: break-word; /* Force break long words if needed */
+      hyphens: auto; /* Nicer breaking */
+    }
+    /* Ensuring 3 columns fit without horizontal scroll */
+  }
+
+  /* Gammes */
+  .gamme-section { padding: 0; }
+  .gamme-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center; }
+  .gamme-title { font-size:clamp(22px,2.2vw,32px); font-weight:800; margin:0; text-align: left !important; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji" !important; }
+  .gamme-subtitle { color: #6b7280; font-size: 15px; margin-bottom: 30px; text-align: left !important; }
+  .gamme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+  .gamme-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.25s ease; }
+  .gamme-card:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); }
+  .gamme-img { width: 100%; height: 190px; object-fit: cover; display: block; margin: 0 auto; }
+  .gamme-body { padding: 20px 22px 26px; text-align: left; flex: 1; }
+  .gamme-tag { background: #F1F5F9; display: inline-block; padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 600; color: #111; margin-bottom: 8px; }
+  .gamme-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; margin-top:-5px; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji" !important; }
+  .gamme-desc { color: #4b5563; font-size: 16px; line-height: 1.5; margin-bottom: 14px; }
+  .gamme-specs { list-style: none; padding: 0; margin: 0 0 18px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .gamme-specs li { border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 6px; font-size: 13px; text-align: center; background: #fff; }
+  .gamme-btn { display: block; text-align: center; border-radius: 12px; padding: 12px 0; font-size: 15px; font-weight: 600; text-decoration: none; transition: background 0.25s ease; }
+  .gamme-btn-black { background: #000; color: #fff; } .gamme-btn-black:hover { background: #111; }
+
+  /* Reviews */
+  .rcx-review-img { width: 100%; height: 200px; object-fit: cover; border-top-left-radius: 16px; border-top-right-radius: 16px; display: block; margin: 0 auto; }
+
+  /* FAQ */
+  .rcx-faq{background:#f9fafb;padding:0}
+  .rcx-faq .rcx-card, .rcx-faq-single .rcx-card { background:#fff; border:1px solid #e5e7eb; border-radius:16px; }
+  .rcx-faq .rcx-card-hd, .rcx-faq-single .rcx-card-hd { padding:20px 20px 6px; }
+  .rcx-faq .rcx-card-bd, .rcx-faq-single .rcx-card-bd { padding:0px 20px 20px; }
+  .rcx-faq .rcx-h3, .rcx-faq-single .rcx-h3 { margin:0; font-size:18px; font-weight:700; color:#111; }
+  .rcx-faq .rcx-faq-answer, .rcx-faq-single .rcx-faq-answer { margin:0; color:#5f6368; font-size:15px; line-height:1.6; padding-left:0; }
+  .rcx-faq .rcx-faq-answer + .rcx-faq-answer, .rcx-faq-single .rcx-faq-answer + .rcx-faq-answer { margin-top:10px; }
+  .rcx-faq .rcx-faq-answer li, .rcx-faq-single .rcx-faq-answer li { margin-left:1.2em; }
+
+  /* FAQ Additional */
+  .rcx-faq-single { background: #f9fafb; }
+  .rcx-faq-single .rcx-max { padding-top: 0; padding-bottom: 0; }
+
+  /* FAQ Accordion Logic */
+  .rcx-faq-item .rcx-card-hd { cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px !important; /* Visual balance when closed */ }
+  .rcx-faq-item .rcx-card-bd { display: none; padding-top: 0 !important; }
+  .rcx-faq-item.active .rcx-card-bd { display: block; }
+  .rcx-faq-item .rcx-ico-chevron { transition: transform 0.25s ease; }
+  .rcx-faq-item.active .rcx-ico-chevron { transform: rotate(90deg); }
+  /* Ensure grid items don't stretch weirdly when one opens */
+  .rcx-faq .rcx-grid, .rcx-faq-single .rcx-grid { align-items: flex-start; }
+
+  /* CTA */
+  .rcx-cta { padding: 0; }
+  .rcx-cta-box { background: #111; color: #fff; border-radius: 24px; padding: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; }
+  .rcx-cta-sub { color: #cbd5e1; margin-top: 6px; }
+  .rcx-row .rcx-btn { flex: 1 1 auto; min-width: 180px; text-align: center; }
+  
+  /* CTA Custom Alignment */
+  .rcx-cta-box.rcx-align-center { flex-direction: column; text-align: center; align-items: center; gap: 24px; }
+  .rcx-cta-box.rcx-align-right { flex-direction: column; text-align: right; align-items: flex-end; gap: 24px; }
+
+  @media (max-width: 900px) { 
+    .rcx-cta-box { flex-direction: column; gap: 24px; }
+    .rcx-cta-box { text-align: left; align-items: flex-start; }
+    .rcx-cta-box #cta-row { justify-content: flex-start; }
+
+    .rcx-cta-box.rcx-align-center { text-align: center; align-items: center; }
+    .rcx-cta-box.rcx-align-center #cta-row { justify-content: center; }
+
+    .rcx-cta-box.rcx-align-right { text-align: right; align-items: flex-end; }
+    .rcx-cta-box.rcx-align-right #cta-row { justify-content: flex-end; }
+
+    .rcx-cta { padding: 15px; } 
+    .rcx-row .rcx-btn { width: 100%; max-width: none; }
+  }
+
+  /* Icons */
+  .rcx-ico{display:inline-block;width:18px;height:18px;vertical-align:-3px;background-repeat:no-repeat;background-position:center;background-size:18px 18px}
+  .rcx-ico.small{width:16px;height:16px;background-size:16px 16px}
+  .rcx-ico-check{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2316a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>')}
+  .rcx-ico-chevron{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>')}
+  .rcx-ico-shield{background-image:url('https://cdn.shopify.com/s/files/1/0929/6396/3193/files/shield-check.svg?v=1761674502')}
+  .rcx-ico-truck{background-image:url('https://cdn.shopify.com/s/files/1/0929/6396/3193/files/truck.svg?v=1761670115')}
+  .rcx-ico-star{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23f59e0b" stroke="%23f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8.5 22 9 17 13.5 18.5 21 12 17.5 5.5 21 7 13.5 2 9 9 8.5 12 2"/></svg>')}
+  .rcx-ico-cart{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.62 16H19a2 2 0 0 0 1.92-1.54L23 6H6"></path></svg>')}
+  .rcx-ico-wrench{background-image:url('https://cdn.shopify.com/s/files/1/0929/6396/3193/files/wrench.svg?v=1761674502')}
+  .rcx-ico-sparkles{background-image:url('https://cdn.shopify.com/s/files/1/0929/6396/3193/files/sparkles.svg?v=1761674501')}
+  .rcx-green{filter:hue-rotate(80deg)}
+  .rcx-ico-flag::before { content: "🇫🇷"; font-size: 16px; display: inline-block; vertical-align: middle; }
+
+  .rcx-h1, .rcx-h2, .rcx-h3, .rcx-h4, .gamme-title, .rcx-reco-title { text-transform: none !important; letter-spacing: 0 !important; word-spacing: normal !important; }
+
+  /* TYPOGRAPHY OVERRIDES */
+  {% if section.settings.heading_font_source != 'default' %}
+    .rcx-h1, .rcx-h2, .rcx-h3, .rcx-h4, .gamme-title, .rcx-reco-title {
+      font-family: {% if section.settings.heading_font_source == 'shopify' %}{{ section.settings.heading_font_shopify.family }}, {{ section.settings.heading_font_shopify.fallback_families }}{% else %}{{ section.settings.heading_font_custom_name }}{% endif %} !important;
+    }
+  {% endif %}
+</style>
+
+<section id="rcx-chooser" class="rcx-wrap section-{{ section.id }}">
+  {% for block in section.blocks %}
+    {% case block.type %}
+      
+      {% when 'hero' %}
+        <div class="rcx-hero" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <div class="rcx-hero-grid" style="align-items: {{ block.settings.vertical_alignment }}">
+            <div class="rcx-hero-copy rcx-align-{{ block.settings.alignment }}">
+              <h1 class="rcx-h1" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h1>
+              <p class="rcx-lead">{{ block.settings.text }}</p>
+              <div class="rcx-row gap">
+                <a href="#selector-{{ section.id }}" class="rcx-btn rcx-btn-light">{{ block.settings.btn1_label }} <span class="rcx-ico rcx-ico-chevron"></span></a>
+                <a href="#comparatifs" class="rcx-btn rcx-btn-dark">{{ block.settings.btn2_label }}</a>
+              </div>
+              <div class="rcx-hero-trust">
+                <span><span class="rcx-ico rcx-ico-shield"></span> {{ block.settings.trust1 }}</span>
+                <span><span class="rcx-ico rcx-ico-truck"></span> {{ block.settings.trust2 }}</span>
+                <span><span class="rcx-ico rcx-ico-star"></span> {{ block.settings.trust3 }}</span>
+              </div>
+            </div>
+            <div class="rcx-hero-media">
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | image_url: width: 1600 }}" alt="{{ block.settings.heading }}" class="rcx-hero-img" loading="lazy" width="800" height="500" style="max-width: {{ block.settings.image_max_width }}px">
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      {% when 'selector' %}
+        <div id="selector-{{ section.id }}" class="rcx-max rcx-selector-container" {{ block.shopify_attributes }} 
+          style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;"
+          data-rcx-block
+          data-go-img="{{ block.settings.go_image | image_url: width: 400 }}"
+          data-go-link="{{ block.settings.link_go }}"
+          data-go-name="{{ block.settings.name_go }}"
+          data-go-sub="{{ block.settings.go_sub }}"
+          data-go-bullets="{{ block.settings.go_bullets }}"
+          data-max-img="{{ block.settings.max_image | image_url: width: 400 }}"
+          data-max-link="{{ block.settings.link_max }}"
+          data-max-name="{{ block.settings.name_max }}"
+          data-max-sub="{{ block.settings.max_sub }}"
+          data-max-bullets="{{ block.settings.max_bullets }}"
+          data-pro-img="{{ block.settings.pro_image | image_url: width: 400 }}"
+          data-pro-link="{{ block.settings.link_pro }}"
+          data-pro-name="{{ block.settings.name_pro }}"
+          data-pro-sub="{{ block.settings.pro_sub }}"
+          data-pro-bullets="{{ block.settings.pro_bullets }}"
+        >
+          <div class="rcx-stack-24">
+            <div class="rcx-grid rcx-grid-3">
+              <div class="rcx-card rcx-col-span-2">
+                <div class="rcx-card-hd"><h3 class="rcx-h3" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h3></div>
+                <div class="rcx-card-bd">
+                  <div class="rcx-grid rcx-grid-3">
+                    
+                    <!-- Niveau -->
+                    <div class="rcx-field" data-name="niveau">
+                      <label>{{ block.settings.lbl_level }}</label>
+                      <div class="rcx-choices">
+                        <button type="button" class="rcx-chipopt" data-opt="debutant">{{ block.settings.opt_level_1 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="intermediaire">{{ block.settings.opt_level_2 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="expert">{{ block.settings.opt_level_3 }}</button>
+                      </div>
+                    </div>
+
+                    <!-- Terrain -->
+                    <div class="rcx-field" data-name="terrain">
+                      <label>{{ block.settings.lbl_terrain }}</label>
+                      <div class="rcx-choices">
+                        <button type="button" class="rcx-chipopt" data-opt="urbain">{{ block.settings.opt_terrain_1 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="offroad">{{ block.settings.opt_terrain_2 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="mixte">{{ block.settings.opt_terrain_3 }}</button>
+                      </div>
+                    </div>
+
+                    <!-- Vitesse -->
+                    <div class="rcx-field" data-name="vitesse">
+                      <label>{{ block.settings.lbl_vitesse }}</label>
+                      <div class="rcx-choices">
+                        <button type="button" class="rcx-chipopt" data-opt="douce">{{ block.settings.opt_vitesse_1 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="moyenne">{{ block.settings.opt_vitesse_2 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="elevee">{{ block.settings.opt_vitesse_3 }}</button>
+                      </div>
+                    </div>
+
+                    <!-- Usage -->
+                    <div class="rcx-field" data-name="usage">
+                      <label>{{ block.settings.lbl_usage }}</label>
+                      <div class="rcx-choices">
+                        <button type="button" class="rcx-chipopt" data-opt="enfant">{{ block.settings.opt_usage_1 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="loisir">{{ block.settings.opt_usage_2 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="sensations">{{ block.settings.opt_usage_3 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="competition">{{ block.settings.opt_usage_4 }}</button>
+                      </div>
+                    </div>
+
+                    <!-- Autonomie -->
+                    <div class="rcx-field" data-name="autonomie">
+                      <label>{{ block.settings.lbl_autonomie }}</label>
+                      <div class="rcx-choices">
+                        <button type="button" class="rcx-chipopt" data-opt="compacte">{{ block.settings.opt_autonomie_1 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="standard">{{ block.settings.opt_autonomie_2 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="longue">{{ block.settings.opt_autonomie_3 }}</button>
+                      </div>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="rcx-field" data-name="budget">
+                      <label>{{ block.settings.lbl_budget }}</label>
+                      <div class="rcx-choices">
+                        <button type="button" class="rcx-chipopt" data-opt="moins-100">{{ block.settings.opt_budget_1 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="100-150">{{ block.settings.opt_budget_2 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="150-250">{{ block.settings.opt_budget_3 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="250-400">{{ block.settings.opt_budget_4 }}</button>
+                        <button type="button" class="rcx-chipopt" data-opt="400+">{{ block.settings.opt_budget_5 }}</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="rcx-card rcx-card-reco">
+                <div class="rcx-card-hd">
+                  <h3 class="rcx-h3" style="font-weight:700;">{{ block.settings.reco_heading }}</h3>
+                </div>
+                <div class="rcx-card-bd">
+                  <div class="rcx-reco-outer">
+                    <div class="rcx-reco-box">
+                      <div class="rcx-reco-row">
+                        <img id="reco-image" src="{{ block.settings.go_image | image_url: width: 320 }}" alt="Recommended RC" class="rcx-reco-img" width="120" height="80" loading="lazy" style="width: {{ block.settings.reco_img_width }}px" />
+                        <div class="rcx-reco-main">
+                          <div class="rcx-micro">{{ block.settings.reco_micro }}</div>
+                          <div id="reco-name" class="rcx-reco-title">{{ block.settings.name_go }}</div>
+                          <div id="reco-sub" class="rcx-reco-sub">{{ block.settings.go_sub }}</div>
+                        </div>
+                      </div>
+                      <ul id="reco-bullets" class="rcx-list-bullets">
+                        <!-- Populated by JS -->
+                      </ul>
+                      <div class="rcx-reco-actions">
+                        <a id="reco-link" href="{{ block.settings.link_go }}" class="rcx-btn rcx-btn-black">
+                          <span class="rcx-ico rcx-ico-cart"></span> {{ block.settings.btn_view }}
+                        </a>
+                        <a href="#comparatifs" class="rcx-btn rcx-btn-white">{{ block.settings.btn_compare }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% when 'badges' %}
+        <div class="rcx-badges" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <div class="rcx-max rcx-grid rcx-grid-4">
+            <div class="rcx-badge-card"><span class="rcx-ico rcx-ico-shield"></span>
+              <div><div class="rcx-strong">{{ block.settings.badge1_title }}</div><div class="rcx-muted">{{ block.settings.badge1_desc }}</div></div>
+            </div>
+            <div class="rcx-badge-card"><span class="rcx-ico rcx-ico-truck"></span>
+              <div><div class="rcx-strong">{{ block.settings.badge2_title }}</div><div class="rcx-muted">{{ block.settings.badge2_desc }}</div></div>
+            </div>
+            <div class="rcx-badge-card"><span class="rcx-ico rcx-ico-wrench"></span>
+              <div><div class="rcx-strong">{{ block.settings.badge3_title }}</div><div class="rcx-muted">{{ block.settings.badge3_desc }}</div></div>
+            </div>
+            <div class="rcx-badge-card"><span class="rcx-ico rcx-ico-sparkles"></span>
+              <div><div class="rcx-strong">{{ block.settings.badge4_title }}</div><div class="rcx-muted">{{ block.settings.badge4_desc }}</div></div>
+            </div>
+          </div>
+        </div>
+
+{% when 'comparison' %}
+        {%- case request.locale.iso_code -%}
+          {%- when 'en' -%}
+            {%- assign t_criterie = 'Criterion' -%}{%- assign t_vitesse = 'Speed' -%}{%- assign t_entretien = 'Maintenance' -%}{%- assign t_prix = 'Price' -%}{%- assign t_resistance = 'Resistance' -%}{%- assign t_autonomie = 'Range' -%}{%- assign t_poids = 'Weight' -%}{%- assign t_securite = 'Safety' -%}
+          {%- when 'de' -%}
+            {%- assign t_criterie = 'Kriterium' -%}{%- assign t_vitesse = 'Geschwindigkeit' -%}{%- assign t_entretien = 'Wartung' -%}{%- assign t_prix = 'Preis' -%}{%- assign t_resistance = 'Widerstand' -%}{%- assign t_autonomie = 'Reichweite' -%}{%- assign t_poids = 'Gewicht' -%}{%- assign t_securite = 'Sicherheit' -%}
+          {%- when 'es' -%}
+            {%- assign t_criterie = 'Criterio' -%}{%- assign t_vitesse = 'Velocidad' -%}{%- assign t_entretien = 'Mantenimiento' -%}{%- assign t_prix = 'Precio' -%}{%- assign t_resistance = 'Resistencia' -%}{%- assign t_autonomie = 'Autonomía' -%}{%- assign t_poids = 'Peso' -%}{%- assign t_securite = 'Seguridad' -%}
+          {%- when 'nl' -%}
+            {%- assign t_criterie = 'Criterium' -%}{%- assign t_vitesse = 'Snelheid' -%}{%- assign t_entretien = 'Onderhoud' -%}{%- assign t_prix = 'Prijs' -%}{%- assign t_resistance = 'Weerstand' -%}{%- assign t_autonomie = 'Bereik' -%}{%- assign t_poids = 'Gewicht' -%}{%- assign t_securite = 'Veiligheid' -%}
+          {%- when 'sv' -%}
+            {%- assign t_criterie = 'Kriterium' -%}{%- assign t_vitesse = 'Hastighet' -%}{%- assign t_entretien = 'Underhåll' -%}{%- assign t_prix = 'Pris' -%}{%- assign t_resistance = 'Motstånd' -%}{%- assign t_autonomie = 'Räckvidd' -%}{%- assign t_poids = 'Vikt' -%}{%- assign t_securite = 'Säkerhet' -%}
+          {%- else -%}
+            {%- assign t_criterie = 'Critère' -%}{%- assign t_vitesse = 'Vitesse' -%}{%- assign t_entretien = 'Entretien' -%}{%- assign t_prix = 'Prix' -%}{%- assign t_resistance = 'Résistance' -%}{%- assign t_autonomie = 'Autonomie' -%}{%- assign t_poids = 'Poids' -%}{%- assign t_securite = 'Sécurité' -%}
+        {%- endcase -%}
+
+        <div id="comparatifs" class="rcx-max" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <h2 class="rcx-h2" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h2>
+          <p class="rcx-muted">{{ block.settings.subheading }}</p>
+          <div class="rcx-grid rcx-grid-2">
+            <!-- Table 1 -->
+            <div class="rcx-card">
+              <div class="rcx-card-hd"><h3 class="rcx-h3">{{ block.settings.t1_title }}</h3></div>
+              <div class="rcx-card-bd">
+                <table>
+                  <thead><tr><th>{{ t_criterie }}</th><th>{{ block.settings.t1_col1 }}</th><th>{{ block.settings.t1_col2 }}</th></tr></thead>
+                  <tbody>
+                    <tr><td>{{ t_vitesse }}</td><td>{{ block.settings.t1_r1_c1 }}</td><td>{{ block.settings.t1_r1_c2 }}</td></tr>
+                    <tr><td>{{ t_entretien }}</td><td>{{ block.settings.t1_r2_c1 }}</td><td>{{ block.settings.t1_r2_c2 }}</td></tr>
+                    <tr><td>{{ t_prix }}</td><td>{{ block.settings.t1_r3_c1 }}</td><td>{{ block.settings.t1_r3_c2 }}</td></tr>
+                    <tr><td>{{ t_resistance }}</td><td>{{ block.settings.t1_r4_c1 }}</td><td>{{ block.settings.t1_r4_c2 }}</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Table 2 -->
+            <div class="rcx-card">
+              <div class="rcx-card-hd"><h3 class="rcx-h3">{{ block.settings.t2_title }}</h3></div>
+              <div class="rcx-card-bd">
+                <table>
+                  <thead><tr><th>{{ t_criterie }}</th><th>{{ block.settings.t2_col1 }}</th><th>{{ block.settings.t2_col2 }}</th></tr></thead>
+                  <tbody>
+                    <tr><td>{{ t_autonomie }}</td><td>{{ block.settings.t2_r1_c1 }}</td><td>{{ block.settings.t2_r1_c2 }}</td></tr>
+                    <tr><td>{{ t_poids }}</td><td>{{ block.settings.t2_r2_c1 }}</td><td>{{ block.settings.t2_r2_c2 }}</td></tr>
+                    <tr><td>{{ t_securite }}</td><td>{{ block.settings.t2_r3_c1 }}</td><td>{{ block.settings.t2_r3_c2 }}</td></tr>
+                    <tr><td>{{ t_prix }}</td><td>{{ block.settings.t2_r4_c1 }}</td><td>{{ block.settings.t2_r4_c2 }}</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% when 'gammes' %}
+        <div class="gamme-section" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <div class="gamme-wrapper">
+            <h2 class="gamme-title" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h2>
+            <p class="gamme-subtitle">{{ block.settings.subheading }}</p>
+            <div class="gamme-grid">
+              {% for i in (1..3) %}
+                {% capture img_key %}image_{{i}}{% endcapture %}
+                {% capture tag_key %}tag_{{i}}{% endcapture %}
+                {% capture title_key %}title_{{i}}{% endcapture %}
+                {% capture desc_key %}desc_{{i}}{% endcapture %}
+                {% capture specs_key %}specs_{{i}}{% endcapture %}
+                {% capture btn_key %}link_{{i}}{% endcapture %}
+                {% capture btn_label_key %}btn_label_{{i}}{% endcapture %}
+                <div class="gamme-card">
+                  {% if block.settings[img_key] != blank %}
+                    <img src="{{ block.settings[img_key] | image_url: width: 600 }}" alt="{{ block.settings[title_key] }}" class="gamme-img" loading="lazy" style="height: {{ block.settings.image_height }}px">
+                  {% endif %}
+                  <div class="gamme-body">
+                    <div class="gamme-tag">{{ block.settings[tag_key] }}</div>
+                    <h3 class="gamme-name">{{ block.settings[title_key] }}</h3>
+                    <p class="gamme-desc">{{ block.settings[desc_key] }}</p>
+                    <ul class="gamme-specs">
+                      {% assign specs = block.settings[specs_key] | split: ',' %}
+                      {% for s in specs %}<li>{{ s | strip }}</li>{% endfor %}
+                    </ul>
+                    <a href="{{ block.settings[btn_key] }}" class="gamme-btn gamme-btn-black">{{ block.settings[btn_label_key] }}</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      {% when 'reviews' %}
+        <div class="rcx-max" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <h2 class="rcx-h2" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h2>
+          <div class="rcx-grid rcx-grid-3">
+            {% for i in (1..3) %}
+              {% capture img_key %}image_{{i}}{% endcapture %}
+              {% capture name_key %}name_{{i}}{% endcapture %}
+              {% capture title_key %}title_{{i}}{% endcapture %}
+              {% capture text_key %}text_{{i}}{% endcapture %}
+              <div class="rcx-card">
+                <img src="{{ block.settings[img_key] | image_url: width: 600 }}" alt="Avis client {{i}}" class="rcx-review-img" loading="lazy" style="height: {{ block.settings.image_height }}px" />
+                <div class="rcx-card-bd">
+                  <div style="display:flex;align-items:center;gap:8px;font-weight:700">
+                    {{ block.settings[name_key] }}
+                    <span style="font-size:12px;background:#e0e7ff;color:#1e3a8a;padding:3px 6px;border-radius:6px">{{ block.settings.verified_label }}</span>
+                  </div>
+                  <div class="rcx-h4" style="margin-top:6px">{{ block.settings[title_key] }}</div>
+                  <p class="rcx-muted">{{ block.settings[text_key] }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      {% when 'faq_group' %}
+        <div class="rcx-faq" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <div class="rcx-max">
+            <h2 class="rcx-h2" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h2>
+            <div class="rcx-grid rcx-grid-2">
+              {% for i in (1..5) %}
+                {% capture q_key %}q_{{i}}{% endcapture %}
+                {% capture a_key %}a_{{i}}{% endcapture %}
+                {% if block.settings[q_key] != blank %}
+                  <div class="rcx-card rcx-faq-item">
+                    <div class="rcx-card-hd">
+                      <h3 class="rcx-h3">{{ block.settings[q_key] }}</h3>
+                      <span class="rcx-ico rcx-ico-chevron"></span>
+                    </div>
+                    <div class="rcx-card-bd">
+                      {{ block.settings[a_key] | replace: '<p', '<p class="rcx-faq-answer"' | replace: '<ul', '<ul class="rcx-faq-answer"' }}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      {% when 'faq_additional' %}
+        <div class="rcx-faq-single" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+           <div class="rcx-max">
+             <div class="{% if block.settings.enable_grid %}rcx-grid rcx-grid-2{% else %}rcx-stack-24{% endif %}">
+               {% for i in (1..4) %}
+                 {% capture q_key %}q_{{i}}{% endcapture %}
+                 {% capture a_key %}a_{{i}}{% endcapture %}
+                 {% if block.settings[q_key] != blank %}
+                   <div class="rcx-card rcx-faq-item">
+                     <div class="rcx-card-hd">
+                       <h3 class="rcx-h3">{{ block.settings[q_key] }}</h3>
+                       <span class="rcx-ico rcx-ico-chevron"></span>
+                     </div>
+                     <div class="rcx-card-bd">
+                       {{ block.settings[a_key] | replace: '<p', '<p class="rcx-faq-answer"' | replace: '<ul', '<ul class="rcx-faq-answer"' }}
+                     </div>
+                   </div>
+                 {% endif %}
+               {% endfor %}
+             </div>
+           </div>
+        </div>
+
+      {% when 'cta' %}
+        <div class="rcx-cta" {{ block.shopify_attributes }} style="padding-top: {{ block.settings.padding_top }}px; padding-bottom: {{ block.settings.padding_bottom }}px; --pt-mob: {{ block.settings.padding_top_mobile }}px; --pb-mob: {{ block.settings.padding_bottom_mobile }}px;" data-rcx-block>
+          <div class="rcx-max rcx-cta-box rcx-align-{{ block.settings.alignment }}">
+            <div>
+              <h2 class="rcx-h2 rcx-h2-light" style="margin-bottom: {{ block.settings.heading_spacing }}px; --fs-desktop: {{ block.settings.heading_size }}px; --fs-mobile: {{ block.settings.heading_size_mobile }}px;" data-rcx-heading>{{ block.settings.heading }}</h2>
+              <p class="rcx-cta-sub">{{ block.settings.subheading }}</p>
+            </div>
+            <div class="rcx-row gap" id="cta-row">
+              <a class="rcx-btn rcx-btn-light" href="{{ block.settings.link_1 }}">{{ block.settings.label_1 }}</a>
+              <a class="rcx-btn rcx-btn-light" href="{{ block.settings.link_2 }}">{{ block.settings.label_2 }}</a>
+              <a class="rcx-btn rcx-btn-light" href="{{ block.settings.link_3 }}">{{ block.settings.label_3 }}</a>
+            </div>
+          </div>
+        </div>
+
+    {% endcase %}
+  {% endfor %}
+</section>
+
+<script>
+(function(){
+  var answers = { niveau:'debutant', terrain:'mixte', vitesse:'moyenne', usage:'loisir', autonomie:'standard', budget:'100-150' };
+  // Scoped selection to this section to avoid conflicts
+  var sel = document.querySelector('.section-{{ section.id }} .rcx-selector-container');
+  
+  function $all(s, r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+
+  // UI binding
+  if(sel){
+    $all('.rcx-field', sel).forEach(function(f){
+      var name = f.getAttribute('data-name');
+      $all('[data-opt]', f).forEach(function(btn){
+        var val = btn.getAttribute('data-opt');
+        btn.addEventListener('click', function(e){
+          e.preventDefault();
+          answers[name] = val;
+          $all('[data-opt]', f).forEach(function(b){ b.classList.remove('active'); });
+          btn.classList.add('active');
+          updateReco();
+        });
+      });
+    });
+  }
+
+  function scoreReco(x){
+    if (x.budget === 'moins-100') return 'go';
+    if (x.budget === '100-150')  return 'max';
+    if (x.budget === '150-250' || x.budget === '250-400' || x.budget === '400+') return 'pro';
+
+    var s = { go:0, max:0, pro:0 };
+    if (x.niveau === 'debutant')       s.go += 2;
+    if (x.niveau === 'intermediaire')  s.max  += 2;
+    if (x.niveau === 'expert')         s.pro   += 2;
+    if (x.vitesse === 'douce')         s.go += 2;
+    if (x.vitesse === 'moyenne')       s.max  += 1;
+    if (x.vitesse === 'elevee')        s.pro   += 2;
+    if (x.terrain === 'urbain')        s.go += 1;
+    if (x.terrain === 'mixte')         s.max  += 1;
+    if (x.terrain === 'offroad')       s.pro   += 3;
+    var best='max', v=-1; for (var k in s){ if (s[k] > v){ best=k; v=s[k]; } }
+    return best;
+  }
+
+  function buildReco(tag){
+    // Read settings from data attributes on container
+    if(!sel) return {};
+    var d = sel.dataset;
+    var map = {
+      go: { img: d.goImg, link: d.goLink, name: d.goName, sub: d.goSub, bullets: d.goBullets },
+      max: { img: d.maxImg, link: d.maxLink, name: d.maxName, sub: d.maxSub, bullets: d.maxBullets },
+      pro: { img: d.proImg, link: d.proLink, name: d.proName, sub: d.proSub, bullets: d.proBullets }
+    };
+    
+    var t = map[tag] || map['max'];
+
+    return {
+      image: t.img,
+      link:  t.link,
+      name:  t.name,
+      sub:   t.sub,
+      bullets: t.bullets ? t.bullets.split(',').map(function(s){return s.trim()}) : []
+    };
+  }
+
+  function updateReco(){
+    if(!sel) return;
+    var tag = scoreReco(answers);
+    var r = buildReco(tag);
+    var img = document.getElementById('reco-image');
+    var name = document.getElementById('reco-name');
+    var sub = document.getElementById('reco-sub');
+    var link = document.getElementById('reco-link');
+    var ul = document.getElementById('reco-bullets');
+
+    if (img && r.image) img.src = r.image;
+    if (name) name.textContent = r.name;
+    if (sub)  sub.textContent  = r.sub;
+    if (link) link.href        = r.link;
+
+    if (ul){
+      ul.innerHTML = '';
+      r.bullets.forEach(function(b){
+        var li = document.createElement('li');
+        var ico = document.createElement('span');
+        ico.textContent = '✅';
+        ico.className = 'rcx-emoji-ico';
+        var txt = document.createElement('span');
+        txt.textContent = b;
+        li.appendChild(ico); li.appendChild(txt);
+        ul.appendChild(li);
+      });
+    }
+  }
+
+  // Init Selector
+  if(sel){
+    $all('.rcx-field', sel).forEach(function(f){
+      var name = f.getAttribute('data-name');
+      var def = answers[name];
+      var target = f.querySelector('[data-opt="' + def + '"]') || f.querySelector('[data-opt]');
+      if(target) target.classList.add('active');
+    });
+    updateReco();
+  }
+
+  // FAQ Toggle Logic
+  $all('.section-{{ section.id }} .rcx-faq-item .rcx-card-hd').forEach(function(hd){
+    hd.addEventListener('click', function(){
+      this.parentElement.classList.toggle('active');
+    });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "RCX Custom Builder",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Global Typography"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_source",
+      "label": "Heading Font Source",
+      "options": [
+        { "value": "default", "label": "Theme Default / System" },
+        { "value": "shopify", "label": "Shopify Font Library" },
+        { "value": "custom", "label": "Custom (Google Fonts, etc.)" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_shopify",
+      "label": "Shopify Font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_font_custom_link",
+      "label": "Custom Font Embed Code (<link> tag)",
+      "info": "Paste the Google Fonts <link> tag here."
+    },
+    {
+      "type": "text",
+      "id": "heading_font_custom_name",
+      "label": "Custom Font Family Name",
+      "placeholder": "'Open Sans', sans-serif"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hero",
+      "name": "Hero",
+      "settings": [
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "vertical_alignment",
+          "label": "Vertical Alignment",
+          "options": [
+            { "value": "start", "label": "Top" },
+            { "value": "center", "label": "Middle" },
+            { "value": "end", "label": "Bottom" }
+          ],
+          "default": "center"
+        },
+        { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top", "default": 64 },
+        { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom", "default": 64 },
+        { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top (Mobile)", "default": 44 },
+        { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom (Mobile)", "default": 44 },
+        { "type": "image_picker", "id": "image", "label": "Hero Image" },
+        { "type": "range", "id": "image_max_width", "min": 200, "max": 1200, "step": 20, "unit": "px", "label": "Image Max Width", "default": 800 },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Quel modèle RC choisir ?" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Spacing Below Heading", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 32 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 32 },
+        { "type": "textarea", "id": "text", "label": "Lead Text" },
+        { "type": "text", "id": "btn1_label", "label": "Button 1 Label", "default": "Démarrer le sélecteur" },
+        { "type": "text", "id": "btn2_label", "label": "Button 2 Label", "default": "Voir les comparatifs" },
+        { "type": "text", "id": "trust1", "label": "Trust 1", "default": "Garantie 2 ans" },
+        { "type": "text", "id": "trust2", "label": "Trust 2", "default": "Livraison Premium" },
+        { "type": "text", "id": "trust3", "label": "Trust 3", "default": "+4.7/5 avis" }
+      ]
+    },
+    {
+      "type": "selector",
+      "name": "Selector & Engine",
+      "settings": [
+        { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top", "default": 48 },
+        { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom", "default": 48 },
+        { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top (Mobile)", "default": 32 },
+        { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom (Mobile)", "default": 32 },
+        { "type": "text", "id": "heading", "label": "Form Heading", "default": "Vos préférences" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Heading Spacing", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 24 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 24 },
+        
+        { "type": "header", "content": "UI Labels" },
+        { "type": "text", "id": "reco_heading", "label": "Reco Box Heading", "default": "Notre recommandation" },
+        { "type": "text", "id": "reco_micro", "label": "Reco Box Micro", "default": "Suggestion RCXBuggy" },
+        { "type": "range", "id": "reco_img_width", "min": 50, "max": 300, "step": 10, "unit": "px", "label": "Recommendation Image Width", "default": 100 },
+        { "type": "text", "id": "btn_view", "label": "Button View", "default": "Voir le produit" },
+        { "type": "text", "id": "btn_compare", "label": "Button Compare", "default": "Comparer" },
+
+        { "type": "header", "content": "Product Logic: Go" },
+        { "type": "image_picker", "id": "go_image", "label": "Image Go" },
+        { "type": "text", "id": "name_go", "label": "Name Go", "default": "RCX Go 2WD" },
+        { "type": "text", "id": "go_sub", "label": "Subtext Go", "default": "Très facile à piloter • 8–12 ans" },
+        { "type": "textarea", "id": "go_bullets", "label": "Bullets Go (comma separated)", "default": "≈ 20 km/h, Très résistant, Idéal enfant / débutant, Prix doux" },
+        { "type": "url", "id": "link_go", "label": "Link Go" },
+
+        { "type": "header", "content": "Product Logic: Max" },
+        { "type": "image_picker", "id": "max_image", "label": "Image Max" },
+        { "type": "text", "id": "name_max", "label": "Name Max", "default": "RCX PLUS" },
+        { "type": "text", "id": "max_sub", "label": "Subtext Max", "default": "Facile à piloter • 12+ ans" },
+        { "type": "textarea", "id": "max_bullets", "label": "Bullets Max (comma separated)", "default": "≈ 35 km/h, Bon compromis vitesse/autonomie, Résistant, Parfait pour progresser" },
+        { "type": "url", "id": "link_max", "label": "Link Max" },
+
+        { "type": "header", "content": "Product Logic: Pro" },
+        { "type": "image_picker", "id": "pro_image", "label": "Image Pro" },
+        { "type": "text", "id": "name_pro", "label": "Name Pro", "default": "RCX PRO" },
+        { "type": "text", "id": "pro_sub", "label": "Subtext Pro", "default": "Très résistant pour le tout-terrain • 12+ ans" },
+        { "type": "textarea", "id": "pro_bullets", "label": "Bullets Pro (comma separated)", "default": "≈ 50 km/h, Conçu pour tout-terrain, Autonomie longue, Pour sensations" },
+        { "type": "url", "id": "link_pro", "label": "Link Pro" },
+        
+        { "type": "header", "content": "Option Labels" },
+        { "type": "text", "id": "lbl_level", "label": "Level Heading", "default": "Niveau" },
+        { "type": "text", "id": "opt_level_1", "label": "Option: Beginner", "default": "Débutant" },
+        { "type": "text", "id": "opt_level_2", "label": "Option: Intermediate", "default": "Intermédiaire" },
+        { "type": "text", "id": "opt_level_3", "label": "Option: Expert", "default": "Expert" },
+
+        { "type": "text", "id": "lbl_terrain", "label": "Terrain Heading", "default": "Terrain principal" },
+        { "type": "text", "id": "opt_terrain_1", "label": "Option: Urban", "default": "Urbain" },
+        { "type": "text", "id": "opt_terrain_2", "label": "Option: Offroad", "default": "Tout-terrain" },
+        { "type": "text", "id": "opt_terrain_3", "label": "Option: Mixed", "default": "Mixte" },
+
+        { "type": "text", "id": "lbl_vitesse", "label": "Speed Heading", "default": "Vitesse souhaitée" },
+        { "type": "text", "id": "opt_vitesse_1", "label": "Option: Low", "default": "Douce (≤25)" },
+        { "type": "text", "id": "opt_vitesse_2", "label": "Option: Medium", "default": "Moyenne (25–45)" },
+        { "type": "text", "id": "opt_vitesse_3", "label": "Option: High", "default": "Élevée (45–70+)" },
+
+        { "type": "text", "id": "lbl_usage", "label": "Usage Heading", "default": "Usage" },
+        { "type": "text", "id": "opt_usage_1", "label": "Option: Kid", "default": "Enfant (8–12)" },
+        { "type": "text", "id": "opt_usage_2", "label": "Option: Leisure", "default": "Loisir (12+)" },
+        { "type": "text", "id": "opt_usage_3", "label": "Option: Thrill", "default": "Sensations" },
+        { "type": "text", "id": "opt_usage_4", "label": "Option: Comp", "default": "Compétition" },
+
+        { "type": "text", "id": "lbl_autonomie", "label": "Autonomy Heading", "default": "Autonomie" },
+        { "type": "text", "id": "opt_autonomie_1", "label": "Option: Short", "default": "Courte (≤12 min)" },
+        { "type": "text", "id": "opt_autonomie_2", "label": "Option: Standard", "default": "Standard (12–20 min)" },
+        { "type": "text", "id": "opt_autonomie_3", "label": "Option: Long", "default": "Longue (20–30+ min)" },
+
+        { "type": "text", "id": "lbl_budget", "label": "Budget Heading", "default": "Budget (€)" },
+        { "type": "text", "id": "opt_budget_1", "label": "Option: <100", "default": "< 100€" },
+        { "type": "text", "id": "opt_budget_2", "label": "Option: 100-150", "default": "100–150€" },
+        { "type": "text", "id": "opt_budget_3", "label": "Option: 150-250", "default": "150–250€" },
+        { "type": "text", "id": "opt_budget_4", "label": "Option: 250-400", "default": "250–400€" },
+        { "type": "text", "id": "opt_budget_5", "label": "Option: 400+", "default": "400€+" }
+      ]
+    },
+    {
+      "type": "badges",
+      "name": "Trust Badges",
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Top",
+          "default": 28
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Bottom",
+          "default": 28
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Top (Mobile)",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Bottom (Mobile)",
+          "default": 20
+        },
+        { "type": "text", "id": "badge1_title", "label": "Badge 1 Title", "default": "Garantie 2 ans" },
+        { "type": "text", "id": "badge1_desc", "label": "Badge 1 Desc", "default": "Échange ou réparation rapide" },
+        { "type": "text", "id": "badge2_title", "label": "Badge 2 Title", "default": "Livraison rapide Premium" },
+        { "type": "text", "id": "badge2_desc", "label": "Badge 2 Desc", "default": "72h moyenne, suivi en ligne" },
+        { "type": "text", "id": "badge3_title", "label": "Badge 3 Title", "default": "Pièces & SAV" },
+        { "type": "text", "id": "badge3_desc", "label": "Badge 3 Desc", "default": "Stock de pièces et tuto vidéo" },
+        { "type": "text", "id": "badge4_title", "label": "Badge 4 Title", "default": "Qualité testée" },
+        { "type": "text", "id": "badge4_desc", "label": "Badge 4 Desc", "default": "QA par nos équipes" }
+      ]
+    },
+    {
+      "type": "comparison",
+      "name": "Comparison Tables",
+      "settings": [
+        { "type": "range", "id": "padding_top", "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Top",
+          "default": 48
+        },
+        { "type": "range", "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Bottom",
+          "default": 48
+        },
+        { "type": "range", "id": "padding_top_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Top (Mobile)",
+          "default": 32
+        },
+        { "type": "range", "id": "padding_bottom_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Bottom (Mobile)",
+          "default": 32
+        },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Comparatifs essentiels" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Heading Spacing", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 32 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 32 },
+        { "type": "text", "id": "subheading", "label": "Subheading", "default": "Des mots simples pour choisir vite." },
+        { "type": "header", "content": "Table 1" },
+        { "type": "text", "id": "t1_title", "label": "Title", "default": "Moteur classique vs puissant" },
+        { "type": "text", "id": "t1_col1", "label": "Col 1 Header", "default": "Classique" },
+        { "type": "text", "id": "t1_col2", "label": "Col 2 Header", "default": "Puissant" },
+        { "type": "text", "id": "t1_r1_c1", "label": "Row 1 Col 1", "default": "≈ 20–35 km/h (apprentissage)" },
+        { "type": "text", "id": "t1_r1_c2", "label": "Row 1 Col 2", "default": "≈ 50 km/h (sensations)" },
+        { "type": "text", "id": "t1_r2_c1", "label": "Row 2 Col 1", "default": "Basique" },
+        { "type": "text", "id": "t1_r2_c2", "label": "Row 2 Col 2", "default": "Faible" },
+        { "type": "text", "id": "t1_r3_c1", "label": "Row 3 Col 1", "default": "Le plus abordable" },
+        { "type": "text", "id": "t1_r3_c2", "label": "Row 3 Col 2", "default": "Plus élevé" },
+        { "type": "text", "id": "t1_r4_c1", "label": "Row 4 Col 1", "default": "Bonne" },
+        { "type": "text", "id": "t1_r4_c2", "label": "Row 4 Col 2", "default": "Très bonne" },
+        { "type": "header", "content": "Table 2" },
+        { "type": "text", "id": "t2_title", "label": "Title", "default": "Batterie standard vs longue" },
+        { "type": "text", "id": "t2_col1", "label": "Col 1 Header", "default": "Standard" },
+        { "type": "text", "id": "t2_col2", "label": "Col 2 Header", "default": "Longue" },
+        { "type": "text", "id": "t2_r1_c1", "label": "Row 1 Col 1", "default": "12–20 min" },
+        { "type": "text", "id": "t2_r1_c2", "label": "Row 1 Col 2", "default": "20–30+ min" },
+        { "type": "text", "id": "t2_r2_c1", "label": "Row 2 Col 1", "default": "Léger" },
+        { "type": "text", "id": "t2_r2_c2", "label": "Row 2 Col 2", "default": "Plus lourd" },
+        { "type": "text", "id": "t2_r3_c1", "label": "Row 3 Col 1", "default": "Basique" },
+        { "type": "text", "id": "t2_r3_c2", "label": "Row 3 Col 2", "default": "Respecter consignes" },
+        { "type": "text", "id": "t2_r4_c1", "label": "Row 4 Col 1", "default": "Moins cher" },
+        { "type": "text", "id": "t2_r4_c2", "label": "Row 4 Col 2", "default": "Plus cher" }
+      ]
+    },
+    {
+      "type": "gammes",
+      "name": "Product Grid",
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Top",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Bottom",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Top (Mobile)",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Padding Bottom (Mobile)",
+          "default": 24
+        },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Nos gammes RCXBuggy" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Heading Spacing", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 32 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 22 },
+        { "type": "text", "id": "subheading", "label": "Subheading", "default": "Enfant, famille, tout‑terrain." },
+        { "type": "range", "id": "image_height", "min": 100, "max": 500, "step": 10, "unit": "px", "label": "Image Height", "default": 190 },
+        { "type": "header", "content": "Product 1" },
+        { "type": "image_picker", "id": "image_1", "label": "Image 1" },
+        { "type": "text", "id": "tag_1", "label": "Tag 1", "default": "Enfant / Débutant" },
+        { "type": "text", "id": "title_1", "label": "Title 1", "default": "RCX Buggy - 20 km/h" },
+        { "type": "text", "id": "desc_1", "label": "Desc 1", "default": "Très facile à piloter, robuste." },
+        { "type": "text", "id": "specs_1", "label": "Specs 1 (comma separated)", "default": "≈ 20 km/h, 8–12 ans, Très résistant, Autonomie courte" },
+        { "type": "text", "id": "btn_label_1", "label": "Button Label 1", "default": "Découvrir" },
+        { "type": "url", "id": "link_1", "label": "Link 1" },
+        { "type": "header", "content": "Product 2" },
+        { "type": "image_picker", "id": "image_2", "label": "Image 2" },
+        { "type": "text", "id": "tag_2", "label": "Tag 2", "default": "Famille / Intermédiaire" },
+        { "type": "text", "id": "title_2", "label": "Title 2", "default": "RCX PLUS - 35 km/h" },
+        { "type": "text", "id": "desc_2", "label": "Desc 2", "default": "Bon compromis vitesse / autonomie." },
+        { "type": "text", "id": "specs_2", "label": "Specs 2 (comma separated)", "default": "≈ 35 km/h, 12+ ans, Résistant, Autonomie standard" },
+        { "type": "text", "id": "btn_label_2", "label": "Button Label 2", "default": "Découvrir" },
+        { "type": "url", "id": "link_2", "label": "Link 2" },
+        { "type": "header", "content": "Product 3" },
+        { "type": "image_picker", "id": "image_3", "label": "Image 3" },
+        { "type": "text", "id": "tag_3", "label": "Tag 3", "default": "Tout‑terrain / Expert" },
+        { "type": "text", "id": "title_3", "label": "Title 3", "default": "RCX PRO - 50 Km/h" },
+        { "type": "text", "id": "desc_3", "label": "Desc 3", "default": "Très résistant, pensé pour off‑road." },
+        { "type": "text", "id": "specs_3", "label": "Specs 3 (comma separated)", "default": "≈ 50 Km/h, 12+ ans, Très résistant, Autonomie longue" },
+        { "type": "text", "id": "btn_label_3", "label": "Button Label 3", "default": "Découvrir" },
+        { "type": "url", "id": "link_3", "label": "Link 3" }
+      ]
+    },
+    {
+      "type": "reviews",
+      "name": "Reviews",
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top", "default": 48 },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom", "default": 48 },
+        {
+          "type": "range",
+          "id": "padding_top_mobile",
+          "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top (Mobile)", "default": 32 },
+        {
+          "type": "range",
+          "id": "padding_bottom_mobile",
+          "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom (Mobile)", "default": 32 },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "+7,000 utilisateurs" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Heading Spacing", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 32 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 32 },
+        { "type": "range", "id": "image_height", "min": 100, "max": 500, "step": 10, "unit": "px", "label": "Image Height", "default": 200 },
+        { "type": "text", "id": "verified_label", "label": "Verified Badge Text", "default": "Vérifié" },
+        { "type": "header", "content": "Review 1" },
+        { "type": "image_picker", "id": "image_1", "label": "Image 1" },
+        { "type": "text", "id": "name_1", "label": "Name 1", "default": "Antoine D" },
+        { "type": "text", "id": "title_1", "label": "Title 1", "default": "Buggy top pour son prix" },
+        { "type": "textarea", "id": "text_1", "label": "Text 1", "default": "Très bon rapport qualité-prix..." },
+        { "type": "header", "content": "Review 2" },
+        { "type": "image_picker", "id": "image_2", "label": "Image 2" },
+        { "type": "text", "id": "name_2", "label": "Name 2", "default": "Sandrine H" },
+        { "type": "text", "id": "title_2", "label": "Title 2", "default": "Je recommande RCX Buggy" },
+        { "type": "textarea", "id": "text_2", "label": "Text 2", "default": "Rapide et assez costaud..." },
+        { "type": "header", "content": "Review 3" },
+        { "type": "image_picker", "id": "image_3", "label": "Image 3" },
+        { "type": "text", "id": "name_3", "label": "Name 3", "default": "Marc L" },
+        { "type": "text", "id": "title_3", "label": "Title 3", "default": "Super solide" },
+        { "type": "textarea", "id": "text_3", "label": "Text 3", "default": "Utilisé sur graviers..." }
+      ]
+    },
+    {
+      "type": "faq_group",
+      "name": "FAQ Group",
+      "settings": [
+        { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top", "default": 48 },
+        { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom", "default": 48 },
+        { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top (Mobile)", "default": 32 },
+        { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom (Mobile)", "default": 32 },
+        { "type": "text", "id": "heading", "label": "Section Heading", "default": "FAQ" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Heading Spacing", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 32 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 32 },
+        { "type": "text", "id": "q_1", "label": "Question 1", "default": "Quelle vitesse choisir pour débuter ?" },
+        { "type": "richtext", "id": "a_1", "label": "Answer 1" },
+        { "type": "text", "id": "q_2", "label": "Question 2", "default": "2WD ou 4WD ?" },
+        { "type": "richtext", "id": "a_2", "label": "Answer 2" },
+        { "type": "text", "id": "q_3", "label": "Question 3", "default": "Brushless obligatoire ?" },
+        { "type": "richtext", "id": "a_3", "label": "Answer 3" },
+        { "type": "text", "id": "q_4", "label": "Question 4" },
+        { "type": "richtext", "id": "a_4", "label": "Answer 4" },
+        { "type": "text", "id": "q_5", "label": "Question 5" },
+        { "type": "richtext", "id": "a_5", "label": "Answer 5" }
+      ]
+    },
+    {
+      "type": "faq_additional",
+      "name": "FAQ Additional Block",
+      "settings": [
+        { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top", "default": 24 },
+        { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom", "default": 24 },
+        { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top (Mobile)", "default": 24 },
+        { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom (Mobile)", "default": 24 },
+        { "type": "checkbox", "id": "enable_grid", "label": "Grid Layout (2 columns)", "default": false },
+        { "type": "text", "id": "q_1", "label": "Question 1", "default": "Question supplémentaire 1" },
+        { "type": "richtext", "id": "a_1", "label": "Answer 1" },
+        { "type": "text", "id": "q_2", "label": "Question 2" },
+        { "type": "richtext", "id": "a_2", "label": "Answer 2" },
+        { "type": "text", "id": "q_3", "label": "Question 3" },
+        { "type": "richtext", "id": "a_3", "label": "Answer 3" },
+        { "type": "text", "id": "q_4", "label": "Question 4" },
+        { "type": "richtext", "id": "a_4", "label": "Answer 4" }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "Footer CTA",
+      "settings": [
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        },
+        { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top", "default": 48 },
+        { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom", "default": 48 },
+        { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Top (Mobile)", "default": 32 },
+        { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding Bottom (Mobile)", "default": 32 },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Prêt à rouler ?" },
+        { "type": "range", "id": "heading_spacing", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Heading Spacing", "default": 12 },
+        { "type": "range", "id": "heading_size", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Desktop)", "default": 32 },
+        { "type": "range", "id": "heading_size_mobile", "min": 12, "max": 64, "step": 1, "unit": "px", "label": "Heading Size (Mobile)", "default": 32 },
+        { "type": "text", "id": "subheading", "label": "Subheading", "default": "Choisissez selon l’âge, la vitesse et le terrain." },
+        { "type": "url", "id": "link_1", "label": "Link 1" },
+        { "type": "text", "id": "label_1", "label": "Label 1", "default": "Enfant / Débutant" },
+        { "type": "url", "id": "link_2", "label": "Link 2" },
+        { "type": "text", "id": "label_2", "label": "Label 2", "default": "Famille / Intermédiaire" },
+        { "type": "url", "id": "link_3", "label": "Link 3" },
+        { "type": "text", "id": "label_3", "label": "Label 3", "default": "Tout‑terrain / Expert" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "RCX Modular Chooser",
+      "blocks": [
+        { "type": "hero" },
+        { "type": "selector" },
+        { "type": "badges" },
+        { "type": "comparison" },
+        { "type": "gammes" },
+        { "type": "reviews" },
+        { "type": "faq_group" },
+        { "type": "cta" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,77 @@
+<div class="card_main">
+  <div class="page-width">
+    <div class="card_poster_inner">
+      <div class="card-poster-silder card-poster-content">
+      {% for block in section.blocks %}
+      <div class="card_single">
+        {% if block.settings.image != blank %}
+        <div class="card_image">
+          <img src="{{ block.settings.image | img_url : 'master' }}">
+        </div>
+        {% endif %}
+        <div class="card_info">
+          {% if block.settings.title != blank %}
+          	<h2 class="title">{{ block.settings.title }}</h2>
+          {% endif %}
+          {% if block.settings.description != blank %}
+            <div class="description">
+              {{ block.settings.description | truncate: 56 }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+      <div class="see_all_button">
+        <a href="{% if section.settings.button_url != blank %}{{ section.settings.button_url }}{% else %}javascript:void(0){% endif %}" class="btn see_all_btn">{{ section.settings.button_label }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Poster",
+    "settings": [
+	  {
+		"type": "text",
+		"id": "button_label",
+		"label": "Button Label"
+	  },
+	  {
+		"type": "url",
+		"id": "button_url",
+		"label": "Button Link"
+	  }
+	],
+	"blocks": [
+	  {
+		"type": "image",
+		"name": "image",
+		"settings": [
+		  {
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image"
+		  },
+		  {
+			"type": "text",
+			"id": "title",
+			"label": "Title"
+		  },
+		  {
+			"type": "richtext",
+			"id": "description",
+			"label": "Description"
+		  }
+		]
+	  }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

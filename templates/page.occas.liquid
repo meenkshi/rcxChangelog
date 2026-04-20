@@ -1,0 +1,114 @@
+<style>
+  @media (min-width:750px){ 
+    .h2perso{
+        color: #000000;
+    	text-transform: uppercase;
+    	text-align: center;
+    	margin-top: 50px;
+    	
+    	font-size: 40px;
+      	text-align:center;
+    }
+  }
+  @media (max-width:749px){
+    .h2perso{
+        color: #000000;
+    	text-transform: uppercase;
+    	text-align: center;
+    	margin-top: 30px;
+      	margin-right:10px;
+      	margin-left:10px;
+      	text-align:center;
+      font-size: 25px;
+    }
+  }
+  
+  @media (min-width:750px){  
+ .btnCTA {
+  display: block;
+  width: 30%;
+  height: auto;
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 16px;
+  color: #fff;
+  background-color: #000000;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 50px;
+  text-decoration: none;
+  margin: 10px auto 0;
+  font-weight: bold;
+  border: solid;
+  border-width:2px;
+  border-color:#fff;
+  -webkit-animation: btnWiggle 5s infinite;
+  -moz-animation: btnWiggle 5s infinite;
+  -o-animation: btnWiggle 5s infinite;
+  animation: btnWiggle 5s infinite;
+}
+  .btnCTA:hover{
+  background-color:#fff;
+  color:#000000;
+  border-width:2px;
+  border-color:#000000;    
+}
+}
+@media (max-width:749px){
+  .btnCTA {
+  display: block;
+  width: 50%;
+  height: auto;
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size: 16px;
+  color: #fff;
+  background-color: #000000;
+  border-radius: 5px;
+  /*box-shadow: 0px 3px 0px #606060;*/
+  text-align: center;
+  line-height: 50px;
+  text-decoration: none;
+  margin: 10px auto 0;
+  font-weight: bold;
+  -webkit-animation: btnWiggle 5s infinite;
+  -moz-animation: btnWiggle 5s infinite;
+  -o-animation: btnWiggle 5s infinite;
+  animation: btnWiggle 5s infinite;
+    
+}
+  .btnCTA:hover{
+  background-color:#fff;
+  color:#000000;
+  border-width:2px;
+  border-color:#000000;    
+}
+  .prof{
+    width: 60%;
+    margin-top:-10px;
+  }
+}
+</style>
+
+
+<h2 class="h2perso"> Dronetech pour l'écologie </h2>
+<div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth">
+      <div class="section-header text-center"></div>
+      <div class="rte">
+          <p style="text-align: center; font-size: 17px;"> Chez Dronetech nous sommes soucieux de l'environnement. C'est pourquoi nous avons décidé de 
+  mettre en avant nos produits d'occasion pour les aider à trouver une seconde vie.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+ {% section 'occas' %}
+<a class="" href="https://dronetech-europe.com/collections/nos-drones-2022">
+    <div class="btnCTA prof"> Découvrir Nos Drones</div>
+  </a>
+{% section 'occas1' %}
+{% section 'occas2' %}
+
+
+{% section 'newsletter' %}

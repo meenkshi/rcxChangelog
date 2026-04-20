@@ -1,0 +1,590 @@
+
+.logo-bar.logo-bar-slider{
+  margin-bottom:35px;
+  .slick-track{
+    display:flex;
+    align-items:center;
+  }
+  ul.slick-dots{
+    bottom: -22px;
+  }
+  .logo-bar__item{
+    max-width: 100%;
+    margin: 0 0 0;
+    padding: 0 27.5px 0;
+  }
+}
+
+.page--il-on-parler-de-nous {
+  .index-section--slideshow {
+    .slideshow-wrapper {
+      .slideshow__slide {
+        .slideshow__text-wrap {
+          z-index: 99;
+          ul.slideshow__text-content-list {
+            h2.slideshow__title {
+              color: #fff;
+              text-shadow: none;
+            }
+          } 
+        } 
+/*         &:before {
+          content: "";
+          position: absolute;
+          background: rgba(14,39,80,0.5);
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 9;
+        } */
+      } 
+    } 
+  } 
+  #shopify-section-logo-bar-il-on-parler {
+    padding: 0;
+    /*.logo_bar_li_on {
+    ul.logo-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    li.logo-bar__item {
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+    width: 100%;
+    margin: 0;
+  }
+  }
+  }  */
+    ul.logo-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap:wrap;
+      li.logo-bar__item {
+        width:25%;
+      }
+    }
+    ul.logo-bar.slick-initialized{
+      display: block;
+      li.logo-bar__item {
+        
+      }
+    }
+    .logo_bar_li_on {
+      padding:50px 0;
+      li.logo-bar__item {
+        max-width: 100%;
+        margin: 0 0 0;
+        padding: 0 27.5px 0;
+      }
+      .slick-track{
+        display: flex;
+        align-items: center;
+
+      }
+    }
+  } 
+  .rich-text-second {
+    .grid {
+      .grid__item {
+        h2.h1.mega-title {
+          /*           font-size: 55px; */
+          text-decoration: none;
+          box-shadow: none;
+          text-shadow: none;
+          color: #0c2850;
+        }
+        .rich-text__text--large {
+          p {
+            font-size: 23px;
+            color: #82786f;
+          }
+        }
+      }
+    }
+  }
+  .card_main {
+    .page-width {
+      .card_poster_inner {
+        .card-poster-content{
+          display: flex;
+          flex-wrap: wrap;
+        }
+        .card_single {
+          flex: 0 0 33.33%;
+          max-width: 33.33%;
+          width: 100%;
+          margin: 0;
+          padding: 0 10px;
+          .card_image {
+            line-height: 0;
+          }
+          .card_info {
+            background: #0e2750;
+            padding: 30px 10px;
+            text-align: center;
+            h2.title {
+              color: #fff;
+              margin: 0;
+              padding-bottom: 20px;
+              font-size: 25px;
+              letter-spacing: 0;
+            }
+            .description {
+              p {
+                margin: 0;
+                color: #fff;
+                font-size: 18px;
+                text-align: left;
+                padding-top: 10px;
+              }
+            }
+          }
+        }
+        .see_all_button {
+          text-align: center;
+          width: 100%;
+          display: inline-block;
+          a.see_all_btn {
+            margin-top: 80px;
+            background: #3ebaef;
+            font-size: 25px;
+            padding: 12px 60px;
+            border-radius: 50px;
+            outline: none;
+          }
+        }
+      }
+    } 
+  } 
+  .image_with_text {
+    padding: 150px 0 100px;
+    .image_with_text_inner {
+      .text_with_image {
+        .single_image_with_text {
+          display: flex;
+          flex-wrap: wrap;
+          width: 100%;
+          ._image {
+            flex: 0 0 50%;
+            max-width: 50%;
+            width: 100%;
+            margin: 0;
+            line-height: 0;
+          }
+          .description {
+            flex: 0 0 50%;
+            max-width: 50%;
+            width: 100%;
+            padding: 0 40px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            padding-left: 70px;
+            .description_inner{
+              max-width:500px;
+              .section_title{
+                font-size: 60px;
+                text-transform: inherit;
+                letter-spacing: 0;
+                margin-bottom: 0;
+              }
+              .sub-title{
+                padding: 35px 0;
+                p{
+                  font-size:26px;
+                }
+              }
+              .shop_button{
+                padding: 15px 50px;
+                border-radius: 50px;
+                font-size: 26px;
+                letter-spacing: 6px;
+              }
+            }
+          }
+        }
+      } 
+    } 
+  } 
+}
+
+/*=== Slick Dots ====*/
+ul.slick-dots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  bottom: 0;
+  position: relative;
+  padding: 0 0 5px;
+  li {
+    margin: 0 4px;
+    padding: 0;
+    height: 8px;
+    width: 8px;
+    button {
+      background-color: #000;
+      padding: 0;
+      position: absolute;
+      border-radius: 100%;
+      width: 6px;
+      height: 6px;
+      opacity: 0.18;
+    }
+  }
+  li.slick-active {
+    button {
+      width: 8px;
+      height: 8px;
+      opacity: 1;
+      outline: none;
+    }
+  }
+}
+
+/*=== Slick Arrow ====*/
+
+.slick-arrow{
+  border-radius: 100%;
+  border: 1px solid #000;
+  width: 25px;
+  height: 25px;
+  &:focus{
+    outline:none;
+  }
+}
+.slick-prev:before {
+  content: "\f104";
+  font-family: "font awesome 5 free";
+  font-weight: 900;
+}
+.slick-next:before {
+  content: "\f105";
+  font-family: "font awesome 5 free";
+  font-weight: 900;
+}
+.card_poster_inner{
+  ul.slick-dots {
+    width:100%;
+    padding-top:35px;
+  }
+}
+
+/* Responsive Scss  */
+@media only screen and (max-width: 1200px) {
+  .page--il-on-parler-de-nous {
+    .image_with_text {
+      .image_with_text_inner {
+        .text_with_image {
+          .single_image_with_text {
+            ._image{
+              line-height:0;
+            }
+            .description {
+              flex: 0 0 50%;
+              max-width: 50%;
+              padding-left: 0;
+              padding: 20px;
+              .description_inner {
+                .section_title {
+                  font-size: 46px;
+                }
+                .sub-title {
+                  p {
+                    font-size: 20px;
+                  }
+                }
+                .shop_button {
+                  padding: 15px 50px;
+                  font-size: 22px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  .page--il-on-parler-de-nous {
+    .image_with_text {
+      .image_with_text_inner {
+        .text_with_image {
+          .single_image_with_text {
+            .description {
+              .description_inner {
+                .section_title {
+                  font-size: 35px;
+                }
+                .sub-title {
+                  p {
+                    font-size: 18px;
+                  }
+                }
+                .shop_button {
+                  padding: 15px 40px;
+                  font-size: 20px;
+                  letter-spacing: 4px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media only screen and (max-width: 798px) {
+  .page--il-on-parler-de-nous {
+    .rich-text-second {
+      .grid {
+        margin: 0;
+        .grid__item {
+          left: 0;
+          text-align: center;
+          width: 100%;
+          padding-left: 0;
+          float: none;
+          h2.h3 {
+            /*             font-size: 35px; */
+          }
+          .rich-text__text--large p {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+    .card_main {
+      .page-width {
+        .card_poster_inner {
+          /*           .card_single {
+          flex: 0 0 50%;
+          max-width: 50%;
+          width: 100%;
+          margin: 0;
+          padding: 10px;
+        } */
+          .see_all_button a.see_all_btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: 20px;
+            letter-spacing: 4px;
+          }
+        }
+      }
+    }
+    .image_with_text {
+      padding: 75px 0;
+    }
+  }
+  .slick-prev {
+    left: 0;
+    z-index:9;
+  }
+  .slick-next{
+    right:0;
+    z-index:9;
+  }
+}
+
+
+@media only screen and (max-width: 749px) {
+  .page--il-on-parler-de-nous {
+    #shopify-section-logo-bar-il-on-parler {
+      .logo_bar_li_on {
+        padding-top:25px;
+      }
+    }
+  }
+  .page--il-on-parler-de-nous {
+    .image_with_text {
+      .image_with_text_inner {
+        .text_with_image {
+          .single_image_with_text {
+            margin-bottom: 20px;
+            ._image {
+              flex: 0 0 100%;
+              max-width: 100%;
+            }
+            .description {
+              flex: 0 0 100%;
+              max-width: 100%;
+              .description_inner {
+                max-width: 100%;
+              }
+            }
+
+          }
+        }
+      }
+      .image--right .description {
+        order: 2;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .page--il-on-parler-de-nous {
+    .rich-text-second {
+      .grid {
+        .grid__item {
+          h2.h3 {
+            /*             font-size: 38px; */
+          }
+          .rich-text__text--large p {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+    .card_main {
+      .page-width {
+        .card_poster_inner {
+          .card_single {
+            .card_info {
+              h2.title{
+                padding-bottom:0;
+              }
+              .description {
+                p {
+                  font-size: 15px;
+                  text-align:center;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .page--il-on-parler-de-nous {
+    .image_with_text {
+      .image_with_text_inner {
+        .text_with_image {
+          .single_image_with_text {
+            .description {
+              .description_inner {
+                .section_title {
+                  font-size: 38px;
+                }
+                .sub-title {
+                  p {
+                    font-size: 16px;
+                  }
+                }
+                .shop_button {
+                  padding: 10px 40px;
+                  font-size: 16px;
+                  letter-spacing: 2px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .page--il-on-parler-de-nous {
+    .card_main {
+      .page-width {
+        .card_poster_inner {
+          .see_all_button {
+            a.see_all_btn {
+              padding: 10px 40px;
+              font-size: 16px;
+              letter-spacing: 2px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .page--il-on-parler-de-nous{
+    .index-section.index-section--slideshow{
+      padding-bottom:10px;
+    }
+  }
+  .slideshow__text-content--mobile{
+    padding-top: 20px;
+  }
+  .slideshow__title--mobile{
+    font-size:19px;
+  }
+  .page--il-on-parler-de-nous {
+    #shopify-section-logo-bar-il-on-parler {
+      .logo_bar_li_on {
+        padding-bottom: 25px;
+      }
+    }
+  }
+  .page--il-on-parler-de-nous {
+    .rich-text-second {
+      .grid {
+        .grid__item {
+          h2.h3 {
+            /*            font-size: 25px; */
+          }
+          .rich-text__text--large {
+            p {
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
+    .card_main {
+      .page-width {
+        .card_poster_inner {
+          /*           .card_single {
+          flex: 0 0 100%;
+          max-width: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 10px 0;
+        } */
+          .see_all_button {
+            a.see_all_btn {
+              margin-top: 30px;
+            }
+          }
+        }
+      }
+    }
+    .image_with_text {
+      padding: 40px 0;
+    }
+  }
+  .page--il-on-parler-de-nous {
+    .image_with_text {
+      .image_with_text_inner {
+        .text_with_image {
+          .single_image_with_text {
+            .description {
+              .description_inner {
+                .section_title {
+                  font-size: 25px;
+                }
+                .sub-title {
+                  padding: 25px 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #banniere_confiance {
+    margin-top: 40px !important;
+  }
+}
