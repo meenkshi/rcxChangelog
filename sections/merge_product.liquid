@@ -435,8 +435,14 @@ function change_img(source)
           {% if enable_zoom %} data-zoom="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
             <img id="{{ img_id }}"
                  class="feature-row__image {{ img_class }} lazyload{% unless featured_image == image %} lazypreload{% endunless %}"
-                 src="{{ image | img_url: '300x300' }}"
-                 data-src="{{ img_url }}"
+                 {% if forloop.index  <= 1 %}
+                         src="{{ image | img_url: '300x300' }}"
+                        {% else %}
+                           src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1'%20height='1'%3E%3Crect%20width='100%25'%20height='100%25'%20opacity='0'/%3E%3C/svg%3E"  loading="lazy"
+                      data-src="{{ image | img_url: '300x300' }}"
+                    {% endif %}   
+                 {% comment %} data-src="{{ img_url }}" {% endcomment %}
+                  data-class="LazyLoad"
                  data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
                  data-aspectratio="{{ image.aspect_ratio }}"
                  data-sizes="auto"
@@ -537,7 +543,7 @@ function change_img(source)
                    data-thumbnail-id="{{ image.id }}"
                    id="{{image.id}}"
                    {% if enable_zoom %}data-zoom="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
-                     <img class="product-single__thumbnail-image" src="{{ image.src | img_url: '110x110', scale: 2 }}" alt="{{ 'sections.featured_product.gallery_thumbnail_alt' | t: imageAlt: image.alt | escape }}">
+                     <img class="product-single__thumbnail-image" data-class="LazyLoad" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1'%20height='1'%3E%3Crect%20width='100%25'%20height='100%25'%20opacity='0'/%3E%3C/svg%3E" loading="lazy"  data-src="{{ image.src | img_url: '110x110', scale: 2 }}" alt="{{ 'sections.featured_product.gallery_thumbnail_alt' | t: imageAlt: image.alt | escape }}">
                 </a>
               </li>
             {% endfor %}
@@ -2147,9 +2153,24 @@ data-variant-savings="{{ upsell_savings_3 }}"
                 {% endcomment %}
                 {% assign source_content = product.description %}
                 {% if source_content != blank and source_content contains '<h1' %}
-        		<div class="product-single__description rte">
+        		<div class="product-single__description rte product2">
                   {% assign H1F = '<h1' %}{% assign H1L = '</h1>' %}{% assign DIVF = '<div' %}{% assign DIVL = '/div>' %}
-                  {{ source_content | split: H1F | first }}        
+
+
+                   {% comment %} {{ source_content | split: H1F | first }}          {% endcomment %}
+
+
+                  {% assign updated_content = source_content 
+                  | split: H1F 
+                  | first 
+                  | replace: '<video', '<video data-class="LazyLoad"' 
+                  | replace: 'src=', 'data-src=' 
+                %}
+
+                {{ updated_content }} 
+
+
+
                   <ul class="accordionX">         
                     {% assign splitH1F = source_content | split:H1F %}
                     {% assign tabCount = splitH1F.size | minus:1 %}
@@ -2165,10 +2186,23 @@ data-variant-savings="{{ upsell_savings_3 }}"
                           </a>                                  
                           <div class="in-accordion" {% if forloop.first %}style="display:block"{% endif %}>                                  
                             {% capture content_description %}{{ content[i] | split: H1F | first }}{% endcapture %}
-                            {% assign splitDIVF = content_description | split: DIVF %}{% assign splitDIVL = content_description | split: DIVL %}
-                            {% assign openDivs = splitDIVL.size | minus: splitDIVF.size %}{% assign closeDivs = splitDIVF.size | minus: splitDIVL.size %}
+                             
+                                {% assign processed_content = content_description
+                                    | replace: '<img', '<img data-class="LazyLoad"'
+                                    | replace: '<video', '<video data-class="LazyLoad"'
+                                    | replace: 'src=', 'data-src='
+                                  %}
+
+                                  {% assign splitDIVF = processed_content | split: DIVF %}
+                                  {% assign splitDIVL = processed_content | split: DIVL %}
+
+                                  {% assign openDivs = splitDIVL.size | minus: splitDIVF.size %}
+                                  {% assign closeDivs = splitDIVF.size | minus: splitDIVL.size %}
+
+                            {% comment %} {% assign splitDIVF = content_description | split: DIVF %}{% assign splitDIVL = content_description | split: DIVL %}
+                            {% assign openDivs = splitDIVL.size | minus: splitDIVF.size %}{% assign closeDivs = splitDIVF.size | minus: splitDIVL.size %} {% endcomment %}
 {% if openDivs > 0 %}{% for i in (1..openDivs) %}<div>{% endfor %}{% endif %}               
-                            {{ content_description }}
+                            {{ processed_content }}
                             {% if closeDivs > 0 %}{% for i in (1..closeDivs) %}</div>{% endfor %}{% endif %}
                           </div>
                         </li> 
@@ -2181,7 +2215,7 @@ data-variant-savings="{{ upsell_savings_3 }}"
                   {{ content_end }}
         		</div>
             	{% else %}
-                  <div class="product-single__description rte">
+                  <div class="product-single__description rte product3">
                     {{ source_content }}
                   </div>
             	{% endif %}
@@ -2197,7 +2231,7 @@ data-variant-savings="{{ upsell_savings_3 }}"
       </div> 
     </div>
 {%endcapture%}
-<script>
+<script {{ w3_script_type }}>
   if(window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('\x43\x68\x72\x6F\x6D\x65\x2D\x4C\x69\x67\x68\x74\x68\x6F\x75\x73\x65') == -1 ) {   document.write({{apps | json}}); } else { } document.close();  
 </script>
 
@@ -2727,7 +2761,11 @@ else if (window.location.pathname.includes('/sv')) {
               })
               .then(response => response.json())
               .then(data => {
+
+                btn.classList.remove('is-loading');
+                 btn.disabled = false;
                 window.location.href = subfolder;
+                
               })
               .catch(err => {
                 btn.classList.remove('is-loading');

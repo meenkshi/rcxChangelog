@@ -2,23 +2,7 @@
 <html class="no-js" lang="{{ shop.locale }}">
 <head>
 
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PPB72B4');</script>
-<!-- End Google Tag Manager -->
-
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-687353609', {'allow_enhanced_conversions': true});
-</script>
+  
 
 <script type="text/javascript">
 var head = document.head;
@@ -65,6 +49,155 @@ head.appendChild(script);
   {%- if page_description -%}
     <meta name="description" content="{{ page_description | escape }}">
   {%- endif -%}
+
+
+<style>
+  #shopify-buyer-consent.hidden{
+  
+     display: none;
+  
+  }
+</style>
+
+
+{% if template contains 'collection' %}
+
+  <style>
+
+    @media(min-width: 768px){
+
+    select#FilterTags {
+    width: 107px;
+}
+select#SortBy {
+    width: 135px;
+}
+}
+  </style>
+
+{% endif %}
+
+
+
+
+
+{% if template contains 'product' %}
+
+<style>
+  html:not(.w3_js) .banner__wrapper_timer {
+    display: flex !important;
+}
+body.template-product.page-- .isdesk + img.feature-row__image {
+    min-height: 93px;
+}
+html:not(.w3_js) body.template-product.page-- .product-single__description p > video {
+    aspect-ratio: 16/9;
+}
+
+
+
+@media(max-width: 767px){
+
+body.template-product.page-- .product-single #viewthumb {
+    min-height: 60px;
+}
+
+}
+
+
+
+
+</style>
+
+{% endif %}
+
+<style>
+  .slideshow__image {
+    opacity: 1 !important;
+  }
+
+.filters-toolbar__input.hidden {
+    opacity: 1 !important;
+}
+
+.slideshow__text-content--mobile{
+  display: block !important;
+ 
+}
+  .slideshow.slideshow--adapt{
+      transition: none !important;
+  }
+
+.slideshow__text-content{
+  transition: none !important;
+}
+
+.slideshow__text-wrap--desktop .slideshow__text-content{
+  opacity: 1!important;
+}
+
+.slideshow__text-content:after{
+  display: none !important;
+}
+
+</style>
+
+
+
+
+{% if template == 'index' %}
+
+  <style>
+
+ html:not(.jsload) .home1 .slideshow__image.tablet_none.box.ratio-container.lazyload.js {
+    opacity: 1 !important;
+}
+
+html:not(.jsload) .slick-initialized .slideshow__image, .no-js .slideshow__image {
+    opacity: 1 !important;
+}
+
+@media(max-width: 767px){
+
+  div#shopify-section-template--26200337580075__slideshow {
+    min-height: 280px;
+    }
+}
+
+
+  </style>
+
+{% endif %}
+
+
+{% comment %} {% render 'judgeme-App-code' %} {% endcomment %}
+
+  {%- assign w3_script_type = '' -%}
+{%- assign w3_css_type = '' -%}
+{%- unless request.design_mode or template contains 'cart' or template contains 'checkout' -%}
+    {%- assign w3_script_type = ' type="lazyJs"' -%}
+    {%- assign w3_css_type = ' data-' -%}
+    {% render 'w3_header' %}
+{%- endunless -%}
+
+<!-- Google Tag Manager -->
+<script {{ w3_script_type }}>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PPB72B4');</script>
+<!-- End Google Tag Manager -->
+
+
+<!-- Google tag (gtag.js) -->
+<script {{ w3_script_type }} async src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
+<script {{ w3_script_type }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-687353609', {'allow_enhanced_conversions': true});
+</script>
+
 
   {% include 'social-meta-tags' %}
   <link rel="preload" href="https://pro.fontawesome.com/releases/v5.2.0/css/all.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -120,17 +253,54 @@ head.appendChild(script);
 
 
   {%- if request.page_type contains 'customers/' -%}
-    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+    <script {{ w3_script_type }} src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
   {%- endif -%}
 
-  <script src="{{ 'lazysizes.js' | asset_url }}" async></script>
-  <script src="{{ 'vendor.js' | asset_url }}" defer></script>
 
-  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+ {% if template contains 'collection' %}
+
+   <script  src="{{ 'lazysizes.js' | asset_url }}" async></script>
+
+
+ {% else %}
+
+   <script type="lazyJs" src="{{ 'lazysizes.js' | asset_url }}" async></script>
+
+
+ {% endif %}
+
+
   
-{{ content_for_header }}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+  <script {{ w3_script_type }} src="{{ 'vendor.js' | asset_url }}" defer></script>
+
+  <script {{ w3_script_type }} src="{{ 'theme.js' | asset_url }}" defer></script>
   
+{%- if request.design_mode or template contains 'cart' or template contains 'checkout' -%}
+    {{ content_for_header }}
+{%- else -%}
+    {% capture content_for_header2 %}{{ content_for_header }}{% endcapture %}
+        <template id="custom-content-header" style="display:none;">
+ 
+            {{ content_for_header2 }}
+ 
+        </template>
+ 
+        <script type="lazyJs">
+            customProcessor.processContentHeader();
+        </script>
+ 
+{%- endif -%}
+
+
+{% if template contains 'product' %}
+
+  <script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+  
+{%  else %}
+
+ <script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+
+{% endif %}
 
 	{% include 'vitals-loader' %}
 
@@ -139,17 +309,18 @@ head.appendChild(script);
 		{% include 'sold_products' %}
 	{% endif %}
 	<!-- SOLD STOCK PRODUCT APP END -->
+
     {% include 'judgeme_core' %}
   
-    <script defer data-src="https://cdn.younet.network/main.js"></script>
+    <script {{ w3_script_type }} defer data-src="https://cdn.younet.network/main.js"></script>
   
   <meta name="google-site-verification" content="uqocXmmwDSRmQFtaahQqoOIh0o47ZDaTxFWICND28UQ" />
   <meta name="facebook-domain-verification" content="5jh4y0i4ow4jinypx1mkr0k1rgfod4" />
   
   
   <!-- Global site tag (gtag.js) - Google Ads: 687353609 -->
-<script async data-src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
-<script>
+<script {{ w3_script_type }} async data-src="https://www.googletagmanager.com/gtag/js?id=AW-687353609"></script>
+<script {{ w3_script_type }}>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -172,6 +343,22 @@ fbq('track', 'PageView');
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=4504499596252127&ev=PageView&noscript=1"
 /></noscript>
+
+{% render 'w3-css' %}
+
+{%- unless request.design_mode or template contains 'cart' or template contains 'checkout' -%}
+    {% capture custom_header %}
+        <template id="custom-header" style="display:none;">
+
+        </head> 
+
+        </template>
+    {% endcapture %}
+{{ custom_header }}
+<script type="lazyJs">
+    customProcessor.processCustomHeader();
+</script>
+{% endunless %}
 
  </head>
  
@@ -301,17 +488,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% endif %}
 {% render 'backToTop-maxdesign' %}
 
-  <script src="{{ 'ajax.js' | asset_url  }}" async ></script>
+  <script  src="{{ 'ajax.js' | asset_url  }}" async ></script>
 
   <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 
 
-<script src="{{ 'slik.js' | asset_url }}" defer></script>
+<script {{ w3_script_type }} src="{{ 'slik.js' | asset_url }}" defer></script>
 
-<script src="//code.tidio.co/2srj5r9jallvu0anfv9kft3jbkjkqbpn.js" defer></script>
-  {{ "//cdn.shopify.com/s/files/1/0603/7530/2276/t/1/assets/optimizem.js" | script_tag}}
-  <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
-  <script>
+<script {{ w3_script_type }} src="//code.tidio.co/2srj5r9jallvu0anfv9kft3jbkjkqbpn.js" defer></script>
+  {% comment %} {{ "//cdn.shopify.com/s/files/1/0603/7530/2276/t/1/assets/optimizem.js" | script_tag}} {% endcomment %}
+
+
+{% if template contains 'product' %}
+
+  
+
+    <scriptt  src="//cdn.shopify.com/s/files/1/0603/7530/2276/t/1/assets/optimizem.js"></script>
+
+{%  else %}
+
+   {{ "//cdn.shopify.com/s/files/1/0603/7530/2276/t/1/assets/optimizem.js" | script_tag}}
+
+{%  endif %}
+
+<script src="//cdn.shopify.com/s/files/1/0603/7530/2276/t/1/assets/optimizem.js"></script>
+
+
+  <script {{ w3_script_type }} src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" defer></script>
+  <script {{ w3_script_type }}>
     document.addEventListener("DOMContentLoaded", function() {
   // Configure Twemoji
   result = twemoji.parse(
@@ -325,6 +529,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   </script>
 
- 
+ {%- unless request.design_mode or template contains 'cart' or template contains 'checkout' -%}
+    {% render 'w3_footer' %}
+{%- endunless -%}    
 </body>
 </html>

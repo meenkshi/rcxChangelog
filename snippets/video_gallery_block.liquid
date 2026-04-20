@@ -1,4 +1,4 @@
-<script src="https://www.youtube.com/iframe_api"></script>
+<script  src="https://www.youtube.com/iframe_api"></script>
 <div class="video-gallery-block" id="block-{{ block.id }}">
 {% if block.settings.heading != blank %}
     <h2 class="video-gallery-block__heading">{{ block.settings.heading }}</h2>
@@ -49,8 +49,9 @@
                 <div class="video-gallery-block__thumbnail" style="background-image: url('{{ thumbnail_img | image_url: width: 600 }}');"></div>
               {%- endif -%}
 <iframe 
+                data-class="LazyLoad"
                 class="video-gallery-block__video" 
-                src="https://www.youtube.com/embed/{{ video_id }}?autoplay=1&mute=1&controls=0&loop=1&playlist={{ video_id }}&modestbranding=1&rel=0&enablejsapi=1&playsinline=1" 
+                data-src="https://www.youtube.com/embed/{{ video_id }}?autoplay=1&mute=1&controls=0&loop=1&playlist={{ video_id }}&modestbranding=1&rel=0&enablejsapi=1&playsinline=1" 
                 frameborder="0" 
                 allow="autoplay; encrypted-media" 
                 loading="lazy"

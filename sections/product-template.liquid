@@ -584,7 +584,7 @@ function viewImg() {
                 {% endcomment %}
                 {% assign source_content = product.description %}
                 {% if source_content != blank and source_content contains '<h1' %}
-        		<div class="product-single__description rte">
+        		<div class="product-single__description rte product4">
                   {% assign H1F = '<h1' %}{% assign H1L = '</h1>' %}{% assign DIVF = '<div' %}{% assign DIVL = '/div>' %}
                   {{ source_content | split: H1F | first }}        
                   <ul class="accordionX">         
@@ -618,7 +618,7 @@ function viewImg() {
                   {{ content_end }}
         		</div>
             	{% else %}
-                  <div class="product-single__description rte">
+                  <div class="product-single__description rte product5">
                     {{ source_content }}
                   </div>
             	{% endif %}

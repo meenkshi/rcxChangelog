@@ -33,7 +33,7 @@
 {% endstyle %}
 <div data-section-id="{{ section.id }}" data-section-type="slideshow-section">
   {%- if section.blocks.size > 0 -%}
-    <div id="SlideshowWrapper-{{ section.id }}" class="slideshow-wrapper" role="region" aria-label="slideshow" aria-describedby="slideshow-info" tabindex="-1">
+    <div id="SlideshowWrapper-{{ section.id }}" class="slideshow-wrapper home1" role="region" aria-label="slideshow" aria-describedby="slideshow-info" tabindex="-1">
       <div class="slideshow slideshow--{{ section.settings.slideshow_height }}{% if display_controls %} slideshow--display-controls{% endif %}"
            id="Slideshow-{{ section.id }}"
            data-autorotate="{{ section.settings.autorotate }}"
